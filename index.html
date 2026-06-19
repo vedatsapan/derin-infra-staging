@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Der-In infra | Badkamer & Toilet Renovatie Specialist Lelystad</title>
+    <meta name="description" content="Professionele badkamerrenovatie, toiletrenovatie, gipsplaat wanden, tegelwerk en loodgieterswerk in Lelystad en omgeving. All-in tarieven, 1 jaar garantie.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header / Navigation -->
+    <header class="main-header">
+        <div class="container header-container">
+            <a href="#" class="logo" aria-label="Der-In infra Home">
+                <img src="bouwtimmerwerk_logo.png" alt="Der-In infra Logo" class="logo-img">
+            </a>
+            
+            <nav class="main-nav" aria-label="Hoofdmenu">
+                <ul>
+                    <li><a href="#home" data-i18n="nav_home">Home</a></li>
+                    <li><a href="#services" data-i18n="nav_services">Diensten</a></li>
+                    <li><a href="#usp" data-i18n="nav_usp">Garanties</a></li>
+                    <li><a href="#gallery" data-i18n="nav_gallery">Projecten</a></li>
+                    <li><a href="#quote-section" data-i18n="nav_quote">Offerte</a></li>
+                    <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <div class="header-cta">
+                <!-- Language Switcher -->
+                <div class="lang-switcher" aria-label="Taalkeuze">
+                    <button class="lang-btn active" data-lang="nl">NL</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="tr">TR</button>
+                </div>
+                <a href="tel:0618694652" class="btn btn-phone" aria-label="Bel ons op +31 6 18694652"><i class="fa-solid fa-phone"></i> <span data-i18n="btn_call">Bel Direct</span></a>
+                <a href="#quote-section" class="btn btn-primary" data-i18n="btn_get_quote">Gratis Offerte</a>
+            </div>
+            
+            <button class="mobile-nav-toggle" aria-label="Menu openen" aria-expanded="false" aria-controls="mobile-menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-menu" class="mobile-menu" aria-label="Mobiel menu" aria-hidden="true">
+        <div class="mobile-menu-header">
+            <div class="lang-switcher-mobile">
+                <button class="lang-btn-mobile active" data-lang="nl">NL</button>
+                <button class="lang-btn-mobile" data-lang="en">EN</button>
+                <button class="lang-btn-mobile" data-lang="tr">TR</button>
+            </div>
+            <button class="mobile-menu-close" aria-label="Menu sluiten"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <ul>
+            <li><a href="#home" data-i18n="nav_home">Home</a></li>
+            <li><a href="#services" data-i18n="nav_services">Diensten</a></li>
+            <li><a href="#usp" data-i18n="nav_usp">Garanties</a></li>
+            <li><a href="#gallery" data-i18n="nav_gallery">Projecten</a></li>
+            <li><a href="#quote-section" data-i18n="nav_quote">Offerte</a></li>
+            <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+        </ul>
+        <div class="mobile-menu-cta">
+            <a href="tel:0618694652" class="btn btn-phone btn-block"><i class="fa-solid fa-phone"></i> <span data-i18n="btn_call">Bel Direct</span></a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <span class="hero-badge"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="hero_badge_text">1 Jaar Volledige Garantie</span></span>
+                <h1 data-i18n="hero_title">Der-In infra</h1>
+                <p class="hero-lead" data-i18n="hero_subtitle">Uw specialist in complete badkamer- en toiletrenovaties, strak tegelwerk, gipsplaat wanden en water- / afvoerleidingen. Actief in Lelystad en omgeving.</p>
+                <div class="hero-usps">
+                    <div class="hero-usp-item"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="hero_usp_1">Sloop & Afval Inbegrepen</span></div>
+                    <div class="hero-usp-item"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="hero_usp_2">Geen reiskosten & parkeerkosten</span></div>
+                    <div class="hero-usp-item"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="hero_usp_3">Geen verrassingen achteraf!</span></div>
+                </div>
+                <div class="hero-actions">
+                    <a href="#quote-section" class="btn btn-primary btn-lg" data-i18n="hero_cta_calc">Bereken Richtprijs</a>
+                    <a href="#gallery" class="btn btn-outline btn-lg" data-i18n="hero_cta_projects">Bekijk Projecten</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Propositions / USPs -->
+    <section id="usp" class="usp-section">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2 data-i18n="usp_title">Onze Duidelijke Beloftes</h2>
+                <p data-i18n="usp_subtitle">Eerlijk vakmanschap zonder verborgen kosten.</p>
+            </div>
+            <div class="usp-grid">
+                <div class="usp-card">
+                    <div class="usp-icon" aria-hidden="true"><i class="fa-solid fa-wallet"></i></div>
+                    <h3 data-i18n="usp_card_1_title">Geen verrassingen achteraf!</h3>
+                    <p data-i18n="usp_card_1_desc">Onze tarieven zijn all-in (excl. BTW). Voorrijkosten (yol masrafı) en otoparkkosten (parkeerkosten) zijn volledig inbegrepen. U betaalt wat op de offerte staat.</p>
+                </div>
+                <div class="usp-card">
+                    <div class="usp-icon" aria-hidden="true"><i class="fa-solid fa-truck-ramp-box"></i></div>
+                    <h3 data-i18n="usp_card_2_title">Materiaal & Uren Splitsing</h3>
+                    <p data-i18n="usp_card_2_desc">U kiest en koopt uw eigen tegels, kranen, bad en meubels naar eigen smaak. Wij verzorgen de vakkundige montage en leveren alle kaba-materialen (lijm, cement, leidingen).</p>
+                </div>
+                <div class="usp-card">
+                    <div class="usp-icon" aria-hidden="true"><i class="fa-solid fa-dumpster"></i></div>
+                    <h3 data-i18n="usp_card_3_title">Sloop & Afval Inclusief</h3>
+                    <p data-i18n="usp_card_3_desc">Bij al onze renovaties is het slopen van de oude badkamer/toilet en het afvoeren van alle puin en restafval volledig bij de prijs inbegrepen.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2 data-i18n="services_title">Onze Diensten</h2>
+                <p data-i18n="services_subtitle">Wij leveren vakmanschap van A tot Z voor uw woning of bedrijfspand.</p>
+            </div>
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <div class="service-card">
+                    <div class="service-img" style="background-image: url('gallery_bathroom_modern.png')"></div>
+                    <div class="service-body">
+                        <h3 data-i18n="service_1_title">Badkamerrenovatie</h3>
+                        <p data-i18n="service_1_desc">Complete renovatie inclusief sloopwerk, leidingen verleggen, stucwerk, tegelen en montage van douchecabines en sanitair.</p>
+                        <span class="service-tag"><span data-i18n="service_tag_starting">Vanaf</span> € 4.000,- ex. BTW</span>
+                    </div>
+                </div>
+                <!-- Service 2 -->
+                <div class="service-card">
+                    <div class="service-img" style="background-image: url('gallery_toilet_hangend.png')"></div>
+                    <div class="service-body">
+                        <h3 data-i18n="service_2_title">Toiletrenovatie</h3>
+                        <p data-i18n="service_2_desc">Installatie van inbouwreservoirs (hangend toilet), modern tegelwerk, fonteintjes en strakke plafondafwerking.</p>
+                        <span class="service-tag"><span data-i18n="service_tag_starting">Vanaf</span> € 2.000,- ex. BTW</span>
+                    </div>
+                </div>
+                <!-- Service 3 -->
+                <div class="service-card">
+                    <div class="service-img" style="background-image: url('gallery_drywall_finished.png')"></div>
+                    <div class="service-body">
+                        <h3 data-i18n="service_3_title">Gipsplaten & Scheidingswanden</h3>
+                        <p data-i18n="service_3_desc">Plaatsen van scheidingswanden en voorzetwanden met gipsplaten, inclusief isolatie en strakke afwerking.</p>
+                        <span class="service-tag"><span data-i18n="service_tag_starting">Vanaf</span> € 40,- <span data-i18n="service_tag_per_m2">per m²</span> ex. BTW</span>
+                    </div>
+                </div>
+                <!-- Service 4 -->
+                <div class="service-card">
+                    <div class="service-img" style="background-image: url('gallery_plumbing_pipes.png')"></div>
+                    <div class="service-body">
+                        <h3 data-i18n="service_4_title">Riolering & Loodgieterswerk</h3>
+                        <p data-i18n="service_4_desc">Professionele water- en afvoerleidingen aansluiten, lekkages verhelpen en rioolbuizen vakkundig vernieuwen.</p>
+                        <span class="service-tag" data-i18n="service_tag_on_request">Prijs op aanvraag</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dynamic Gallery / Portfolio Section -->
+    <section id="gallery" class="gallery-section">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2 data-i18n="gallery_title">Ons Opgeleverde Werk</h2>
+                <p data-i18n="gallery_subtitle">100% echte foto's van onze projecten in badkamerrenovatie, toiletrenovatie, tegelwerk en wanden.</p>
+            </div>
+            <div class="gallery-grid">
+                <!-- 1 -->
+                <div class="gallery-item" tabindex="0">
+                    <img src="gallery_bathroom_modern.png" alt="Moderne gerenoveerde badkamer met inloopdouche en LED spiegel">
+                    <div class="gallery-overlay">
+                        <h4 data-i18n="gallery_item_1_title">Badkamer Amsterdam</h4>
+                        <p data-i18n="gallery_item_1_desc">Inloopdouche & Grote plavuizen</p>
+                    </div>
+                </div>
+                <!-- 2 -->
+                <div class="gallery-item" tabindex="0">
+                    <img src="gallery_bathroom_luxury.png" alt="Luxe badkamer met dubbele wastafel en vrijstaand bad">
+                    <div class="gallery-overlay">
+                        <h4 data-i18n="gallery_item_2_title">Luxe Badkamer Almere</h4>
+                        <p data-i18n="gallery_item_2_desc">Dubbele wastafel & Goudkleurige kranen</p>
+                    </div>
+                </div>
+                <!-- 3 -->
+                <div class="gallery-item" tabindex="0">
+                    <img src="gallery_toilet_hangend.png" alt="Modern hangend toilet met houten wandpanelen en nisverlichting">
+                    <div class="gallery-overlay">
+                        <h4 data-i18n="gallery_item_3_title">Toilet Lelystad</h4>
+                        <p data-i18n="gallery_item_3_desc">Hangtoilet & Nis verlichting</p>
+                    </div>
+                </div>
+                <!-- 4 -->
+                <div class="gallery-item" tabindex="0">
+                    <img src="gallery_toilet_classic.png" alt="Klassiek betegeld toilet met witte metrotegels">
+                    <div class="gallery-overlay">
+                        <h4 data-i18n="gallery_item_4_title">Toilet Utrecht</h4>
+                        <p data-i18n="gallery_item_4_desc">Klassiek tegelwerk & Fonteintje</p>
+                    </div>
+                </div>
+                <!-- 5 -->
+                <div class="gallery-item" tabindex="0">
+                    <img src="gallery_drywall_finished.png" alt="Strak afgewerkte alçıpan bölme duvarı">
+                    <div class="gallery-overlay">
+                        <h4 data-i18n="gallery_item_5_title">Scheidingswand Lelystad</h4>
+                        <p data-i18n="gallery_item_5_desc">Gipsplaten wand & Glad stucwerk</p>
+                    </div>
+                </div>
+                <!-- 6 -->
+                <div class="gallery-item" tabindex="0">
+                    <img src="gallery_drywall_under_construction.png" alt="Metal stud profiller üzerine alçıpan montajı aşaması">
+                    <div class="gallery-overlay">
+                        <h4 data-i18n="gallery_item_6_title">Wand in opbouw</h4>
+                        <p data-i18n="gallery_item_6_desc">Metal-stud isolatie & Gipsplaten</p>
+                    </div>
+                </div>
+                <!-- 7 -->
+                <div class="gallery-item" tabindex="0">
+                    <img src="gallery_tiling_large_floor.png" alt="Büyük ebatlı fayans döşeme çalışması">
+                    <div class="gallery-overlay">
+                        <h4 data-i18n="gallery_item_7_title">Vloertegels Lelystad</h4>
+                        <p data-i18n="gallery_item_7_desc">Grote plavuizen met nivelleersysteem</p>
+                    </div>
+                </div>
+                <!-- 8 -->
+                <div class="gallery-item" tabindex="0">
+                    <img src="gallery_tiling_bathroom_wall.png" alt="Lazer hizalama ile banyo duvar fayansı döşeme">
+                    <div class="gallery-overlay">
+                        <h4 data-i18n="gallery_item_8_title">Wandtegelwerk</h4>
+                        <p data-i18n="gallery_item_8_desc">Precisie tegelen met laser-nivellering</p>
+                    </div>
+                </div>
+                <!-- 9 -->
+                <div class="gallery-item" tabindex="0">
+                    <img src="gallery_plumbing_pipes.png" alt="Lavabo altı temiz bakır ve PVC su borusu tesisatı">
+                    <div class="gallery-overlay">
+                        <h4 data-i18n="gallery_item_9_title">Loodgieterswerk</h4>
+                        <p data-i18n="gallery_item_9_desc">Koperen leidingen & Riolering</p>
+                    </div>
+                </div>
+                <!-- 10 -->
+                <div class="gallery-item" tabindex="0">
+                    <img src="gallery_bathroom_small.png" alt="Küçük 2 metrekare banyo alanı tasarımı ve yerleşimi">
+                    <div class="gallery-overlay">
+                        <h4 data-i18n="gallery_item_10_title">Compacte Badkamer</h4>
+                        <p data-i18n="gallery_item_10_desc">2 m² slimme indeling & inloopdouche</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Quote Section -->
+    <section id="quote-section" class="quote-section">
+        <div class="container">
+            <div class="quote-box">
+                <div class="quote-header">
+                    <h2 data-i18n="quote_title">Bereken Uw Richtprijs</h2>
+                    <p data-i18n="quote_subtitle">Vul het formulier in. De richtprijs wordt live berekend. Onze AI-assistent stuurt de aanvraag direct door naar ons team!</p>
+                </div>
+                <form id="quoteForm" class="quote-form" action="#" method="POST" novalidate>
+                    
+                    <!-- Anti-Spam Honeypot Field -->
+                    <div class="visually-hidden">
+                        <label for="honeypot_field">Vul dit veld niet in als u een mens bent</label>
+                        <input type="text" id="honeypot_field" name="honeypot_field" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="project_type"><span data-i18n="form_project_type">Type Project</span> <span class="required">*</span></label>
+                            <select id="project_type" name="project_type" required aria-required="true">
+                                <option value="" disabled selected data-i18n="form_choose_project">Kies uw project...</option>
+                                <option value="badkamer" data-i18n="form_opt_badkamer">Complete Badkamerrenovatie</option>
+                                <option value="toilet" data-i18n="form_opt_toilet">Toiletrenovatie</option>
+                                <option value="gipsplaat" data-i18n="form_opt_gipsplaat">Gipsplaten wanden plaatsen</option>
+                                <option value="riolering" data-i18n="form_opt_riolering">Riolering & Loodgieterswerk</option>
+                                <option value="fayans" data-i18n="form_opt_fayans">Tegelwerk (Grote Tegels)</option>
+                            </select>
+                            <span class="error-msg" id="error-project_type" aria-live="polite"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="material_preference"><span data-i18n="form_material_pref">Materiaal Optie</span> <span class="required">*</span></label>
+                            <select id="material_preference" name="material_preference" required aria-required="true">
+                                <option value="zonder-materiaal" selected data-i18n="form_opt_labor_only">Ik lever zelf sanitair & tegels (Alleen arbeid & basis-materialen)</option>
+                                <option value="met-materiaal" data-i18n="form_opt_with_materials">Der-In infra levert alles (All-in inclusief sanitair/tegels)</option>
+                            </select>
+                            <span class="error-msg" id="error-material_preference" aria-live="polite"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="size"><span data-i18n="form_size">Geschatte Oppervlakte in m²</span> <span class="required">*</span></label>
+                            <input type="text" id="size" name="size" placeholder="Bijv. 12" inputmode="numeric" pattern="[0-9]*" required aria-required="true" aria-describedby="size-hint">
+                            <span class="hint" id="size-hint" data-i18n="form_size_hint">Vul alleen hele getallen in.</span>
+                            <span class="error-msg" id="error-size" aria-live="polite"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="location"><span data-i18n="form_location">Stad / Regio</span> <span class="required">*</span></label>
+                            <input type="text" id="location" name="location" placeholder="Bijv. Lelystad" autocomplete="address-level2" required aria-required="true">
+                            <span class="error-msg" id="error-location" aria-live="polite"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description" data-i18n="form_description">Beschrijf uw wensen (Bijv. inloopdouche, hangend toilet, verlaagd plafond, etc.)</label>
+                        <textarea id="description" name="description" rows="4" placeholder="Geef ons zoveel mogelijk details over de afmetingen of wensen..."></textarea>
+                    </div>
+
+                    <div class="form-divider" data-i18n="form_div_contact">Uw Contactgegevens</div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="client_name"><span data-i18n="form_name">Naam</span> <span class="required">*</span></label>
+                            <input type="text" id="client_name" name="client_name" placeholder="Voor- en achternaam" autocomplete="name" required aria-required="true">
+                            <span class="error-msg" id="error-client_name" aria-live="polite"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_phone"><span data-i18n="form_phone">Telefoonnummer</span> <span class="required">*</span></label>
+                            <input type="tel" id="client_phone" name="client_phone" placeholder="Bijv. 06 12345678" autocomplete="tel" inputmode="tel" required aria-required="true">
+                            <span class="error-msg" id="error-client_phone" aria-live="polite"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="client_email"><span data-i18n="form_email">E-mailadres</span> <span class="required">*</span></label>
+                        <input type="email" id="client_email" name="client_email" placeholder="Bijv. info@domein.nl" autocomplete="email" required aria-required="true">
+                        <span class="error-msg" id="error-client_email" aria-live="polite"></span>
+                    </div>
+
+                    <!-- Make.com Webhook URL Configuration Panel -->
+                    <div class="form-group webhook-config-group">
+                        <label for="webhook_url"><i class="fa-solid fa-gears"></i> Make.com Webhook Integratie URL</label>
+                        <input type="url" id="webhook_url" name="webhook_url" value="https://hook.us2.make.com/placeholder-webhook-id">
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitBtn">
+                            <span id="btnText" data-i18n="form_btn_calc">Vul gegevens in voor richtprijs</span>
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="formSuccess" class="form-success-alert hidden" aria-live="assertive">
+                    <div class="success-icon" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></div>
+                    <h3 data-i18n="success_title">Bedankt! Uw aanvraag is succesvol verstuurd.</h3>
+                    <p data-i18n="success_desc">Onze AI-assistent en ons team verwerken uw aanvraag. We nemen zo snel mogelijk contact met u op.</p>
+                    <button type="button" class="btn btn-outline" id="resetFormBtn" data-i18n="success_btn_reset">Nieuwe berekening maken</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Info Section -->
+    <section id="contact" class="contact-section">
+        <div class="container contact-container">
+            <div class="contact-info">
+                <h2 data-i18n="contact_title">Neem Direct Contact Op</h2>
+                <p data-i18n="contact_subtitle">Wilt u direct een afspraak maken voor een opmeting of advies bij u thuis?</p>
+                
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <div class="contact-icon" aria-hidden="true"><i class="fa-solid fa-phone"></i></div>
+                        <div>
+                            <h4 data-i18n="contact_phone_title">Bellen / WhatsApp</h4>
+                            <p><a href="tel:0618694652">+31 6 18694652</a></p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></div>
+                        <div>
+                            <h4 data-i18n="contact_email_title">E-mail</h4>
+                            <p><a href="mailto:inankuruoz@hotmail.com">inankuruoz@hotmail.com</a></p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon" aria-hidden="true"><i class="fa-solid fa-location-dot"></i></div>
+                        <div>
+                            <h4 data-i18n="contact_area_title">Werkgebied</h4>
+                            <p data-i18n="contact_area_desc">Lelystad en omgeving (50 to 75 km straal)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="company-credentials">
+                    <p><strong>KvK Nummer:</strong> 89133226 (Der-In infra)</p>
+                    <p><strong>BTW Nummer:</strong> NL004694216B91</p>
+                    <p><strong>IBAN:</strong> NL52 INGB 0101 4419 75 (I. Kuruoz)</p>
+                    <p><strong>Adres:</strong> De Valk 14, 8239AE Lelystad</p>
+                </div>
+            </div>
+
+            <div class="contact-map-placeholder">
+                <i class="fa-solid fa-map-location-dot map-icon" aria-hidden="true"></i>
+                <h3 data-i18n="map_title">Actief in Flevoland & Omstreken</h3>
+                <p>Lelystad • Almere • Amsterdam • Utrecht • Purmerend</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container footer-container">
+            <p>&copy; 2026 Der-In infra. Alle rechten voorbehouden.</p>
+            <p class="footer-note" data-i18n="footer_note">Gerealiseerd met AI-assistentie & Vakmanschap.</p>
+        </div>
+    </footer>
+
+    <!-- Advanced AI Chatbot Widget -->
+    <div class="chat-widget" id="chatWidget">
+        <!-- Floating Toggle Button -->
+        <button class="chat-bubble" id="chatBubble" aria-label="Open Chat Asistent" aria-expanded="false" aria-controls="chatWindow">
+            <span class="pulse-ring"></span>
+            <i class="fa-solid fa-robot"></i>
+        </button>
+
+        <!-- Slide-Up Chat Window -->
+        <div class="chat-window hidden" id="chatWindow" role="dialog" aria-label="Der-In AI Assistant">
+            <div class="chat-header">
+                <div class="chat-avatar">
+                    <i class="fa-solid fa-robot"></i>
+                    <span class="online-indicator"></span>
+                </div>
+                <div class="chat-title-container">
+                    <h3>Der-In AI Assistant</h3>
+                    <span class="chat-status" data-i18n="chat_status">Altijd online</span>
+                </div>
+                <button class="chat-close" id="chatClose" aria-label="Sluit chat"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-msg bot">
+                    <div class="msg-bubble" data-i18n="chat_welcome">
+                        Hallo! Ik ben de AI-assistent van Der-In infra. Ik kan u helpen met richtprijzen voor badkamerrenovatie, toiletrenovatie, tegelwerk en wanden. Hoe kan ik u vandaag helpen?
+                    </div>
+                    <span class="msg-time">Zojuist</span>
+                </div>
+            </div>
+
+            <!-- Typing indicator -->
+            <div class="chat-typing hidden" id="chatTyping">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+
+            <form class="chat-footer" id="chatForm" action="#" method="POST" autocomplete="off">
+                <input type="text" id="chatInput" placeholder="Stel een vraag..." aria-label="Chatbericht input" required>
+                <button type="submit" class="chat-send" aria-label="Verzend bericht"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="app.js"></script>
+</body>
+</html>

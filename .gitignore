@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+.netlify/
+scratch/
+*.log
+update_app_js.py
+write_architecture.py
