@@ -616,11 +616,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 quoteForm.classList.add('hidden');
                 formSuccess.classList.remove('hidden');
+                
+                // Show dynamic Offerte preview modal
+                showOfferte(data);
+                createReopenButton(data);
             } catch (err) {
                 console.error(err);
                 // Fallback success for user ease
                 quoteForm.classList.add('hidden');
                 formSuccess.classList.remove('hidden');
+                
+                showOfferte(data);
+                createReopenButton(data);
             } finally {
                 submitBtn.disabled = false;
             }
@@ -872,5 +879,218 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     loadDynamicProjects();
+
+    // ----------------------------------------------------------------
+    // 9. Offerte Modal & Generator Handler
+    // ----------------------------------------------------------------
+    const offerteModal = document.getElementById('offerteModal');
+    const offerteClose = document.getElementById('offerteClose');
+    const closeOfferteModalBtn = document.getElementById('closeOfferteModalBtn');
+    const printOfferteBtn = document.getElementById('printOfferteBtn');
+    const viewSampleOfferteBtn = document.getElementById('viewSampleOfferteBtn');
+
+    // Modal populate fields
+    const offerteClientName = document.getElementById('offerteClientName');
+    const offerteClientPhone = document.getElementById('offerteClientPhone');
+    const offerteClientEmail = document.getElementById('offerteClientEmail');
+    const offerteClientLocation = document.getElementById('offerteClientLocation');
+    const offerteDate = document.getElementById('offerteDate');
+    const offerteNumber = document.getElementById('offerteNumber');
+    const offerteProjectTitle = document.getElementById('offerteProjectTitle');
+    const offerteWorksList = document.getElementById('offerteWorksList');
+    const offertePriceVal = document.getElementById('offertePriceVal');
+    const offerteMaterialNote = document.getElementById('offerteMaterialNote');
+    const currentDateSpans = document.querySelectorAll('.current-date-span');
+
+    // List of included works per project type (toilet matches ODT exactly!)
+    const worksTemplates = {
+        badkamer: [
+            "Verwijderen van bestaande badkamer (wastafel, douche/bad, toilet, wand- en vloertegels).",
+            "Afvoeren van alle sloop- en bouwafval (inbegrepen).",
+            "Gereedmaken en uitvlakken van wanden en vloer voor nieuw tegelwerk.",
+            "Aanleggen en aanpassen van water- en afvoerleidingen.",
+            "Installatie van inbouwreservoir (indien toilet aanwezig).",
+            "Plaatsen van nieuwe wand- en vloertegels.",
+            "Het plafond herstellen en schilderen.",
+            "Professioneel voegwerk en afwerking.",
+            "Afkitten van alle hoeken en sanitair met sanitair siliconenkit.",
+            "Montage van nieuw douchecabine/bad, wastafel en kraan.",
+            "Montage van spiegel, planchet en overige accessoires.",
+            "Controle op lekkages en correcte werking.",
+            "Schoon opleveren van de ruimte."
+        ],
+        toilet: [
+            "Verwijderen van bestaande wastafel, toilet, kraan en wand-/vloertegels.",
+            "Gereedmaken van wanden voor nieuw tegelwerk.",
+            "Afvoer van puin en bouwafval.",
+            "Aanleggen en aanpassen van water- en afvoerleidingen.",
+            "Installatie van inbouwreservoir.",
+            "Plaatsen van nieuwe wand- en vloertegels.",
+            "het plafond schilderen",
+            "Voegwerk en afwerking.",
+            "Afkitten met sanitair siliconenkit.",
+            "Montage van nieuw toilet, wastafel en kraan.",
+            "Montage van spiegel, toiletrolhouder, toiletborstelhouder en overige accessoires indien aanwezig.",
+            "Controle op lekkages en correcte werking.",
+            "Schoon opleveren van de ruimte."
+        ],
+        gipsplaat: [
+            "Montage van metal-stud of houten frameprofielen.",
+            "Aanbrengen van thermische en geluidsisolatie (steenwol/glaswol).",
+            "Monteren van gipsplaten (wanden en/of plafonds).",
+            "Glad afwerken van naden en schroefgaten (klaar voor stucwerk).",
+            "Afvoeren van restafval en restanten.",
+            "Schoon opleveren van de werkplek."
+        ],
+        fayans: [
+            "Voorbereiden, reinigen en primeren van de ondergrond.",
+            "Precieze laser-meting voor optimaal voegverloop.",
+            "Verlijmen van grootformaat wand- of vloertegels met levelsysteem.",
+            "Inwassen / Voegen van het tegelwerk in kleur naar keuze.",
+            "Elastisch afkitten van aansluitingen en hoeken.",
+            "Afvoer van snijafval.",
+            "Schoon opleveren."
+        ],
+        riolering: [
+            "Inspectie en lekdetectie van riolering en afvoeren.",
+            "Aanleg of vernieuwing van koperen en kunststof waterleidingen.",
+            "Professionele installatie of reparatie van PVC afvoerbuizen.",
+            "Montage van sifons, kranen en sanitair aansluitingen.",
+            "Lekkage-controle en druktesten.",
+            "Schoon opleveren van de ruimte."
+        ]
+    };
+
+    function showOfferte(data) {
+        if (!offerteModal) return;
+
+        // Set date
+        const today = new Date();
+        const dateStr = today.toLocaleDateString('nl-NL');
+        if (offerteDate) offerteDate.textContent = dateStr;
+        currentDateSpans.forEach(el => el.textContent = dateStr);
+
+        // Generate Offerte Number
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        if (offerteNumber) offerteNumber.textContent = `DI-${today.getFullYear()}-${randomNum}`;
+
+        // Populate client details
+        if (offerteClientName) offerteClientName.textContent = data.client_name || "-";
+        if (offerteClientPhone) offerteClientPhone.textContent = data.client_phone || "-";
+        if (offerteClientEmail) offerteClientEmail.textContent = data.client_email || "-";
+        if (offerteClientLocation) offerteClientLocation.textContent = data.location || "-";
+
+        // Set project title
+        const typeNames = {
+            badkamer: "BADKAMERENOVATIE",
+            toilet: "TOILETRENOVATIE",
+            gipsplaat: "GIPSPLATEN WANDEN",
+            fayans: "TEGELWERK",
+            riolering: "RIOLERING & LOODGIETERSWERK"
+        };
+        const pType = data.project_type || "toilet";
+        if (offerteProjectTitle) offerteProjectTitle.textContent = typeNames[pType] || pType.toUpperCase();
+
+        // Populate works list
+        if (offerteWorksList) {
+            offerteWorksList.innerHTML = "";
+            const works = worksTemplates[pType] || worksTemplates.toilet;
+            works.forEach(w => {
+                const li = document.createElement('li');
+                li.textContent = w;
+                offerteWorksList.appendChild(li);
+            });
+        }
+
+        // Set materials note
+        if (offerteMaterialNote) {
+            const isWithMaterials = data.material_preference === 'met-materiaal';
+            if (pType === 'badkamer') {
+                offerteMaterialNote.textContent = isWithMaterials 
+                    ? "Der-In infra levert alle materialen inclusief sanitair, A-merk tegels, kranen en badkamermeubels conform de gemaakte specificaties."
+                    : "De klant is verantwoordelijk voor de te gebruiken materialen: nieuwe tegels, sanitair, kranen, meubels, etc. Der-In infra levert alle kaba-bouwmaterialen (lijm, cement, leidingen, voegmiddel).";
+            } else if (pType === 'toilet') {
+                offerteMaterialNote.textContent = isWithMaterials
+                    ? "Der-In infra levert alle materialen inclusief inbouwreservoir, toiletpot, wastafeltje, kraan en tegels."
+                    : "De klant is verantwoordelijk voor de te gebruiken materialen: nieuwe tegels, een nieuwe wastafel en kraan, een inbouwreservoir en een nieuw toilet.";
+            } else if (pType === 'gipsplaat' || pType === 'fayans') {
+                offerteMaterialNote.textContent = isWithMaterials
+                    ? "Der-In infra levert alle materialen (gipsplaten, metal-studs, isolatie / tegels, lijm, voegen)."
+                    : "De klant levert zelf de gipsplaten / tegels. Der-In infra levert de overige verbruiksartikelen (schroeven, profielen / lijm, voegen).";
+            } else {
+                offerteMaterialNote.textContent = "Prijsopgave is op basis van inspectie ter plaatse.";
+            }
+        }
+
+        // Set Price Value
+        if (offertePriceVal) offertePriceVal.textContent = data.calculated_estimate || "Op aanvraag";
+
+        // Show Modal
+        offerteModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeOfferte() {
+        if (offerteModal) offerteModal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    // Dynamic button on success page
+    function createReopenButton(data) {
+        const formSuccessDiv = document.getElementById('formSuccess');
+        if (!formSuccessDiv) return;
+        
+        let reopenBtn = document.getElementById('reopenOfferteBtn');
+        if (!reopenBtn) {
+            reopenBtn = document.createElement('button');
+            reopenBtn.type = 'button';
+            reopenBtn.className = 'btn btn-primary btn-block';
+            reopenBtn.id = 'reopenOfferteBtn';
+            reopenBtn.style.marginBottom = '15px';
+            reopenBtn.style.marginTop = '15px';
+            reopenBtn.innerHTML = `<i class="fa-solid fa-file-invoice"></i> Bekijk en Print Offerte`;
+            reopenBtn.addEventListener('click', () => showOfferte(data));
+            
+            const resetBtn = document.getElementById('resetFormBtn');
+            if (resetBtn) {
+                formSuccessDiv.insertBefore(reopenBtn, resetBtn);
+            } else {
+                formSuccessDiv.appendChild(reopenBtn);
+            }
+        } else {
+            // Update click handler with new data
+            const newBtn = reopenBtn.cloneNode(true);
+            newBtn.addEventListener('click', () => showOfferte(data));
+            reopenBtn.parentNode.replaceChild(newBtn, reopenBtn);
+        }
+    }
+
+    if (offerteClose) offerteClose.addEventListener('click', closeOfferte);
+    if (closeOfferteModalBtn) closeOfferteModalBtn.addEventListener('click', closeOfferte);
+    if (offerteModal) {
+        offerteModal.addEventListener('click', (e) => {
+            if (e.target === offerteModal) closeOfferte();
+        });
+    }
+
+    if (printOfferteBtn) {
+        printOfferteBtn.addEventListener('click', () => {
+            window.print();
+        });
+    }
+
+    if (viewSampleOfferteBtn) {
+        viewSampleOfferteBtn.addEventListener('click', () => {
+            showOfferte({
+                client_name: "İnan Kuruöz (Voorbeeld)",
+                client_phone: "0618694652",
+                client_email: "inankuruoz@hotmail.com",
+                location: "De Valk 14, 8239AE Lelystad",
+                project_type: "toilet",
+                material_preference: "zonder-materiaal",
+                calculated_estimate: "€ 2.000,-"
+            });
+        });
+    }
 
 });

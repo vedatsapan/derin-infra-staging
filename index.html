@@ -20,7 +20,7 @@
     <header class="main-header">
         <div class="container header-container">
             <a href="#" class="logo" aria-label="Der-In infra Home">
-                <img src="bouwtimmerwerk_logo.png" alt="Der-In infra Logo" class="logo-img">
+                <img src="derin_infra_new_logo.png" alt="Der-In infra Logo" class="logo-img">
             </a>
             
             <nav class="main-nav" aria-label="Hoofdmenu">
@@ -352,6 +352,12 @@
                             <span id="btnText" data-i18n="form_btn_calc">Vul gegevens in voor richtprijs</span>
                         </button>
                     </div>
+                    
+                    <div class="form-footer-secondary" style="margin-top: 15px; text-align: center;">
+                        <button type="button" class="btn-link" id="viewSampleOfferteBtn" style="color: var(--primary); background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: 600; font-size: 0.95rem; font-family: var(--font-sans);">
+                            <i class="fa-solid fa-file-contract"></i> <span data-i18n="btn_view_sample_offerte">Bekijk Voorbeeld Offerte (Toiletrenovatie)</span>
+                        </button>
+                    </div>
                 </form>
                 
                 <div id="formSuccess" class="form-success-alert hidden" aria-live="assertive">
@@ -461,6 +467,93 @@
                 <input type="text" id="chatInput" placeholder="Stel een vraag..." aria-label="Chatbericht input" required>
                 <button type="submit" class="chat-send" aria-label="Verzend bericht"><i class="fa-solid fa-paper-plane"></i></button>
             </form>
+        </div>
+    </div>
+
+    <!-- Offerte Modal -->
+    <div id="offerteModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="offerteTitle">
+        <div class="modal-content">
+            <button class="modal-close" id="offerteClose" aria-label="Sluiten">&times;</button>
+            <div class="offerte-document" id="offertePrintArea">
+                <div class="offerte-header">
+                    <div class="offerte-logo">
+                        <img src="derin_infra_new_logo.png" alt="Der-In infra Logo">
+                    </div>
+                    <div class="offerte-company-details">
+                        <h3>Der-In infra</h3>
+                        <p><strong>Adres:</strong> De Valk 14, 8239AE Lelystad</p>
+                        <p><strong>Telefoon:</strong> +31 6 18694652</p>
+                        <p><strong>E-mail:</strong> inankuruoz@hotmail.com</p>
+                        <p><strong>KvK:</strong> 89133226</p>
+                        <p><strong>BTW:</strong> NL004694216B91</p>
+                        <p><strong>IBAN:</strong> NL52 INGB 0101 4419 75 (I. Kuruoz)</p>
+                    </div>
+                </div>
+                
+                <hr class="offerte-divider">
+                
+                <div class="offerte-meta">
+                    <div class="offerte-client-details">
+                        <h4><strong>Offerte Voor (Klant):</strong></h4>
+                        <p><strong>Naam:</strong> <span id="offerteClientName">-</span></p>
+                        <p><strong>Telefoon:</strong> <span id="offerteClientPhone">-</span></p>
+                        <p><strong>E-mail:</strong> <span id="offerteClientEmail">-</span></p>
+                        <p><strong>Locatie:</strong> <span id="offerteClientLocation">-</span></p>
+                    </div>
+                    <div class="offerte-info">
+                        <h4><strong>Offerte Details:</strong></h4>
+                        <p><strong>Datum:</strong> <span id="offerteDate">-</span></p>
+                        <p><strong>Offerte Nr:</strong> <span id="offerteNumber">-</span></p>
+                        <p><strong>Geldigheid:</strong> 30 dagen</p>
+                    </div>
+                </div>
+                
+                <h2 class="offerte-title" id="offerteTitle">OFFERTE <span id="offerteProjectTitle">-</span></h2>
+                
+                <div class="offerte-body">
+                    <h3>Werkzaamheden Inbegrepen</h3>
+                    <ul id="offerteWorksList" class="offerte-works-list">
+                        <!-- Dynamic items -->
+                    </ul>
+                    
+                    <div class="offerte-pricing">
+                        <h3>Prijsopgave</h3>
+                        <p class="offerte-material-note" id="offerteMaterialNote">
+                            De klant is verantwoordelijk voor de te gebruiken materialen: nieuwe tegels, een nieuwe wastafel en kraan, un inbouwreservoir en een nieuw toilet.
+                        </p>
+                        <div class="offerte-price-box">
+                            <span class="price-label">Project Richtprijs:</span>
+                            <span class="price-value" id="offertePriceVal">€ -</span>
+                            <span class="price-vat">ex. BTW</span>
+                        </div>
+                    </div>
+                    
+                    <div class="offerte-terms">
+                        <h3>Voorwaarden & Garantie</h3>
+                        <p><strong>Betalingsvoorwaarden:</strong> 30% aanbetaling bij opdrachtverstrekking, 70% bij oplevering.</p>
+                        <p><strong>Garantie:</strong> Op alle uitgevoerde werkzaamheden wordt 12 maanden garantie verleend vanaf de opleverdatum. De garantie geldt niet voor schade veroorzaakt door verkeerd gebruik, nalatigheid, normale slijtage, werkzaamheden door derden of productgebreken van geleverde materialen.</p>
+                        <p><strong>Reiskosten & Otopark:</strong> Reiskosten (voorrijkosten) en parkeerkosten binnen onze werkstraal (75 km rond Lelystad) zijn €0 (volledig inbegrepen).</p>
+                    </div>
+                </div>
+                
+                <div class="offerte-signatures">
+                    <div class="signature-box">
+                        <p>Handtekening opdrachtgever:</p>
+                        <div class="signature-line"></div>
+                        <p>Datum: ____ / ____ / 2026</p>
+                    </div>
+                    <div class="signature-box">
+                        <p>Handtekening Der-In infra:</p>
+                        <div class="signature-line font-signature">İ. Kuruöz</div>
+                        <p>Datum: <span class="current-date-span"></span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-primary" id="printOfferteBtn"><i class="fa-solid fa-print"></i> <span>Afdrukken / Opslaan als PDF</span></button>
+                <button type="button" class="btn btn-outline" id="closeOfferteModalBtn">Sluiten</button>
+            </div>
         </div>
     </div>
 

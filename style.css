@@ -1254,3 +1254,335 @@ section {
         padding: 32px 24px;
     }
 }
+
+/* ----------------------------------------------------------------
+   8. Offerte Modal & Document Preview Styles
+   ---------------------------------------------------------------- */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(11, 19, 43, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 0.3s ease;
+}
+
+.modal.hidden {
+    display: none !important;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    color: #1e293b;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 850px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+    color: #0f172a;
+}
+
+.offerte-document {
+    background: #ffffff;
+    padding: 40px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #0f172a;
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.6;
+}
+
+.offerte-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.offerte-logo img {
+    height: 70px;
+    width: auto;
+    object-fit: contain;
+}
+
+.offerte-company-details {
+    text-align: right;
+    font-size: 0.85rem;
+    color: #475569;
+}
+
+.offerte-company-details h3 {
+    color: #0b132b;
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.offerte-company-details p {
+    margin: 2px 0;
+}
+
+.offerte-divider {
+    border: 0;
+    border-top: 2px solid #0b132b;
+    margin: 20px 0;
+}
+
+.offerte-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+    background: #f8fafc;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+}
+
+.offerte-client-details h4, .offerte-info h4 {
+    margin-bottom: 10px;
+    color: #0b132b;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 5px;
+}
+
+.offerte-client-details p, .offerte-info p {
+    margin: 4px 0;
+}
+
+.offerte-title {
+    text-align: center;
+    color: #0b132b;
+    margin-bottom: 25px;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+.offerte-body h3 {
+    color: #0b132b;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 5px;
+    margin-top: 25px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.offerte-works-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.offerte-works-list li {
+    margin-bottom: 8px;
+    padding-left: 25px;
+    position: relative;
+    font-size: 0.95rem;
+}
+
+.offerte-works-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #10b981;
+    font-weight: bold;
+}
+
+.offerte-pricing {
+    margin-top: 25px;
+}
+
+.offerte-material-note {
+    font-style: italic;
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 10px;
+}
+
+.offerte-price-box {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 15px 25px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.price-label {
+    font-weight: 600;
+    color: #334155;
+    font-size: 1.05rem;
+}
+
+.price-value {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #0b132b;
+}
+
+.price-vat {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.offerte-terms p {
+    font-size: 0.88rem;
+    color: #334155;
+    margin: 8px 0;
+}
+
+.offerte-signatures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px dashed #cbd5e1;
+}
+
+.signature-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.signature-box p {
+    margin: 4px 0;
+    font-size: 0.9rem;
+}
+
+.signature-line {
+    border-bottom: 1px solid #94a3b8;
+    height: 60px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-end;
+    padding-left: 10px;
+}
+
+.font-signature {
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    font-weight: bold;
+    color: #0b132b;
+    font-size: 1.25rem;
+    border-bottom: 1px solid #94a3b8;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* ----------------------------------------------------------------
+   9. Print Styles
+   ---------------------------------------------------------------- */
+@media print {
+    /* Hide all elements on page */
+    body * {
+        visibility: hidden !important;
+        background: transparent !important;
+    }
+    
+    /* Make sure modal content is root and printable */
+    #offerteModal, #offerteModal * {
+        visibility: visible !important;
+    }
+    
+    #offerteModal {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        background: white !important;
+        backdrop-filter: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .modal-content {
+        box-shadow: none !important;
+        border: none !important;
+        max-height: none !important;
+        overflow: visible !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+    }
+    
+    .modal-close, .modal-actions {
+        display: none !important;
+        height: 0 !important;
+        width: 0 !important;
+        overflow: hidden !important;
+    }
+    
+    .offerte-document {
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* Optimize colors for print */
+    .offerte-meta, .offerte-price-box {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    .offerte-works-list li::before {
+        color: #047857 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    .offerte-divider {
+        border-top: 2px solid #000000 !important;
+    }
+}
+
