@@ -41,13 +41,18 @@ Web sitesindeki chatbot widget'ının en gelişmiş yapay zeka ile çalışabilm
 
 ---
 
-## 🌐 Geçici Canlı Arayüz (Staging Deploy)
+## 🌐 Canlıya Alma ve Domain Yönlendirme (Production Deploy)
 
-Web sitesinin test edilmesi amacıyla GitHub Pages üzerinde geçici bir canlı link oluşturuldu:
-* **Canlı Test Linki (Staging URL):** [https://vedatsapan.github.io/derin-infra-staging/](https://vedatsapan.github.io/derin-infra-staging/)
-* **GitHub Repository:** [https://github.com/vedatsapan/derin-infra-staging](https://github.com/vedatsapan/derin-infra-staging)
+Web sitesi, kullanıcı tercihi doğrultusunda **GitHub Pages** üzerinde kendi alan adınız olan **`derininfra.nl`** ile tamamen ücretsiz ve güvenli (HTTPS) olarak yayına alınmıştır:
+* 🌐 **Canlı Web Sitesi URL'si:** [https://derininfra.nl](https://derininfra.nl)
+* 🧪 **Staging / Test Linki:** [https://vedatsapan.github.io/derin-infra-staging/](https://vedatsapan.github.io/derin-infra-staging/)
+* 📦 **GitHub Repository:** [https://github.com/vedatsapan/derin-infra-staging](https://github.com/vedatsapan/derin-infra-staging)
 
-İnan abiye bu linki göndererek cep telefonundan veya bilgisayarından incelemesini sağlayabilirsiniz.
+### Gerçekleştirilen DNS ve Altyapı İşlemleri:
+1. **DNS Yönlendirmesi:** Hostinger hPanel DNS editörü üzerinden, domainin boşta durmasını sağlayan eski IP kaydı silindi ve domain doğrudan GitHub Pages'e yönlendirildi (A kayıtları: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`).
+2. **CNAME & SSL Kurulumu:** Projenin ana dizinine `CNAME` dosyası eklenerek domain GitHub Pages'e bağlandı. SSL sertifikası (HTTPS) GitHub tarafından otomatik olarak oluşturulup onaylandı.
+3. **Statik Chatbot Modu (Offline Fallback):** Sitenin statik barındırılması nedeniyle backend sunucusu çalışmamaktadır. Ancak chatbot, `app.js` içerisine gömülü akıllı yerel AI asistanı (keyword fallback) sayesinde müşterilerin tüm banyo, tuvalet, alçıpan tadilatı ve Lelystad bölgesi ile ilgili fiyat/hizmet sorularına anında ve çevrimdışı modda doğru yanıtlar vermektedir.
+
 
 ---
 
