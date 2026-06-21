@@ -318,12 +318,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Update form placeholders
-        const sizeInput = document.getElementById('size');
-        const locationInput = document.getElementById('location');
-        const descInput = document.getElementById('description');
-        const nameInput = document.getElementById('client_name');
-        const phoneInput = document.getElementById('client_phone');
-        const emailInput = document.getElementById('client_email');
+        const sizeInput = document.getElementById('wizard_size');
+        const locationInput = document.getElementById('wizard_location');
+        const descInput = document.getElementById('wizard_description');
+        const nameInput = document.getElementById('wizard_client_name');
+        const phoneInput = document.getElementById('wizard_client_phone');
+        const emailInput = document.getElementById('wizard_client_email');
         const chatInput = document.getElementById('chatInput');
 
         if (lang === 'en') {
@@ -352,7 +352,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (chatInput) chatInput.placeholder = "Stel een vraag...";
         }
 
-        calculateEstimate(); // Recalculate helper text on button
+        // Only call if defined
+        if (typeof calculateEstimate === 'function') {
+            calculateEstimate();
+        }
     }
 
     // Set click listeners for header and mobile menu language switchers
@@ -397,145 +400,351 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------------------
-    // 4. Live Pricing Calculator Logic (Real Business Data)
+    // 3.1. Before/After Image Slider Drag Logic
     // ----------------------------------------------------------------
-    const projectTypeSelect = document.getElementById('project_type');
-    const materialPrefSelect = document.getElementById('material_preference');
-    const sizeInput = document.getElementById('size');
-    const submitBtnText = document.getElementById('btnText');
+    const sliders = document.querySelectorAll('.ba-slider');
+    sliders.forEach(slider => {
+        const handle = slider.querySelector('.slider-handle');
+        const afterImg = slider.querySelector('.after-image');
+        
+        if (!handle || !afterImg) return;
+        
+        let isDragging = false;
+        
+        function updateSlider(clientX) {
+            const rect = slider.getBoundingClientRect();
+            const x = clientX - rect.left;
+            let percentage = (x / rect.width) * 100;
+            
+            // Constrain between 0% and 100%
+            if (percentage < 0) percentage = 0;
+            if (percentage > 100) percentage = 100;
+            
+            slider.style.setProperty('--clip-percentage', `${percentage}%`);
+        }
+        
+        // Mouse Events
+        slider.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            updateSlider(e.clientX);
+        });
+        
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            updateSlider(e.clientX);
+        });
+        
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        
+        // Touch Events (Mobile)
+        slider.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            if (e.touches.length > 0) {
+                updateSlider(e.touches[0].clientX);
+            }
+        });
+        
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            if (e.touches.length > 0) {
+                updateSlider(e.touches[0].clientX);
+            }
+        });
+        
+        window.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+    });
+
+    // ----------------------------------------------------------------
+    // 3.2. Portfolio Category Filter Logic
+    // ----------------------------------------------------------------
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            filterTabs.forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+
+            const filterValue = tab.getAttribute('data-filter');
+
+            galleryItems.forEach(item => {
+                const category = item.getAttribute('data-category');
+                if (filterValue === 'all' || category === filterValue) {
+                    item.classList.remove('hidden');
+                    item.style.transform = 'scale(0.95)';
+                    item.style.opacity = '0';
+                    setTimeout(() => {
+                        item.style.transform = 'scale(1)';
+                        item.style.opacity = '1';
+                    }, 50);
+                } else {
+                    item.style.opacity = '0';
+                    item.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        item.classList.add('hidden');
+                    }, 250);
+                }
+            });
+        });
+    });
+
+    // ----------------------------------------------------------------
+    // 4. Live Pricing Calculator & Multi-Step Wizard Logic
+    // ----------------------------------------------------------------
+    const wizardForm = document.getElementById('quoteWizardForm');
+    const wizardSteps = document.querySelectorAll('.wizard-step');
+    const progressFill = document.getElementById('progressFill');
+    const indicators = document.querySelectorAll('.step-indicator');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const wSubmitBtn = document.getElementById('wSubmitBtn');
+    const sizeRange = document.getElementById('wizard_size_range');
+    const sizeInput = document.getElementById('wizard_size');
+
+    let currentStep = 1;
+    const totalSteps = 5;
+
+    // Range & Number sync
+    if (sizeRange && sizeInput) {
+        sizeRange.addEventListener('input', () => {
+            sizeInput.value = sizeRange.value;
+            calculateEstimate();
+        });
+        sizeInput.addEventListener('input', () => {
+            let val = parseInt(sizeInput.value);
+            if (isNaN(val)) val = 1;
+            if (val < 1) val = 1;
+            if (val > 100) val = 100;
+            sizeRange.value = val;
+            calculateEstimate();
+        });
+    }
 
     function calculateEstimate() {
-        const type = projectTypeSelect.value;
-        const materialPref = materialPrefSelect.value;
+        if (!sizeInput) return null;
+        
+        const projectTypeChecked = document.querySelector('input[name="project_type"]:checked');
+        const projectType = projectTypeChecked ? projectTypeChecked.value : null;
+        const materialPref = document.getElementById('wizard_material_preference')?.value;
         const size = parseFloat(sizeInput.value) || 0;
 
-        if (!type) {
-            submitBtnText.textContent = translations[currentLang].form_btn_calc;
+        if (!projectType) {
             return null;
         }
 
         let basePrice = 0;
         let materialCost = 0;
-        let requiresSize = false;
+        let isOnRequest = false;
 
-        switch (type) {
+        switch (projectType) {
             case 'badkamer':
-                requiresSize = true;
-                // Banyo taban fiyatı (söküm, moloz dahil)
                 if (size <= 2) {
-                    basePrice = 4000; // 2m² banyo €4000
+                    basePrice = 4000;
                 } else if (size === 3) {
                     basePrice = 4500;
                 } else if (size === 4) {
                     basePrice = 5200;
                 } else if (size === 5 || size === 6) {
-                    basePrice = 6000; // Normal boy banyo €6000
+                    basePrice = 6000;
                 } else if (size > 6) {
-                    basePrice = 6000 + (size - 6) * 800; // m² başına +800 Euro
+                    basePrice = 6000 + (size - 6) * 800;
                 }
-                
-                // Malzeme bedeli eklenirse sabit +2500 Euro
                 materialCost = materialPref === 'met-materiaal' ? 2500 : 0;
                 break;
 
             case 'toilet':
-                basePrice = 2000; // Taban €2000 (Söküm/moloz dahil)
-                materialCost = materialPref === 'met-materiaal' ? 1000 : 0; // Malzemeli €3000
+                basePrice = 2000;
+                materialCost = materialPref === 'met-materiaal' ? 1000 : 0;
                 break;
 
             case 'gipsplaat':
-                requiresSize = true;
-                basePrice = size * 42.5; // €42.50 işçilik
-                materialCost = materialPref === 'met-materiaal' ? (size * 22.5) : 0; // Toplam €65/m2 malzemeli
+                basePrice = size * 42.5;
+                materialCost = materialPref === 'met-materiaal' ? (size * 22.5) : 0;
                 break;
 
             case 'fayans':
-                requiresSize = true;
-                basePrice = size * 47.5; // €47.50 işçilik
-                materialCost = materialPref === 'met-materiaal' ? (size * 52.5) : 0; // Toplam €100/m2 malzemeli
+                basePrice = size * 47.5;
+                materialCost = materialPref === 'met-materiaal' ? (size * 52.5) : 0;
                 break;
 
             case 'riolering':
-                if (currentLang === 'tr') {
-                    submitBtnText.innerHTML = `<i class="fa-solid fa-calculator"></i> Tesisat: Fiyat Teklifi İsteyin`;
-                } else if (currentLang === 'en') {
-                    submitBtnText.innerHTML = `<i class="fa-solid fa-calculator"></i> Plumbing: Price on Request`;
-                } else {
-                    submitBtnText.innerHTML = `<i class="fa-solid fa-calculator"></i> Loodgieterswerk: Prijs op aanvraag`;
-                }
-                return 'Op aanvraag';
+                isOnRequest = true;
+                break;
         }
 
-        const sizeHint = document.getElementById('size-hint');
-        if (sizeHint) {
-            if (requiresSize && size === 0) {
-                sizeHint.style.color = '#ef4444';
-                sizeHint.textContent = currentLang === 'tr' ? 'Lütfen alan boyutunu girin.' : (currentLang === 'en' ? 'Please enter the size.' : 'Vul a.b.v. de oppervlakte in.');
-            } else {
-                sizeHint.style.color = '#94a3b8';
-                sizeHint.textContent = translations[currentLang].form_size_hint;
-            }
+        if (isOnRequest) {
+            return currentLang === 'tr' ? 'Fiyat teklifi isteyin' : (currentLang === 'en' ? 'Price on request' : 'Prijs op aanvraag');
         }
 
-        const totalPrice = basePrice + materialCost;
-        if (totalPrice > 0) {
-            const prefix = currentLang === 'tr' ? 'Tahmini Fiyat' : (currentLang === 'en' ? 'Estimated Price' : 'Richtprijs');
-            const suffix = currentLang === 'tr' ? 'Teklif İste' : (currentLang === 'en' ? 'Request Quote' : 'Vraag Offerte');
-            submitBtnText.innerHTML = `<i class="fa-solid fa-calculator"></i> ${prefix}: € ${totalPrice.toLocaleString('nl-NL')} ex. BTW - ${suffix}`;
-            return `€ ${totalPrice.toLocaleString('nl-NL')} ex. BTW`;
+        const total = basePrice + materialCost;
+        return total > 0 ? `€ ${total.toLocaleString('nl-NL')}` : null;
+    }
+
+    function populateSummaryAndPrice() {
+        const projectTypeChecked = document.querySelector('input[name="project_type"]:checked');
+        const projectType = projectTypeChecked ? projectTypeChecked.value : null;
+        const materialPref = document.getElementById('wizard_material_preference')?.value;
+        const size = parseFloat(sizeInput?.value) || 0;
+        const name = document.getElementById('wizard_client_name')?.value || '';
+        const phone = document.getElementById('wizard_client_phone')?.value || '';
+        
+        const typeNames = {
+            badkamer: currentLang === 'tr' ? 'Komple Banyo Yenileme' : (currentLang === 'en' ? 'Complete Bathroom Renovation' : 'Complete Badkamerrenovatie'),
+            toilet: currentLang === 'tr' ? 'Tuvalet Yenileme' : (currentLang === 'en' ? 'Toilet Renovation' : 'Toiletrenovatie'),
+            gipsplaat: currentLang === 'tr' ? 'Alçıpan Bölme Duvar' : (currentLang === 'en' ? 'Drywall Partition Walls' : 'Gipsplaten scheidingswanden'),
+            fayans: currentLang === 'tr' ? 'Tegelwerk (Fayans)' : (currentLang === 'en' ? 'Tiling' : 'Tegelwerk'),
+            riolering: currentLang === 'tr' ? 'Su Tesisatı & Kanalizasyon' : (currentLang === 'en' ? 'Sewerage & Plumbing' : 'Riolering & Loodgieterswerk')
+        };
+        
+        const materialPrefTexts = {
+            'zonder-materiaal': currentLang === 'tr' ? 'Sadece İşçilik (+Kaba Malzeme)' : (currentLang === 'en' ? 'Labor & Rough Materials only' : 'Alleen arbeid & basis-materialen'),
+            'met-materiaal': currentLang === 'tr' ? 'Her Şey Dahil (Malzemeli)' : (currentLang === 'en' ? 'All-in including materials' : 'All-in inclusief sanitair/tegels')
+        };
+
+        const sumProject = document.getElementById('sumProject');
+        const sumSize = document.getElementById('sumSize');
+        const sumMaterials = document.getElementById('sumMaterials');
+        const sumName = document.getElementById('sumName');
+        const sumPhone = document.getElementById('sumPhone');
+        const wizardPriceVal = document.getElementById('wizardPriceVal');
+        const sumSizeRow = document.getElementById('sumSizeRow');
+        const sumMaterialsRow = document.getElementById('sumMaterialsRow');
+
+        if (sumProject) sumProject.textContent = typeNames[projectType] || '-';
+        
+        if (projectType === 'riolering') {
+            if (sumSizeRow) sumSizeRow.style.display = 'none';
+            if (sumMaterialsRow) sumMaterialsRow.style.display = 'none';
         } else {
-            submitBtnText.textContent = translations[currentLang].form_btn_calc;
-            return null;
+            if (sumSizeRow) sumSizeRow.style.display = 'block';
+            if (sumMaterialsRow) sumMaterialsRow.style.display = 'block';
+            if (sumSize) sumSize.textContent = size;
+            if (sumMaterials) sumMaterials.textContent = materialPrefTexts[materialPref] || '-';
+        }
+
+        if (sumName) sumName.textContent = name;
+        if (sumPhone) sumPhone.textContent = phone;
+
+        const estimate = calculateEstimate();
+        if (wizardPriceVal) {
+            wizardPriceVal.textContent = estimate || '-';
         }
     }
 
-    // Calculator event listeners
-    if (projectTypeSelect && materialPrefSelect && sizeInput) {
-        projectTypeSelect.addEventListener('change', calculateEstimate);
-        materialPrefSelect.addEventListener('change', calculateEstimate);
-        sizeInput.addEventListener('input', calculateEstimate);
+    function updateWizardUI() {
+        wizardSteps.forEach(step => {
+            const stepNum = parseInt(step.getAttribute('data-step'));
+            step.classList.toggle('active', stepNum === currentStep);
+        });
+
+        const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+        if (progressFill) progressFill.style.width = `${progressPercent}%`;
+
+        indicators.forEach(indicator => {
+            const stepNum = parseInt(indicator.getAttribute('data-step-indicator'));
+            indicator.classList.toggle('active', stepNum === currentStep);
+            indicator.classList.toggle('completed', stepNum < currentStep);
+        });
+
+        if (currentStep === 1) {
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'inline-flex';
+            if (wSubmitBtn) wSubmitBtn.style.display = 'none';
+        } else if (currentStep === 5) {
+            if (prevBtn) prevBtn.style.display = 'inline-flex';
+            if (nextBtn) nextBtn.style.display = 'none';
+            if (wSubmitBtn) wSubmitBtn.style.display = 'inline-flex';
+            populateSummaryAndPrice();
+        } else {
+            if (prevBtn) prevBtn.style.display = 'inline-flex';
+            if (nextBtn) nextBtn.style.display = 'inline-flex';
+            if (wSubmitBtn) wSubmitBtn.style.display = 'none';
+        }
     }
 
-    // ----------------------------------------------------------------
-    // 5. Accessible Form Validation (Validate on Blur, Clear on Input)
-    // ----------------------------------------------------------------
-    const quoteForm = document.getElementById('quoteForm');
-    const fieldsToValidate = ['project_type', 'material_preference', 'size', 'location', 'client_name', 'client_phone', 'client_email'];
+    indicators.forEach(indicator => {
+        indicator.addEventListener('click', () => {
+            const targetStep = parseInt(indicator.getAttribute('data-step-indicator'));
+            if (targetStep < currentStep) {
+                currentStep = targetStep;
+                updateWizardUI();
+            }
+        });
+    });
 
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateWizardUI();
+            }
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (validateStep(currentStep)) {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateWizardUI();
+                }
+            } else {
+                const activeStep = document.querySelector(`.wizard-step[data-step="${currentStep}"]`);
+                const invalidEl = activeStep?.querySelector('[aria-invalid="true"]');
+                if (invalidEl) invalidEl.focus();
+            }
+        });
+    }
+
+    // Initialize wizard
+    updateWizardUI();
+
+    // ----------------------------------------------------------------
+    // 5. Accessible Form Validation (Per Step & Blur)
+    // ----------------------------------------------------------------
     function validateField(fieldId) {
         const field = document.getElementById(fieldId);
-        const errorSpan = document.getElementById(`error-${fieldId}`);
-        const parentGroup = field.closest('.form-group');
+        let errorSpanId = '';
+        if (fieldId === 'wizard_client_name') errorSpanId = 'error-client_name';
+        else if (fieldId === 'wizard_client_phone') errorSpanId = 'error-client_phone';
+        else if (fieldId === 'wizard_client_email') errorSpanId = 'error-client_email';
+        else if (fieldId === 'wizard_location') errorSpanId = 'error-location';
+        else if (fieldId === 'wizard_size') errorSpanId = 'error-size';
+        
+        const errorSpan = document.getElementById(errorSpanId);
+        const parentGroup = field?.closest('.form-group');
 
         if (!field || !errorSpan) return true;
 
         let isValid = true;
         let errorMsg = '';
 
-        if (field.required && !field.value) {
+        if (field.required && !field.value.trim()) {
             isValid = false;
             errorMsg = currentLang === 'tr' ? 'Bu alan zorunludur.' : (currentLang === 'en' ? 'This field is required.' : 'Dit veld is verplicht.');
-        } else if (fieldId === 'client_email' && field.value) {
+        } else if (fieldId === 'wizard_client_email' && field.value) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(field.value)) {
+            if (!emailRegex.test(field.value.trim())) {
                 isValid = false;
-                errorMsg = currentLang === 'tr' ? 'Geçersiz e-posta.' : (currentLang === 'en' ? 'Invalid email.' : 'Vul een geldig e-mailadres in.');
-            }
-        } else if (fieldId === 'size' && field.value) {
-            const sizeVal = parseFloat(field.value);
-            if (isNaN(sizeVal) || sizeVal <= 0) {
-                isValid = false;
-                errorMsg = currentLang === 'tr' ? 'Lütfen sıfırdan büyük değer girin.' : (currentLang === 'en' ? 'Please enter a number > 0.' : 'Vul een getal groter dan 0 in.');
+                errorMsg = currentLang === 'tr' ? 'Geçersiz e-posta adresi.' : (currentLang === 'en' ? 'Invalid email address.' : 'Vul een geldig e-mailadres in.');
             }
         }
 
         if (!isValid) {
-            parentGroup.classList.add('has-error');
+            if (parentGroup) parentGroup.classList.add('has-error');
             errorSpan.textContent = errorMsg;
             errorSpan.style.display = 'block';
             field.setAttribute('aria-invalid', 'true');
         } else {
-            parentGroup.classList.remove('has-error');
+            if (parentGroup) parentGroup.classList.remove('has-error');
             errorSpan.textContent = '';
             errorSpan.style.display = 'none';
             field.removeAttribute('aria-invalid');
@@ -544,68 +753,132 @@ document.addEventListener('DOMContentLoaded', () => {
         return isValid;
     }
 
-    fieldsToValidate.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener('blur', () => validateField(fieldId));
-            field.addEventListener('input', () => {
-                const parentGroup = field.closest('.form-group');
-                const errorSpan = document.getElementById(`error-${fieldId}`);
+    function validateStep(step) {
+        let isValid = true;
+        if (step === 1) {
+            const projectType = document.querySelector('input[name="project_type"]:checked');
+            const errorSpan = document.getElementById('error-project_type');
+            if (!projectType) {
+                isValid = false;
+                if (errorSpan) {
+                    errorSpan.textContent = currentLang === 'tr' ? 'Lütfen bir proje seçin.' : (currentLang === 'en' ? 'Please select a project.' : 'Kies een project.');
+                    errorSpan.style.display = 'block';
+                }
+            } else {
+                if (errorSpan) {
+                    errorSpan.textContent = '';
+                    errorSpan.style.display = 'none';
+                }
+            }
+        } else if (step === 2) {
+            const projectTypeChecked = document.querySelector('input[name="project_type"]:checked');
+            const projectType = projectTypeChecked ? projectTypeChecked.value : null;
+            const size = parseFloat(sizeInput?.value);
+            const errorSpan = document.getElementById('error-size');
+            const parentGroup = sizeInput?.closest('.form-group');
+            
+            if (projectType === 'badkamer' || projectType === 'gipsplaat' || projectType === 'fayans') {
+                if (isNaN(size) || size <= 0) {
+                    isValid = false;
+                    sizeInput.setAttribute('aria-invalid', 'true');
+                    if (parentGroup) parentGroup.classList.add('has-error');
+                    if (errorSpan) {
+                        errorSpan.textContent = currentLang === 'tr' ? 'Lütfen sıfırdan büyük geçerli bir alan boyutu girin.' : (currentLang === 'en' ? 'Please enter a valid size greater than 0.' : 'Vul een geldige oppervlakte in groter dan 0.');
+                        errorSpan.style.display = 'block';
+                    }
+                } else {
+                    sizeInput.removeAttribute('aria-invalid');
+                    if (parentGroup) parentGroup.classList.remove('has-error');
+                    if (errorSpan) {
+                        errorSpan.textContent = '';
+                        errorSpan.style.display = 'none';
+                    }
+                }
+            }
+        } else if (step === 4) {
+            if (!validateField('wizard_client_name')) isValid = false;
+            if (!validateField('wizard_client_phone')) isValid = false;
+            if (!validateField('wizard_client_email')) isValid = false;
+            if (!validateField('wizard_location')) isValid = false;
+        }
+        return isValid;
+    }
+
+    ['wizard_client_name', 'wizard_client_phone', 'wizard_client_email', 'wizard_location'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', () => {
+                const parentGroup = el.closest('.form-group');
+                let errorSpanId = '';
+                if (id === 'wizard_client_name') errorSpanId = 'error-client_name';
+                else if (id === 'wizard_client_phone') errorSpanId = 'error-client_phone';
+                else if (id === 'wizard_client_email') errorSpanId = 'error-client_email';
+                else if (id === 'wizard_location') errorSpanId = 'error-location';
+                
+                const errorSpan = document.getElementById(errorSpanId);
                 if (parentGroup && errorSpan) {
                     parentGroup.classList.remove('has-error');
                     errorSpan.style.display = 'none';
-                    field.removeAttribute('aria-invalid');
+                    el.removeAttribute('aria-invalid');
                 }
-                calculateEstimate();
             });
+            el.addEventListener('blur', () => validateField(id));
         }
     });
 
     // ----------------------------------------------------------------
     // 6. Form Submission (Webhook & Honeypot)
     // ----------------------------------------------------------------
-    const formSuccess = document.getElementById('formSuccess');
-    const resetFormBtn = document.getElementById('resetFormBtn');
-
-    if (quoteForm && formSuccess) {
-        quoteForm.addEventListener('submit', async (e) => {
+    if (wizardForm) {
+        wizardForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // Honeypot spam check
-            const honeypot = document.getElementById('honeypot_field');
+            // Honeypot check
+            const honeypot = document.getElementById('w_honeypot');
             if (honeypot && honeypot.value !== '') {
                 console.warn('Bot detected.');
-                quoteForm.classList.add('hidden');
-                formSuccess.classList.remove('hidden');
+                wizardForm.style.display = 'none';
+                document.getElementById('wizardSuccessBox').classList.remove('hidden');
                 return;
             }
 
-            // Form validation check
-            let isFormValid = true;
-            fieldsToValidate.forEach(fieldId => {
-                const isFieldValid = validateField(fieldId);
-                if (!isFieldValid) isFormValid = false;
-            });
-
-            if (!isFormValid) {
-                const firstInvalid = document.querySelector('[aria-invalid="true"]');
-                if (firstInvalid) firstInvalid.focus();
+            // Validation
+            if (!validateStep(4)) {
                 return;
             }
 
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtnText.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Loading...`;
+            const projectTypeChecked = document.querySelector('input[name="project_type"]:checked');
+            const projectType = projectTypeChecked ? projectTypeChecked.value : null;
+            const size = parseFloat(sizeInput?.value) || 0;
+            const materialPref = document.getElementById('wizard_material_preference')?.value;
+            const description = document.getElementById('wizard_description')?.value;
+            const name = document.getElementById('wizard_client_name')?.value;
+            const phone = document.getElementById('wizard_client_phone')?.value;
+            const email = document.getElementById('wizard_client_email')?.value;
+            const location = document.getElementById('wizard_location')?.value;
+            const calculated_estimate = calculateEstimate();
 
-            const formData = new FormData(quoteForm);
-            const data = {};
-            formData.forEach((value, key) => {
-                if (key !== 'honeypot_field') data[key] = value;
-            });
+            const data = {
+                project_type: projectType,
+                size: size,
+                material_preference: materialPref,
+                description: description,
+                client_name: name,
+                client_phone: phone,
+                client_email: email,
+                location: location,
+                calculated_estimate: calculated_estimate
+            };
 
-            data['calculated_estimate'] = calculateEstimate();
+            const submitBtn = document.getElementById('wSubmitBtn');
+            const originalBtnHTML = submitBtn ? submitBtn.innerHTML : '';
+            
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Loading...`;
+            }
 
-            const webhookUrl = data.webhook_url || 'https://hook.us2.make.com/placeholder-webhook-id';
+            const webhookUrl = document.getElementById('wizard_webhook_url')?.value || 'https://hook.us2.make.com/placeholder-webhook-id';
 
             try {
                 await fetch(webhookUrl, {
@@ -614,32 +887,45 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify(data),
                     mode: 'cors'
                 });
-                quoteForm.classList.add('hidden');
-                formSuccess.classList.remove('hidden');
-                
-                // Show dynamic Offerte preview modal
-                showOfferte(data);
-                createReopenButton(data);
             } catch (err) {
-                console.error(err);
-                // Fallback success for user ease
-                quoteForm.classList.add('hidden');
-                formSuccess.classList.remove('hidden');
-                
-                showOfferte(data);
-                createReopenButton(data);
+                console.warn("Webhook submission error. Showing success fallback.", err);
             } finally {
-                submitBtn.disabled = false;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnHTML;
+                }
+                
+                wizardForm.style.display = 'none';
+                const successBox = document.getElementById('wizardSuccessBox');
+                if (successBox) successBox.classList.remove('hidden');
+                
+                const successAlert = document.getElementById('wizardSubmitSuccess');
+                if (successAlert) successAlert.style.display = 'flex';
+                
+                const viewOfferteBtn = document.getElementById('viewGeneratedOfferteBtn');
+                if (viewOfferteBtn) {
+                    const newBtn = viewOfferteBtn.cloneNode(true);
+                    newBtn.addEventListener('click', () => showOfferte(data));
+                    viewOfferteBtn.parentNode.replaceChild(newBtn, viewOfferteBtn);
+                }
             }
         });
     }
 
-    if (resetFormBtn) {
-        resetFormBtn.addEventListener('click', () => {
-            quoteForm.reset();
-            formSuccess.classList.add('hidden');
-            quoteForm.classList.remove('hidden');
-            calculateEstimate();
+    const resetWizardBtn = document.getElementById('resetWizardBtn');
+    if (resetWizardBtn) {
+        resetWizardBtn.addEventListener('click', () => {
+            wizardForm.reset();
+            currentStep = 1;
+            wizardForm.style.display = 'block';
+            document.getElementById('wizardSuccessBox').classList.add('hidden');
+            const successAlert = document.getElementById('wizardSubmitSuccess');
+            if (successAlert) successAlert.style.display = 'none';
+            
+            if (sizeRange) sizeRange.value = 10;
+            if (sizeInput) sizeInput.value = 10;
+            
+            updateWizardUI();
         });
     }
 
@@ -655,7 +941,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatTyping = document.getElementById('chatTyping');
 
     if (chatBubble && chatWindow && chatClose) {
-        // Toggle Chat Window
         chatBubble.addEventListener('click', () => {
             const isOpen = chatWindow.classList.contains('open');
             if (isOpen) {
@@ -677,24 +962,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle Chat Messages Sending & AI Response Generation
     if (chatForm && chatInput && chatMessages && chatTyping) {
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const userMsgText = chatInput.value.trim();
             if (!userMsgText) return;
 
-            // Add User Message bubble
             addChatMessage(userMsgText, 'user');
             chatInput.value = '';
 
-            // Show AI Typing indicator
             chatTyping.classList.remove('hidden');
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             let replyText = "";
             try {
-                // Attempt to call the real Gemini AI Chatbot backend running on VPS
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: {
@@ -709,15 +990,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = await response.json();
                     replyText = data.reply;
                 } else {
-                    throw new Error("Server responded with code " + response.status);
+                    throw new Error("Server error " + response.status);
                 }
             } catch (err) {
-                console.warn("Real-time AI Chatbot API not available (offline/local). Using intelligent fallback...", err);
-                // Fallback to local keyword-matching algorithm
+                console.warn("AI Chatbot API not available. Using fallback...", err);
                 replyText = generateAIResponse(userMsgText);
             }
 
-            // Natural typing delay simulation
             setTimeout(() => {
                 chatTyping.classList.add('hidden');
                 addChatMessage(replyText, 'bot');
@@ -746,7 +1025,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateAIResponse(query) {
         const q = query.toLowerCase();
         
-        // Contextual keywords in Dutch, English, Turkish
         const isBanyo = q.includes('badd') || q.includes('bath') || q.includes('banyo') || q.includes('renovatie');
         const isToilet = q.includes('toil') || q.includes('klozet') || q.includes('wc');
         const isFayans = q.includes('fay') || q.includes('teg') || q.includes('tile');
@@ -761,16 +1039,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 return "Hermes Agent sistemimiz, İnan abimizin şantiyeden doğrudan WhatsApp üzerinden fotoğraf ve ses kaydı atarak web sitesini ve Facebook sayfasını güncellemesini sağlayan gelişmiş bir yapay zeka köprüsüdür. Derya ablamızın onayından geçtikten sonra site anında güncellenir. Hostinger VPS üzerinde izole bir şekilde güvenle çalışmaktadır.";
             }
             if (isBanyo) {
-                return "Banyo yenileme işçilik ve kaba malzeme fiyatlarımız 2 m² küçük alanlar için €2.000 - €4.000, standart banyolar (5-6 m²) için €6.000 taban fiyatından başlar. Söküm ve moloz atımı dahildir. Malzemeyi bizim almamızı isterseniz +€2.500 eklenir.";
+                return "Banyo yenileme işçilik ve kaba malzeme fiyatlarımız 2 m² küçük alanlar için €4.000, standart banyolar (5-6 m²) için €6.000 taban fiyatından başlar. Söküm ve moloz atımı dahildir. Malzemeyi bizim almamızı isterseniz +€2.500 eklenir.";
             }
             if (isToilet) {
                 return "Tuvalet yenileme fiyatımız eski tuvaletin sökülmesi, moloz atılması ve anahtar teslim kurulum dahil malzemesiz €2.000'dur. Tüm malzemeleri bizim almamızı isterseniz (All-in klozet, rezervuar ve fayans dahil) €3.000'dur.";
             }
             if (isFayans) {
-                return "Büyük ebat fayans döşeme işlerinde sadece işçilik m² fiyatımız €45 - €50 arasıdır. Fayanslar dahil malzemeli m² fiyatımız €100 ex. BTW'dir.";
+                return "Büyük ebat fayans döşeme işlerinde sadece işçilik m² fiyatımız €47.50'dir. Fayanslar dahil malzemeli m² fiyatımız €100 ex. BTW'dir.";
             }
             if (isAlcipan) {
-                return "Alçıpan bölme duvar yapımı işçilik m² fiyatı €40 - €45 arasındadır. Levhalar ve profiller dahil malzemeli fiyatımız m² başına €65 ex. BTW'dir.";
+                return "Alçıpan bölme duvar yapımı işçilik m² fiyatı €42.50'dir. Levhalar ve profiller dahil malzemeli fiyatımız m² başına €65 ex. BTW'dir.";
             }
             if (isPrice) {
                 return "Fiyatlarımız Lelystad ve çevresinde otopark ve yol masrafları dahil her şey dahil (excl. BTW) net fiyatlardır. Ekstra veya sürpriz hiçbir masraf çıkarılmaz (Geen verrassingen achteraf!).";
@@ -794,10 +1072,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return "A complete toilet renovation is €2,000 for labor + rough materials (dismantling and debris disposal included). If we supply all sanitaries and tiles (All-in package), the price is €3,000 ex. VAT.";
             }
             if (isFayans) {
-                return "For large tiling works, labor is €45 - €50 per m². Tiling materials included is €100 per m² ex. VAT.";
+                return "For large tiling works, labor is €47.50 per m². Tiling materials included is €100 per m² ex. VAT.";
             }
             if (isAlcipan) {
-                return "Drywall partition installation labor is €40 - €45 per m². Drywall materials and studs included is €65 per m² ex. VAT.";
+                return "Drywall wall installation is €42.50 per m² (labor). Materials included is €65 per m² ex. VAT.";
             }
             if (isPrice) {
                 return "Our prices are listed ex. VAT (excl. BTW) but are strictly all-inclusive. Parking fees and travel charges are covered. We guarantee no surprises afterwards (Geen verrassingen achteraf!).";
@@ -821,10 +1099,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return "Een toiletrenovatie is € 2.000 voor arbeid + kaba materiaal (demontage en afvalafvoer inbegrepen). Als wij alle sanitair en tegels leveren (All-in pakket), is de prijs € 3.000 ex. BTW.";
             }
             if (isFayans) {
-                return "Voor grote tegelwerken bedraagt de arbeid € 45 - € 50 per m². Inclusief tegels is dit € 100 per m² ex. BTW.";
+                return "Voor grote tegelwerken bedraagt de arbeid € 47.50 per m². Inclusief tegels is dit € 100 per m² ex. BTW.";
             }
             if (isAlcipan) {
-                return "Gipsplaten scheidingswand montage is € 40 - € 45 per m². Inclusief platen en metal-stud profielen is dit € 65 per m² ex. BTW.";
+                return "Gipsplaten scheidingswand montage is € 42.50 per m². Inclusief platen en metal-stud profielen is dit € 65 per m² ex. BTW.";
             }
             if (isPrice) {
                 return "Onze prijzen zijn ex. BTW maar zijn all-in. Parkeerkosten en reiskosten zijn gedekt. Wij garanderen geen verrassingen achteraf (Geen verrassingen achteraf!).";
@@ -838,6 +1116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return "Ik kan u helpen met vragen over badkamer- en toiletrenovaties, tegelwerk, gipsplaat wanden, loodgieterswerk, prijzen en garanties rond Lelystad. Wat is uw vraag?";
         }
     }
+
     // ----------------------------------------------------------------
     // 8. Dynamic Portfolio Loader (Hermes integration)
     // ----------------------------------------------------------------
@@ -857,6 +1136,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (!exists) {
                             const item = document.createElement('div');
                             item.className = 'gallery-item';
+                            item.setAttribute('data-category', proj.category || 'badkamer');
                             item.tabIndex = 0;
                             
                             const title = proj.title;
@@ -887,7 +1167,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const offerteClose = document.getElementById('offerteClose');
     const closeOfferteModalBtn = document.getElementById('closeOfferteModalBtn');
     const printOfferteBtn = document.getElementById('printOfferteBtn');
-    const viewSampleOfferteBtn = document.getElementById('viewSampleOfferteBtn');
 
     // Modal populate fields
     const offerteClientName = document.getElementById('offerteClientName');
@@ -902,7 +1181,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const offerteMaterialNote = document.getElementById('offerteMaterialNote');
     const currentDateSpans = document.querySelectorAll('.current-date-span');
 
-    // List of included works per project type (toilet matches ODT exactly!)
     const worksTemplates = {
         badkamer: [
             "Verwijderen van bestaande badkamer (wastafel, douche/bad, toilet, wand- en vloertegels).",
@@ -926,11 +1204,11 @@ document.addEventListener('DOMContentLoaded', () => {
             "Aanleggen en aanpassen van water- en afvoerleidingen.",
             "Installatie van inbouwreservoir.",
             "Plaatsen van nieuwe wand- en vloertegels.",
-            "het plafond schilderen",
+            "Het plafond schilderen.",
             "Voegwerk en afwerking.",
             "Afkitten met sanitair siliconenkit.",
             "Montage van nieuw toilet, wastafel en kraan.",
-            "Montage van spiegel, toiletrolhouder, toiletborstelhouder en overige accessoires indien aanwezig.",
+            "Montage van spiegel, toiletrolhouder, toiletborstelhouder ve overige accessoires.",
             "Controle op lekkages en correcte werking.",
             "Schoon opleveren van de ruimte."
         ],
@@ -939,7 +1217,7 @@ document.addEventListener('DOMContentLoaded', () => {
             "Aanbrengen van thermische en geluidsisolatie (steenwol/glaswol).",
             "Monteren van gipsplaten (wanden en/of plafonds).",
             "Glad afwerken van naden en schroefgaten (klaar voor stucwerk).",
-            "Afvoeren van restafval en restanten.",
+            "Afvoeren van restafval.",
             "Schoon opleveren van de werkplek."
         ],
         fayans: [
@@ -956,7 +1234,7 @@ document.addEventListener('DOMContentLoaded', () => {
             "Aanleg of vernieuwing van koperen en kunststof waterleidingen.",
             "Professionele installatie of reparatie van PVC afvoerbuizen.",
             "Montage van sifons, kranen en sanitair aansluitingen.",
-            "Lekkage-controle en druktesten.",
+            "Lekkage-controle en draktesten.",
             "Schoon opleveren van de ruimte."
         ]
     };
@@ -964,23 +1242,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function showOfferte(data) {
         if (!offerteModal) return;
 
-        // Set date
         const today = new Date();
         const dateStr = today.toLocaleDateString('nl-NL');
         if (offerteDate) offerteDate.textContent = dateStr;
         currentDateSpans.forEach(el => el.textContent = dateStr);
 
-        // Generate Offerte Number
         const randomNum = Math.floor(1000 + Math.random() * 9000);
         if (offerteNumber) offerteNumber.textContent = `DI-${today.getFullYear()}-${randomNum}`;
 
-        // Populate client details
         if (offerteClientName) offerteClientName.textContent = data.client_name || "-";
         if (offerteClientPhone) offerteClientPhone.textContent = data.client_phone || "-";
         if (offerteClientEmail) offerteClientEmail.textContent = data.client_email || "-";
         if (offerteClientLocation) offerteClientLocation.textContent = data.location || "-";
 
-        // Set project title
         const typeNames = {
             badkamer: "BADKAMERENOVATIE",
             toilet: "TOILETRENOVATIE",
@@ -991,7 +1265,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const pType = data.project_type || "toilet";
         if (offerteProjectTitle) offerteProjectTitle.textContent = typeNames[pType] || pType.toUpperCase();
 
-        // Populate works list
         if (offerteWorksList) {
             offerteWorksList.innerHTML = "";
             const works = worksTemplates[pType] || worksTemplates.toilet;
@@ -1002,7 +1275,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Set materials note
         if (offerteMaterialNote) {
             const isWithMaterials = data.material_preference === 'met-materiaal';
             if (pType === 'badkamer') {
@@ -1022,10 +1294,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Set Price Value
         if (offertePriceVal) offertePriceVal.textContent = data.calculated_estimate || "Op aanvraag";
 
-        // Show Modal
         offerteModal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
@@ -1033,36 +1303,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeOfferte() {
         if (offerteModal) offerteModal.classList.add('hidden');
         document.body.style.overflow = '';
-    }
-
-    // Dynamic button on success page
-    function createReopenButton(data) {
-        const formSuccessDiv = document.getElementById('formSuccess');
-        if (!formSuccessDiv) return;
-        
-        let reopenBtn = document.getElementById('reopenOfferteBtn');
-        if (!reopenBtn) {
-            reopenBtn = document.createElement('button');
-            reopenBtn.type = 'button';
-            reopenBtn.className = 'btn btn-primary btn-block';
-            reopenBtn.id = 'reopenOfferteBtn';
-            reopenBtn.style.marginBottom = '15px';
-            reopenBtn.style.marginTop = '15px';
-            reopenBtn.innerHTML = `<i class="fa-solid fa-file-invoice"></i> Bekijk en Print Offerte`;
-            reopenBtn.addEventListener('click', () => showOfferte(data));
-            
-            const resetBtn = document.getElementById('resetFormBtn');
-            if (resetBtn) {
-                formSuccessDiv.insertBefore(reopenBtn, resetBtn);
-            } else {
-                formSuccessDiv.appendChild(reopenBtn);
-            }
-        } else {
-            // Update click handler with new data
-            const newBtn = reopenBtn.cloneNode(true);
-            newBtn.addEventListener('click', () => showOfferte(data));
-            reopenBtn.parentNode.replaceChild(newBtn, reopenBtn);
-        }
     }
 
     if (offerteClose) offerteClose.addEventListener('click', closeOfferte);

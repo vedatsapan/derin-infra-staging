@@ -615,12 +615,145 @@ section {
     opacity: 1;
 }
 
-/* Quote Section & Form */
-.quote-section {
+/* Before / After Slider Section */
+.before-after-section {
     background-color: var(--bg-main);
 }
 
-.quote-box {
+.before-after-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 30px;
+}
+
+.slider-card {
+    background-color: var(--bg-surface);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+}
+
+.slider-card:hover {
+    border-color: rgba(2, 132, 199, 0.2);
+}
+
+.slider-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-align: center;
+    color: var(--text-main);
+}
+
+.ba-slider {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    user-select: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.ba-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+.before-image {
+    z-index: 1;
+}
+
+.after-image {
+    z-index: 2;
+    clip-path: inset(0 0 0 var(--clip-percentage, 50%));
+}
+
+.slider-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--clip-percentage, 50%);
+    width: 4px;
+    background-color: #fff;
+    z-index: 10;
+    cursor: ew-resize;
+    transform: translateX(-50%);
+}
+
+.slider-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background-color: rgba(255, 255, 255, 0.5);
+    transform: translateX(-50%);
+}
+
+.slider-arrows {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    background-color: var(--primary);
+    border: 3px solid #fff;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    font-size: 1.1rem;
+    transition: var(--transition);
+}
+
+.slider-handle:hover .slider-arrows,
+.ba-slider:active .slider-arrows {
+    transform: translate(-50%, -50%) scale(1.1);
+    background-color: var(--accent);
+}
+
+.ba-label {
+    position: absolute;
+    bottom: 16px;
+    padding: 6px 12px;
+    background-color: rgba(11, 15, 25, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 4px;
+    pointer-events: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.before-label {
+    left: 16px;
+    z-index: 5;
+}
+
+.after-label {
+    right: 16px;
+    z-index: 5;
+}
+
+/* Multi-Step Wizard Section */
+.wizard-section {
+    background-color: var(--bg-main);
+}
+
+.wizard-container {
     max-width: 850px;
     margin: 0 auto;
     background-color: var(--bg-surface);
@@ -630,25 +763,113 @@ section {
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
 }
 
-.quote-header {
-    margin-bottom: 40px;
+.wizard-header {
     text-align: center;
+    margin-bottom: 40px;
 }
 
-.quote-header h2 {
+.wizard-header h2 {
     font-size: 2.2rem;
     font-weight: 800;
     margin-bottom: 12px;
 }
 
-.quote-header p {
+.wizard-header p {
     color: var(--text-muted);
 }
 
-.quote-form {
+/* Wizard Progress Track */
+.wizard-progress-track {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 48px;
+    padding: 0 10px;
+}
+
+.wizard-progress-track::before {
+    content: '';
+    position: absolute;
+    top: 17px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.08);
+    z-index: 1;
+}
+
+.progress-fill {
+    position: absolute;
+    top: 17px;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary) 0%, var(--accent) 100%);
+    z-index: 1;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+}
+
+.step-indicator {
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    width: 80px;
+    cursor: pointer;
+}
+
+.step-num {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--bg-main);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.step-indicator.active .step-num {
+    border-color: var(--primary);
+    background-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 0 12px rgba(2, 132, 199, 0.4);
+}
+
+.step-indicator.completed .step-num {
+    border-color: var(--success);
+    background-color: var(--success);
+    color: #fff;
+}
+
+.step-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 10px;
+    text-align: center;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.step-indicator.active .step-label {
+    color: var(--text-main);
+}
+
+.step-indicator.completed .step-label {
+    color: var(--success);
+}
+
+/* Wizard Form & Steps */
+.wizard-form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
 
 .form-row {
@@ -777,6 +998,309 @@ section {
 .form-success-alert p {
     color: var(--text-muted);
     margin-bottom: 30px;
+}
+
+/* Wizard step elements, cards, and calculators */
+.wizard-step {
+    display: none;
+    animation: wizardFadeIn 0.4s ease;
+}
+
+.wizard-step.active {
+    display: block;
+}
+
+@keyframes wizardFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.step-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text-main);
+    border-left: 4px solid var(--primary);
+    padding-left: 12px;
+}
+
+/* Selection Cards (Step 1) */
+.services-cards-selection {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.selection-card {
+    cursor: pointer;
+}
+
+.selection-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.card-inner {
+    background-color: var(--bg-main);
+    border: 2px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    transition: var(--transition);
+    height: 100%;
+}
+
+.selection-card:hover .card-inner {
+    border-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.01);
+}
+
+.selection-card input[type="radio"]:checked + .card-inner {
+    border-color: var(--primary);
+    background-color: rgba(2, 132, 199, 0.06);
+    box-shadow: 0 0 15px rgba(2, 132, 199, 0.15);
+}
+
+.card-inner i {
+    font-size: 2.2rem;
+    color: var(--primary);
+    transition: var(--transition);
+}
+
+.selection-card input[type="radio"]:checked + .card-inner i {
+    color: var(--primary);
+    transform: scale(1.1);
+}
+
+.card-inner span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.card-price-tag {
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    color: var(--accent) !important;
+    background-color: rgba(249, 115, 22, 0.1);
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-top: auto;
+}
+
+/* Range Container (Step 2) */
+.range-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.range-container input[type="range"] {
+    flex: 1;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.range-container input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(2, 132, 199, 0.5);
+    transition: var(--transition);
+}
+
+.range-container input[type="range"]::-webkit-slider-thumb:hover {
+    background-color: var(--accent);
+    box-shadow: 0 0 8px rgba(249, 115, 22, 0.5);
+}
+
+.range-container input[type="number"] {
+    width: 90px;
+    text-align: center;
+    min-height: 48px;
+}
+
+/* Wizard Actions Buttons */
+.wizard-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 24px;
+}
+
+.wizard-actions button {
+    min-width: 130px;
+}
+
+/* Step 5 Summary Layout */
+.summary-box {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 30px;
+    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    padding: 24px;
+}
+
+.summary-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.summary-details p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    padding-bottom: 8px;
+}
+
+.summary-details p strong {
+    color: var(--text-main);
+    display: inline-block;
+    width: 110px;
+}
+
+.live-pricing-panel {
+    background-color: rgba(2, 132, 199, 0.04);
+    border: 1px solid rgba(2, 132, 199, 0.15);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.live-pricing-panel h4 {
+    font-size: 1.05rem;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.wizard-price-tag {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.wizard-price-tag .price-val {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.1;
+}
+
+.wizard-price-tag .price-ex-vat {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.wizard-vat-policy {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.wizard-submit-alert {
+    background-color: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--success);
+    padding: 14px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.wizard-submit-alert i {
+    font-size: 1.2rem;
+}
+
+/* Portfolio Filters Custom Styling */
+.portfolio-filters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.filter-tab {
+    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 8px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filter-tab:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-main);
+}
+
+.filter-tab.active {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+.company-credentials-card {
+    background-color: var(--bg-main);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    margin-top: 20px;
+}
+
+.company-credentials-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 8px;
+    color: var(--primary);
+}
+
+.company-credentials-card p {
+    font-size: 0.88rem;
+    margin-bottom: 6px;
+    color: var(--text-muted);
+}
+
+.company-credentials-card p strong {
+    color: var(--text-main);
 }
 
 /* Contact Section */

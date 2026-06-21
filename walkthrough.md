@@ -63,3 +63,8 @@ Web sitesinin test edilmesi amacıyla GitHub Pages üzerinde geçici bir canlı 
    * Hermes WhatsApp Agent'ın sunucu ücreti ödemeden Windows bilgisayarda lokal olarak nasıl kurulacağı (Node, winget ile FFmpeg vb.) adım adım Türkçe rehber olarak yazıldı.
 4. **Cloud Agent Devir Mega Promptu (`cloud_handoff_mega_prompt.md`):**
    * Projenin Cloud ortamındaki yeni bir yapay zeka ajanına tüm detaylarıyla aktarılabilmesi ve indirilenler klasöründeki 60+ gerçek şantiye fotoğrafının kategorize edilerek siteye otomatik entegre edilmesi için kapsamlı bir "Handoff Mega Prompt" oluşturuldu.
+5. **Etkileşimli Önce/Sonra Kaydırıcıları (Before/After Slider) ve 5 Adımlı Sihirbaz Entegrasyonu:**
+   * Optimize edilmiş gerçek şantiye fotoğrafları ile çalışan 4 adet etkileşimli Önce/Sonra kaydırıcısı (`style.css` ve `app.js` üzerinden) geliştirildi. Kullanıcılar dokunarak veya sürükleyerek dönüşümleri canlı görebilir.
+   * Eski tek sayfalık form yerine 5 adımlı şık bir Teklif Hesaplama Sihirbazı kodlandı. İlerleme çubuğu, adım doğrulama (validation), m² alanı kaydırıcı çubuğu ile sayı girişinin senkronizasyonu ve dinamik özet alanı eklendi.
+   * Portföy için kategori filtreleme tabları (Tümü, Banyolar, Tuvaletler, Duvar & Tavanlar, Tesisat) akıcı ölçeklendirme animasyonları eşliğinde entegre edildi.
+

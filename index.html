@@ -8,7 +8,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
@@ -27,9 +27,9 @@
                 <ul>
                     <li><a href="#home" data-i18n="nav_home">Home</a></li>
                     <li><a href="#services" data-i18n="nav_services">Diensten</a></li>
-                    <li><a href="#usp" data-i18n="nav_usp">Garanties</a></li>
+                    <li><a href="#before-after" data-i18n="nav_transformations">Dtransformations</a></li>
                     <li><a href="#gallery" data-i18n="nav_gallery">Projecten</a></li>
-                    <li><a href="#quote-section" data-i18n="nav_quote">Offerte</a></li>
+                    <li><a href="#wizard-section" data-i18n="nav_quote">Offerte</a></li>
                     <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
                 </ul>
             </nav>
@@ -42,7 +42,7 @@
                     <button class="lang-btn" data-lang="tr">TR</button>
                 </div>
                 <a href="tel:0618694652" class="btn btn-phone" aria-label="Bel ons op +31 6 18694652"><i class="fa-solid fa-phone"></i> <span data-i18n="btn_call">Bel Direct</span></a>
-                <a href="#quote-section" class="btn btn-primary" data-i18n="btn_get_quote">Gratis Offerte</a>
+                <a href="#wizard-section" class="btn btn-primary" data-i18n="btn_get_quote">Gratis Offerte</a>
             </div>
             
             <button class="mobile-nav-toggle" aria-label="Menu openen" aria-expanded="false" aria-controls="mobile-menu">
@@ -64,9 +64,9 @@
         <ul>
             <li><a href="#home" data-i18n="nav_home">Home</a></li>
             <li><a href="#services" data-i18n="nav_services">Diensten</a></li>
-            <li><a href="#usp" data-i18n="nav_usp">Garanties</a></li>
+            <li><a href="#before-after" data-i18n="nav_transformations">Dtransformations</a></li>
             <li><a href="#gallery" data-i18n="nav_gallery">Projecten</a></li>
-            <li><a href="#quote-section" data-i18n="nav_quote">Offerte</a></li>
+            <li><a href="#wizard-section" data-i18n="nav_quote">Offerte</a></li>
             <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
         </ul>
         <div class="mobile-menu-cta">
@@ -88,8 +88,8 @@
                     <div class="hero-usp-item"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="hero_usp_3">Geen verrassingen achteraf!</span></div>
                 </div>
                 <div class="hero-actions">
-                    <a href="#quote-section" class="btn btn-primary btn-lg" data-i18n="hero_cta_calc">Bereken Richtprijs</a>
-                    <a href="#gallery" class="btn btn-outline btn-lg" data-i18n="hero_cta_projects">Bekijk Projecten</a>
+                    <a href="#wizard-section" class="btn btn-primary btn-lg" data-i18n="hero_cta_calc">Bereken Richtprijs</a>
+                    <a href="#before-after" class="btn btn-outline btn-lg" data-i18n="hero_cta_transformations">Bekijk Projecten</a>
                 </div>
             </div>
         </div>
@@ -106,7 +106,7 @@
                 <div class="usp-card">
                     <div class="usp-icon" aria-hidden="true"><i class="fa-solid fa-wallet"></i></div>
                     <h3 data-i18n="usp_card_1_title">Geen verrassingen achteraf!</h3>
-                    <p data-i18n="usp_card_1_desc">Onze tarieven zijn all-in (excl. BTW). Voorrijkosten (yol masrafı) en otoparkkosten (parkeerkosten) zijn volledig inbegrepen. U betaalt wat op de offerte staat.</p>
+                    <p data-i18n="usp_card_1_desc">Onze tarieven zijn all-in (excl. BTW). Voorrijkosten en parkeerkosten zijn volledig inbegrepen. U betaalt wat op de offerte staat.</p>
                 </div>
                 <div class="usp-card">
                     <div class="usp-icon" aria-hidden="true"><i class="fa-solid fa-truck-ramp-box"></i></div>
@@ -132,7 +132,7 @@
             <div class="services-grid">
                 <!-- Service 1 -->
                 <div class="service-card">
-                    <div class="service-img" style="background-image: url('gallery_bathroom_modern.png')"></div>
+                    <div class="service-img" style="background-image: url('projects/bathroom_luxury.jpg')"></div>
                     <div class="service-body">
                         <h3 data-i18n="service_1_title">Badkamerrenovatie</h3>
                         <p data-i18n="service_1_desc">Complete renovatie inclusief sloopwerk, leidingen verleggen, stucwerk, tegelen en montage van douchecabines en sanitair.</p>
@@ -141,7 +141,7 @@
                 </div>
                 <!-- Service 2 -->
                 <div class="service-card">
-                    <div class="service-img" style="background-image: url('gallery_toilet_hangend.png')"></div>
+                    <div class="service-img" style="background-image: url('projects/toilet_modern.jpg')"></div>
                     <div class="service-body">
                         <h3 data-i18n="service_2_title">Toiletrenovatie</h3>
                         <p data-i18n="service_2_desc">Installatie van inbouwreservoirs (hangend toilet), modern tegelwerk, fonteintjes en strakke plafondafwerking.</p>
@@ -150,7 +150,7 @@
                 </div>
                 <!-- Service 3 -->
                 <div class="service-card">
-                    <div class="service-img" style="background-image: url('gallery_drywall_finished.png')"></div>
+                    <div class="service-img" style="background-image: url('projects/drywall_after.jpg')"></div>
                     <div class="service-body">
                         <h3 data-i18n="service_3_title">Gipsplaten & Scheidingswanden</h3>
                         <p data-i18n="service_3_desc">Plaatsen van scheidingswanden en voorzetwanden met gipsplaten, inclusief isolatie en strakke afwerking.</p>
@@ -159,11 +159,91 @@
                 </div>
                 <!-- Service 4 -->
                 <div class="service-card">
-                    <div class="service-img" style="background-image: url('gallery_plumbing_pipes.png')"></div>
+                    <div class="service-img" style="background-image: url('projects/plumbing_rough.jpg')"></div>
                     <div class="service-body">
                         <h3 data-i18n="service_4_title">Riolering & Loodgieterswerk</h3>
                         <p data-i18n="service_4_desc">Professionele water- en afvoerleidingen aansluiten, lekkages verhelpen en rioolbuizen vakkundig vernieuwen.</p>
                         <span class="service-tag" data-i18n="service_tag_on_request">Prijs op aanvraag</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Before / After Slider Section -->
+    <section id="before-after" class="before-after-section">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2 data-i18n="ba_title">Voor & Na Dönüşümler</h2>
+                <p data-i18n="ba_subtitle">Bekijk het indrukwekkende verschil van onze echte renovaties.</p>
+            </div>
+            
+            <div class="before-after-grid">
+                <!-- Slider 1: Bathroom 1 -->
+                <div class="slider-card">
+                    <h3 data-i18n="ba_card_bathroom_1">Badkamer Renovatie (Inloopdouche)</h3>
+                    <div class="ba-slider" data-slider-id="bathroom_1">
+                        <div class="ba-image before-image" style="background-image: url('projects/bathroom_before_1.jpg');"></div>
+                        <div class="ba-image after-image" style="background-image: url('projects/bathroom_after_1.jpg');"></div>
+                        <div class="slider-handle">
+                            <span class="slider-line"></span>
+                            <span class="slider-arrows">
+                                <i class="fa-solid fa-left-right"></i>
+                            </span>
+                        </div>
+                        <span class="ba-label before-label" data-i18n="label_before">Voor</span>
+                        <span class="ba-label after-label" data-i18n="label_after">Na</span>
+                    </div>
+                </div>
+
+                <!-- Slider 2: Toilet 1 -->
+                <div class="slider-card">
+                    <h3 data-i18n="ba_card_toilet_1">Toilet Renovatie (Asma Klozet)</h3>
+                    <div class="ba-slider" data-slider-id="toilet_1">
+                        <div class="ba-image before-image" style="background-image: url('projects/toilet_before.jpg');"></div>
+                        <div class="ba-image after-image" style="background-image: url('projects/toilet_after.jpg');"></div>
+                        <div class="slider-handle">
+                            <span class="slider-line"></span>
+                            <span class="slider-arrows">
+                                <i class="fa-solid fa-left-right"></i>
+                            </span>
+                        </div>
+                        <span class="ba-label before-label" data-i18n="label_before">Voor</span>
+                        <span class="ba-label after-label" data-i18n="label_after">Na</span>
+                    </div>
+                </div>
+
+                <!-- Slider 3: Drywall Ceiling -->
+                <div class="slider-card">
+                    <h3 data-i18n="ba_card_drywall">Gipsplaten Plafond & Spots</h3>
+                    <div class="ba-slider" data-slider-id="drywall">
+                        <div class="ba-image before-image" style="background-image: url('projects/drywall_before.jpg');"></div>
+                        <div class="ba-image after-image" style="background-image: url('projects/drywall_after.jpg');"></div>
+                        <div class="slider-handle">
+                            <span class="slider-line"></span>
+                            <span class="slider-arrows">
+                                <i class="fa-solid fa-left-right"></i>
+                            </span>
+                        </div>
+                        <span class="ba-label before-label" data-i18n="label_before">Voor</span>
+                        <span class="ba-label after-label" data-i18n="label_after">Na</span>
+                    </div>
+                </div>
+
+                <!-- Slider 4: Bathroom 2 -->
+                <div class="slider-card">
+                    <h3 data-i18n="ba_card_bathroom_2">Dönüşüm (Su Yalıtımı & Fayans)</h3>
+                    <div class="ba-slider" data-slider-id="bathroom_2">
+                        <div class="ba-image before-image" style="background-image: url('projects/bathroom_before_2.jpg');"></div>
+                        <div class="ba-image after-image" style="background-image: url('projects/bathroom_after_2.jpg');"></div>
+                        <div class="slider-handle">
+                            <span class="slider-line"></span>
+                            <span class="slider-arrows">
+                                <i class="fa-solid fa-left-right"></i>
+                            </span>
+                        </div>
+                        <span class="ba-label before-label" data-i18n="label_before">Voor</span>
+                        <span class="ba-label after-label" data-i18n="label_after">Na</span>
                     </div>
                 </div>
             </div>
@@ -175,196 +255,301 @@
         <div class="container">
             <div class="section-title text-center">
                 <h2 data-i18n="gallery_title">Ons Opgeleverde Werk</h2>
-                <p data-i18n="gallery_subtitle">100% echte foto's van onze projecten in badkamerrenovatie, toiletrenovatie, tegelwerk en wanden.</p>
+                <p data-i18n="gallery_subtitle">100% echte foto's van onze projecten in Lelystad en omgeving.</p>
             </div>
+
+            <!-- Portfolio Category Filter Tabs -->
+            <div class="portfolio-filters" role="tablist">
+                <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true" data-i18n="filter_all">Alle</button>
+                <button class="filter-tab" data-filter="badkamer" role="tab" aria-selected="false" data-i18n="filter_bathroom">Badkamers</button>
+                <button class="filter-tab" data-filter="toilet" role="tab" aria-selected="false" data-i18n="filter_toilet">Toiletten</button>
+                <button class="filter-tab" data-filter="gipsplaat" role="tab" aria-selected="false" data-i18n="filter_drywall">Wanden & Plafonds</button>
+                <button class="filter-tab" data-filter="riolering" role="tab" aria-selected="false" data-i18n="filter_plumbing">Loodgieterswerk</button>
+            </div>
+
             <div class="gallery-grid">
-                <!-- 1 -->
-                <div class="gallery-item" tabindex="0">
-                    <img src="gallery_bathroom_modern.png" alt="Moderne gerenoveerde badkamer met inloopdouche en LED spiegel">
+                <!-- Project 1 -->
+                <div class="gallery-item" data-category="badkamer" tabindex="0">
+                    <img src="projects/bathroom_luxury.jpg" alt="Luxe badkamer met ligbad en glazen douchewand">
                     <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_1_title">Badkamer Amsterdam</h4>
-                        <p data-i18n="gallery_item_1_desc">Inloopdouche & Grote plavuizen</p>
+                        <h4 data-i18n="gallery_item_1_title">Luxe Badkamer</h4>
+                        <p data-i18n="gallery_item_1_desc">Ligbad, inloopdouche & modern tegelwerk</p>
                     </div>
                 </div>
-                <!-- 2 -->
-                <div class="gallery-item" tabindex="0">
-                    <img src="gallery_bathroom_luxury.png" alt="Luxe badkamer met dubbele wastafel en vrijstaand bad">
+                <!-- Project 2 -->
+                <div class="gallery-item" data-category="toilet" tabindex="0">
+                    <img src="projects/toilet_modern.jpg" alt="Modern hangend toilet met nisverlichting en donkere tegels">
                     <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_2_title">Luxe Badkamer Almere</h4>
-                        <p data-i18n="gallery_item_2_desc">Dubbele wastafel & Goudkleurige kranen</p>
+                        <h4 data-i18n="gallery_item_2_title">Modern Asma Klozet</h4>
+                        <p data-i18n="gallery_item_2_desc">Geberit inbouwsysteem & nisverlichting</p>
                     </div>
                 </div>
-                <!-- 3 -->
-                <div class="gallery-item" tabindex="0">
-                    <img src="gallery_toilet_hangend.png" alt="Modern hangend toilet met houten wandpanelen en nisverlichting">
+                <!-- Project 3 -->
+                <div class="gallery-item" data-category="badkamer" tabindex="0">
+                    <img src="projects/bathroom_after_1.jpg" alt="Badkamerrenovatie met inloopdouche en tegels">
                     <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_3_title">Toilet Lelystad</h4>
-                        <p data-i18n="gallery_item_3_desc">Hangtoilet & Nis verlichting</p>
+                        <h4 data-i18n="gallery_item_3_title">Badkamer Amsterdam</h4>
+                        <p data-i18n="gallery_item_3_desc">Strakke inloopdouche & regendouche</p>
                     </div>
                 </div>
-                <!-- 4 -->
-                <div class="gallery-item" tabindex="0">
-                    <img src="gallery_toilet_classic.png" alt="Klassiek betegeld toilet met witte metrotegels">
+                <!-- Project 4 -->
+                <div class="gallery-item" data-category="gipsplaat" tabindex="0">
+                    <img src="projects/drywall_after.jpg" alt="Strak afgewerkt gipsplaten plafond met spots">
                     <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_4_title">Toilet Utrecht</h4>
-                        <p data-i18n="gallery_item_4_desc">Klassiek tegelwerk & Fonteintje</p>
+                        <h4 data-i18n="gallery_item_4_title">Gipsplaat Plafond</h4>
+                        <p data-i18n="gallery_item_4_desc">Inclusief spots & glad pleisterwerk</p>
                     </div>
                 </div>
-                <!-- 5 -->
-                <div class="gallery-item" tabindex="0">
-                    <img src="gallery_drywall_finished.png" alt="Strak afgewerkte alçıpan bölme duvarı">
+                <!-- Project 5 -->
+                <div class="gallery-item" data-category="riolering" tabindex="0">
+                    <img src="projects/plumbing_rough.jpg" alt="Professionele leidinginstallatie onder de vloer">
                     <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_5_title">Scheidingswand Lelystad</h4>
-                        <p data-i18n="gallery_item_5_desc">Gipsplaten wand & Glad stucwerk</p>
+                        <h4 data-i18n="gallery_item_5_title">Loodgieterswerk</h4>
+                        <p data-i18n="gallery_item_5_desc">Vernieuwde waterleidingen & afvoeren</p>
                     </div>
                 </div>
-                <!-- 6 -->
-                <div class="gallery-item" tabindex="0">
-                    <img src="gallery_drywall_under_construction.png" alt="Metal stud profiller üzerine alçıpan montajı aşaması">
+                <!-- Project 6 -->
+                <div class="gallery-item" data-category="gipsplaat" tabindex="0">
+                    <img src="projects/drywall_before.jpg" alt="Metal-stud plafond frame constructie">
                     <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_6_title">Wand in opbouw</h4>
-                        <p data-i18n="gallery_item_6_desc">Metal-stud isolatie & Gipsplaten</p>
+                        <h4 data-i18n="gallery_item_6_title">Metal Stud Frame</h4>
+                        <p data-i18n="gallery_item_6_desc">Voorbereiding voor gipsplaten</p>
                     </div>
                 </div>
-                <!-- 7 -->
-                <div class="gallery-item" tabindex="0">
-                    <img src="gallery_tiling_large_floor.png" alt="Büyük ebatlı fayans döşeme çalışması">
+                <!-- Project 7 -->
+                <div class="gallery-item" data-category="badkamer" tabindex="0">
+                    <img src="projects/bathroom_sink.jpg" alt="Banyoda şık lavabo ve ayna montajı">
                     <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_7_title">Vloertegels Lelystad</h4>
-                        <p data-i18n="gallery_item_7_desc">Grote plavuizen met nivelleersysteem</p>
+                        <h4 data-i18n="gallery_item_7_title">Lavabo Ünitesi</h4>
+                        <p data-i18n="gallery_item_7_desc">Modern lavabo dolabı, batarya & LED ayna</p>
                     </div>
                 </div>
-                <!-- 8 -->
-                <div class="gallery-item" tabindex="0">
-                    <img src="gallery_tiling_bathroom_wall.png" alt="Lazer hizalama ile banyo duvar fayansı döşeme">
+                <!-- Project 8 -->
+                <div class="gallery-item" data-category="toilet" tabindex="0">
+                    <img src="projects/toilet_after.jpg" alt="Komple yenilenmiş klozet alanı">
                     <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_8_title">Wandtegelwerk</h4>
-                        <p data-i18n="gallery_item_8_desc">Precisie tegelen met laser-nivellering</p>
+                        <h4 data-i18n="gallery_item_8_title">Modern Toilet</h4>
+                        <p data-i18n="gallery_item_8_desc">Klassieke lichte betegeling met hangtoilet</p>
                     </div>
                 </div>
-                <!-- 9 -->
-                <div class="gallery-item" tabindex="0">
-                    <img src="gallery_plumbing_pipes.png" alt="Lavabo altı temiz bakır ve PVC su borusu tesisatı">
+                <!-- Project 9 -->
+                <div class="gallery-item" data-category="gipsplaat" tabindex="0">
+                    <img src="projects/tiling_after.jpg" alt="Fayans yapıştırma işlemi tamamlanmış yer kaplaması">
                     <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_9_title">Loodgieterswerk</h4>
-                        <p data-i18n="gallery_item_9_desc">Koperen leidingen & Riolering</p>
-                    </div>
-                </div>
-                <!-- 10 -->
-                <div class="gallery-item" tabindex="0">
-                    <img src="gallery_bathroom_small.png" alt="Küçük 2 metrekare banyo alanı tasarımı ve yerleşimi">
-                    <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_10_title">Compacte Badkamer</h4>
-                        <p data-i18n="gallery_item_10_desc">2 m² slimme indeling & inloopdouche</p>
+                        <h4 data-i18n="gallery_item_9_title">Zemin Fayansı</h4>
+                        <p data-i18n="gallery_item_9_desc">Büyük ebatlı granit fayans döşeme</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Interactive Quote Section -->
-    <section id="quote-section" class="quote-section">
+    <!-- Multi-Step Estimate Wizard Section -->
+    <section id="wizard-section" class="wizard-section">
         <div class="container">
-            <div class="quote-box">
-                <div class="quote-header">
+            <div class="wizard-container">
+                <div class="wizard-header">
                     <h2 data-i18n="quote_title">Bereken Uw Richtprijs</h2>
-                    <p data-i18n="quote_subtitle">Vul het formulier in. De richtprijs wordt live berekend. Onze AI-assistent stuurt de aanvraag direct door naar ons team!</p>
+                    <p data-i18n="quote_subtitle">Vul de stappen in voor een directe, transparante all-in prijsindicatie.</p>
                 </div>
-                <form id="quoteForm" class="quote-form" action="#" method="POST" novalidate>
-                    
-                    <!-- Anti-Spam Honeypot Field -->
+
+                <!-- Wizard Progress Bar -->
+                <div class="wizard-progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="step-indicator active" data-step-indicator="1">
+                        <span class="step-num">1</span>
+                        <span class="step-label" data-i18n="wizard_indicator_1">Dienst</span>
+                    </div>
+                    <div class="step-indicator" data-step-indicator="2">
+                        <span class="step-num">2</span>
+                        <span class="step-label" data-i18n="wizard_indicator_2">Afmetingen</span>
+                    </div>
+                    <div class="step-indicator" data-step-indicator="3">
+                        <span class="step-num">3</span>
+                        <span class="step-label" data-i18n="wizard_indicator_3">Wensen</span>
+                    </div>
+                    <div class="step-indicator" data-step-indicator="4">
+                        <span class="step-num">4</span>
+                        <span class="step-label" data-i18n="wizard_indicator_4">Contact</span>
+                    </div>
+                    <div class="step-indicator" data-step-indicator="5">
+                        <span class="step-num">5</span>
+                        <span class="step-label" data-i18n="wizard_indicator_5">Resultaat</span>
+                    </div>
+                </div>
+
+                <!-- The Wizard Form -->
+                <form id="quoteWizardForm" class="wizard-form" autocomplete="on" novalidate>
+                    <!-- Honeypot -->
                     <div class="visually-hidden">
-                        <label for="honeypot_field">Vul dit veld niet in als u een mens bent</label>
-                        <input type="text" id="honeypot_field" name="honeypot_field" tabindex="-1" autocomplete="off">
+                        <label for="w_honeypot">Neem dit veld niet op</label>
+                        <input type="text" id="w_honeypot" name="w_honeypot" tabindex="-1" autocomplete="off">
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="project_type"><span data-i18n="form_project_type">Type Project</span> <span class="required">*</span></label>
-                            <select id="project_type" name="project_type" required aria-required="true">
-                                <option value="" disabled selected data-i18n="form_choose_project">Kies uw project...</option>
-                                <option value="badkamer" data-i18n="form_opt_badkamer">Complete Badkamerrenovatie</option>
-                                <option value="toilet" data-i18n="form_opt_toilet">Toiletrenovatie</option>
-                                <option value="gipsplaat" data-i18n="form_opt_gipsplaat">Gipsplaten wanden plaatsen</option>
-                                <option value="riolering" data-i18n="form_opt_riolering">Riolering & Loodgieterswerk</option>
-                                <option value="fayans" data-i18n="form_opt_fayans">Tegelwerk (Grote Tegels)</option>
-                            </select>
-                            <span class="error-msg" id="error-project_type" aria-live="polite"></span>
+                    <!-- STEP 1: Service Selection -->
+                    <div class="wizard-step active" data-step="1">
+                        <h3 class="step-title" data-i18n="wizard_step_1_title">Welk project wilt u uitvoeren?</h3>
+                        <div class="services-cards-selection">
+                            <label class="selection-card">
+                                <input type="radio" name="project_type" value="badkamer" required>
+                                <div class="card-inner">
+                                    <i class="fa-solid fa-bath"></i>
+                                    <span data-i18n="form_opt_badkamer">Complete Badkamerrenovatie</span>
+                                    <span class="card-price-tag">Vanaf €4.000</span>
+                                </div>
+                            </label>
+                            <label class="selection-card">
+                                <input type="radio" name="project_type" value="toilet">
+                                <div class="card-inner">
+                                    <i class="fa-solid fa-toilet"></i>
+                                    <span data-i18n="form_opt_toilet">Toiletrenovatie</span>
+                                    <span class="card-price-tag">Vanaf €2.000</span>
+                                </div>
+                            </label>
+                            <label class="selection-card">
+                                <input type="radio" name="project_type" value="gipsplaat">
+                                <div class="card-inner">
+                                    <i class="fa-solid fa-border-all"></i>
+                                    <span data-i18n="form_opt_gipsplaat">Gipsplaten wanden plaatsen</span>
+                                    <span class="card-price-tag">Vanaf €40/m²</span>
+                                </div>
+                            </label>
+                            <label class="selection-card">
+                                <input type="radio" name="project_type" value="fayans">
+                                <div class="card-inner">
+                                    <i class="fa-solid fa-cubes"></i>
+                                    <span data-i18n="form_opt_fayans">Tegelwerk (Grote Tegels)</span>
+                                    <span class="card-price-tag">Vanaf €47.50/m²</span>
+                                </div>
+                            </label>
+                            <label class="selection-card">
+                                <input type="radio" name="project_type" value="riolering">
+                                <div class="card-inner">
+                                    <i class="fa-solid fa-faucet"></i>
+                                    <span data-i18n="form_opt_riolering">Riolering & Loodgieterswerk</span>
+                                    <span class="card-price-tag" data-i18n="service_tag_on_request">Prijs op aanvraag</span>
+                                </div>
+                            </label>
                         </div>
-                        <div class="form-group">
-                            <label for="material_preference"><span data-i18n="form_material_pref">Materiaal Optie</span> <span class="required">*</span></label>
-                            <select id="material_preference" name="material_preference" required aria-required="true">
-                                <option value="zonder-materiaal" selected data-i18n="form_opt_labor_only">Ik lever zelf sanitair & tegels (Alleen arbeid & basis-materialen)</option>
+                        <span class="error-msg text-center" id="error-project_type" aria-live="polite"></span>
+                    </div>
+
+                    <!-- STEP 2: Size & Materials -->
+                    <div class="wizard-step" data-step="2">
+                        <h3 class="step-title" data-i18n="wizard_step_2_title">Afmetingen & Materiaalopties</h3>
+                        
+                        <div class="form-group" id="sizeGroup">
+                            <label for="wizard_size">
+                                <span data-i18n="form_size">Geschatte Oppervlakte in m²</span> <span class="required">*</span>
+                            </label>
+                            <div class="range-container">
+                                <input type="range" id="wizard_size_range" min="1" max="50" value="10">
+                                <input type="number" id="wizard_size" name="size" placeholder="10" min="1" max="100" required aria-describedby="w-size-hint">
+                            </div>
+                            <span class="hint" id="w-size-hint" data-i18n="form_size_hint">Vul alleen hele getallen in.</span>
+                            <span class="error-msg" id="error-size" aria-live="polite"></span>
+                        </div>
+
+                        <div class="form-group" id="materialGroup">
+                            <label for="wizard_material_preference">
+                                <span data-i18n="form_material_pref">Materiaal Optie</span> <span class="required">*</span>
+                            </label>
+                            <select id="wizard_material_preference" name="material_preference" required>
+                                <option value="zonder-materiaal" selected data-i18n="form_opt_labor_only">Ik lever zelf sanitair & tegels (Alleen arbeid & kaba-materialen)</option>
                                 <option value="met-materiaal" data-i18n="form_opt_with_materials">Der-In infra levert alles (All-in inclusief sanitair/tegels)</option>
                             </select>
                             <span class="error-msg" id="error-material_preference" aria-live="polite"></span>
                         </div>
                     </div>
-                    
-                    <div class="form-row">
+
+                    <!-- STEP 3: Description -->
+                    <div class="wizard-step" data-step="3">
+                        <h3 class="step-title" data-i18n="wizard_step_3_title">Beschrijf uw specifieke wensen</h3>
                         <div class="form-group">
-                            <label for="size"><span data-i18n="form_size">Geschatte Oppervlakte in m²</span> <span class="required">*</span></label>
-                            <input type="text" id="size" name="size" placeholder="Bijv. 12" inputmode="numeric" pattern="[0-9]*" required aria-required="true" aria-describedby="size-hint">
-                            <span class="hint" id="size-hint" data-i18n="form_size_hint">Vul alleen hele getallen in.</span>
-                            <span class="error-msg" id="error-size" aria-live="polite"></span>
+                            <label for="wizard_description" data-i18n="form_description">Beschrijf uw wensen (Bijv. inloopdouche, hangend toilet, verlaagd plafond, etc.)</label>
+                            <textarea id="wizard_description" name="description" rows="5" placeholder="Geef ons zoveel mogelijk details over de afmetingen, de indeling of speciale wensen..."></textarea>
                         </div>
+                    </div>
+
+                    <!-- STEP 4: Contact Details -->
+                    <div class="wizard-step" data-step="4">
+                        <h3 class="step-title" data-i18n="wizard_step_4_title">Uw Contactgegevens</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="wizard_client_name"><span data-i18n="form_name">Naam</span> <span class="required">*</span></label>
+                                <input type="text" id="wizard_client_name" name="client_name" placeholder="Voor- en achternaam" autocomplete="name" required>
+                                <span class="error-msg" id="error-client_name" aria-live="polite"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="wizard_client_phone"><span data-i18n="form_phone">Telefoonnummer</span> <span class="required">*</span></label>
+                                <input type="tel" id="wizard_client_phone" name="client_phone" placeholder="Bijv. 06 12345678" autocomplete="tel" inputmode="tel" required>
+                                <span class="error-msg" id="error-client_phone" aria-live="polite"></span>
+                            </div>
+                        </div>
+
                         <div class="form-group">
-                            <label for="location"><span data-i18n="form_location">Stad / Regio</span> <span class="required">*</span></label>
-                            <input type="text" id="location" name="location" placeholder="Bijv. Lelystad" autocomplete="address-level2" required aria-required="true">
+                            <label for="wizard_client_email"><span data-i18n="form_email">E-mailadres</span> <span class="required">*</span></label>
+                            <input type="email" id="wizard_client_email" name="client_email" placeholder="Bijv. info@domein.nl" autocomplete="email" required>
+                            <span class="error-msg" id="error-client_email" aria-live="polite"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="wizard_location"><span data-i18n="form_location">Stad / Regio</span> <span class="required">*</span></label>
+                            <input type="text" id="wizard_location" name="location" placeholder="Bijv. Lelystad" autocomplete="address-level2" required>
                             <span class="error-msg" id="error-location" aria-live="polite"></span>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="description" data-i18n="form_description">Beschrijf uw wensen (Bijv. inloopdouche, hangend toilet, verlaagd plafond, etc.)</label>
-                        <textarea id="description" name="description" rows="4" placeholder="Geef ons zoveel mogelijk details over de afmetingen of wensen..."></textarea>
-                    </div>
-
-                    <div class="form-divider" data-i18n="form_div_contact">Uw Contactgegevens</div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="client_name"><span data-i18n="form_name">Naam</span> <span class="required">*</span></label>
-                            <input type="text" id="client_name" name="client_name" placeholder="Voor- en achternaam" autocomplete="name" required aria-required="true">
-                            <span class="error-msg" id="error-client_name" aria-live="polite"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="client_phone"><span data-i18n="form_phone">Telefoonnummer</span> <span class="required">*</span></label>
-                            <input type="tel" id="client_phone" name="client_phone" placeholder="Bijv. 06 12345678" autocomplete="tel" inputmode="tel" required aria-required="true">
-                            <span class="error-msg" id="error-client_phone" aria-live="polite"></span>
+                        <!-- Webhook url config panel hidden -->
+                        <div class="visually-hidden">
+                            <input type="url" id="wizard_webhook_url" name="webhook_url" value="https://hook.us2.make.com/placeholder-webhook-id">
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="client_email"><span data-i18n="form_email">E-mailadres</span> <span class="required">*</span></label>
-                        <input type="email" id="client_email" name="client_email" placeholder="Bijv. info@domein.nl" autocomplete="email" required aria-required="true">
-                        <span class="error-msg" id="error-client_email" aria-live="polite"></span>
+                    <!-- STEP 5: Summary & Offerte Link -->
+                    <div class="wizard-step" data-step="5">
+                        <h3 class="step-title" data-i18n="wizard_step_5_title">Uw Teklifs Samenvatting</h3>
+                        
+                        <div class="summary-box">
+                            <div class="summary-details">
+                                <p><strong>Dienst:</strong> <span id="sumProject">-</span></p>
+                                <p id="sumSizeRow"><strong>Oppervlakte:</strong> <span id="sumSize">-</span> m²</p>
+                                <p id="sumMaterialsRow"><strong>Materiaal:</strong> <span id="sumMaterials">-</span></p>
+                                <p><strong>Klant:</strong> <span id="sumName">-</span> (<span id="sumPhone">-</span>)</p>
+                            </div>
+                            
+                            <div class="live-pricing-panel">
+                                <h4 data-i18n="wizard_estimated_price">Live Richtprijs:</h4>
+                                <div class="wizard-price-tag">
+                                    <span class="price-val" id="wizardPriceVal">€ 0</span>
+                                    <span class="price-ex-vat">ex. BTW</span>
+                                </div>
+                                <p class="wizard-vat-policy" data-i18n="wizard_price_policy">Sloop, afvalafvoer en reiskosten zijn 100% inbegrepen.</p>
+                            </div>
+                        </div>
+
+                        <div class="wizard-submit-alert" id="wizardSubmitSuccess" style="display:none;">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span data-i18n="wizard_submit_msg">Uw aanvraag is verzonden! De officiële offerte is hieronder gegenereerd.</span>
+                        </div>
                     </div>
 
-                    <!-- Make.com Webhook URL Configuration Panel -->
-                    <div class="form-group webhook-config-group">
-                        <label for="webhook_url"><i class="fa-solid fa-gears"></i> Make.com Webhook Integratie URL</label>
-                        <input type="url" id="webhook_url" name="webhook_url" value="https://hook.us2.make.com/placeholder-webhook-id">
-                    </div>
-
-                    <div class="form-footer">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitBtn">
-                            <span id="btnText" data-i18n="form_btn_calc">Vul gegevens in voor richtprijs</span>
-                        </button>
-                    </div>
-                    
-                    <div class="form-footer-secondary" style="margin-top: 15px; text-align: center;">
-                        <button type="button" class="btn-link" id="viewSampleOfferteBtn" style="color: var(--primary); background: none; border: none; cursor: pointer; text-decoration: underline; font-weight: 600; font-size: 0.95rem; font-family: var(--font-sans);">
-                            <i class="fa-solid fa-file-contract"></i> <span data-i18n="btn_view_sample_offerte">Bekijk Voorbeeld Offerte (Toiletrenovatie)</span>
-                        </button>
+                    <!-- Wizard Navigation Buttons -->
+                    <div class="wizard-actions">
+                        <button type="button" class="btn btn-outline" id="prevBtn" style="display:none;"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_prev">Vorige</span></button>
+                        <button type="button" class="btn btn-primary" id="nextBtn"><span data-i18n="btn_next">Volgende</span> <i class="fa-solid fa-arrow-right"></i></button>
+                        <button type="submit" class="btn btn-primary" id="wSubmitBtn" style="display:none;"><i class="fa-solid fa-paper-plane"></i> <span data-i18n="btn_submit_request">Verzend Aanvraag & Genereer Offerte</span></button>
                     </div>
                 </form>
-                
-                <div id="formSuccess" class="form-success-alert hidden" aria-live="assertive">
+
+                <div id="wizardSuccessBox" class="form-success-alert hidden" aria-live="assertive">
                     <div class="success-icon" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></div>
                     <h3 data-i18n="success_title">Bedankt! Uw aanvraag is succesvol verstuurd.</h3>
                     <p data-i18n="success_desc">Onze AI-assistent en ons team verwerken uw aanvraag. We nemen zo snel mogelijk contact met u op.</p>
-                    <button type="button" class="btn btn-outline" id="resetFormBtn" data-i18n="success_btn_reset">Nieuwe berekening maken</button>
+                    <div class="success-actions" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                        <button type="button" class="btn btn-primary btn-block" id="viewGeneratedOfferteBtn"><i class="fa-solid fa-file-contract"></i> <span data-i18n="btn_view_offerte">Bekijk & Print Uw Offerte</span></button>
+                        <button type="button" class="btn btn-outline" id="resetWizardBtn" data-i18n="success_btn_reset">Nieuwe berekening maken</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -401,11 +586,15 @@
                     </div>
                 </div>
 
-                <div class="company-credentials">
-                    <p><strong>KvK Nummer:</strong> 89133226 (Der-In infra)</p>
+                <div class="company-credentials-card">
+                    <h3 data-i18n="contact_company_details_title">Bedrijfsgegevens</h3>
+                    <p><strong>Bedrijfsnaam:</strong> Der-In infra</p>
+                    <p><strong>KvK Nummer:</strong> 89133226</p>
                     <p><strong>BTW Nummer:</strong> NL004694216B91</p>
-                    <p><strong>IBAN:</strong> NL52 INGB 0101 4419 75 (I. Kuruoz)</p>
                     <p><strong>Adres:</strong> De Valk 14, 8239AE Lelystad</p>
+                    <p><strong>Telefoon:</strong> 0618694652</p>
+                    <p><strong>E-mail:</strong> inankuruoz@hotmail.com</p>
+                    <p><strong>IBAN:</strong> NL52 INGB 0101 4419 75 (I. Kuruoz)</p>
                 </div>
             </div>
 
@@ -519,7 +708,7 @@
                     <div class="offerte-pricing">
                         <h3>Prijsopgave</h3>
                         <p class="offerte-material-note" id="offerteMaterialNote">
-                            De klant is verantwoordelijk voor de te gebruiken materialen: nieuwe tegels, een nieuwe wastafel en kraan, un inbouwreservoir en een nieuw toilet.
+                            De klant is verantwoordelijk voor de te gebruiken materialen: nieuwe tegels, een nieuwe wastafel en kraan, een inbouwreservoir en een nieuw toilet.
                         </p>
                         <div class="offerte-price-box">
                             <span class="price-label">Project Richtprijs:</span>
@@ -551,7 +740,7 @@
             </div>
             
             <div class="modal-actions">
-                <button type="button" class="btn btn-primary" id="printOfferteBtn"><i class="fa-solid fa-print"></i> <span>Afdrukken / Opslaan als PDF</span></button>
+                <button type="button" class="btn btn-primary" id="printOfferteBtn"><i class="fa-solid fa-print"></i> <span data-i18n="btn_print_pdf">Afdrukken / Opslaan als PDF</span></button>
                 <button type="button" class="btn btn-outline" id="closeOfferteModalBtn">Sluiten</button>
             </div>
         </div>

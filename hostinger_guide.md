@@ -13,7 +13,7 @@ Sistemin çalışması için Hostinger'den iki şey alınmalıdır:
 
 ---
 
-## 2. ADIM: Sunucuye Bağlanma ve Hazırlık
+## 2. ADIM: Sunucuya Bağlanma ve Hazırlık
 
 Sunucu kurulduktan sonra Hostinger size bir **IP Adresi** ve **Şifre** verecektir.
 1. Bilgisayarınızdan terminal (veya Windows kullanıyorsanız PuTTY) uygulamasını açın.
@@ -24,23 +24,7 @@ Sunucu kurulduktan sonra Hostinger size bir **IP Adresi** ve **Şifre** verecekt
 3. Sunucu şifrenizi girin.
 4. Bağlandıktan sonra aşağıdaki komutları sırasıyla kopyalayıp terminale yapıştırarak gerekli programları kurun:
 
-```bash
-# Sunucuyu güncelleyin
-sudo apt update && sudo apt upgrade -y
 
-# Node.js (v18+) ve NPM kurun
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-# PM2 (Arka planda kesintisiz çalıştırma aracı) kurun
-sudo npm install -g pm2
-
-# Ffmpeg (Ses dosyası dönüştürücü) kurun
-sudo apt install ffmpeg -y
-
-# Nginx (Web trafiği yönlendirici) kurun
-sudo apt install nginx -y
-```
 
 ---
 
@@ -85,17 +69,7 @@ Müşteri chatbot'unun ve Hermes WhatsApp asistanının çalışması için Goog
 
 Uygulamalarımızın sunucu kapansa bile sürekli çalışması için PM2 süreç yöneticisini tetikleyelim:
 
-```bash
-# Web sitesi ve chatbot sunucusunu başlatın
-pm2 start server.js --name "derin-web"
 
-# WhatsApp asistanını (Hermes) başlatın
-pm2 start hermes.js --name "hermes-agent"
-
-# PM2 ayarlarını sunucu açılışına kaydedin
-pm2 save
-pm2 startup
-```
 
 ---
 
@@ -132,10 +106,10 @@ Web sitenize girenlerin `https://derininfra.nl` olarak şifreli ve güvenli girm
        location / {
            proxy_pass http://localhost:8085;
            proxy_http_version 1.1;
-           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Upgrade ;
            proxy_set_header Connection 'upgrade';
-           proxy_set_header Host $host;
-           proxy_cache_bypass $http_upgrade;
+           proxy_set_header Host ;
+           proxy_cache_bypass ;
        }
    }
    ```
