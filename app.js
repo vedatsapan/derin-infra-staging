@@ -1788,7 +1788,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Direct fallback for typical *.github.io or when explicitly on derininfra.nl static Pages
                 if (window.location.hostname.includes('github.io') || window.location.hostname === 'derininfra.nl') {
                     // Try the Vercel deployment URL (replace this if Vercel assigns a different name)
-                    chatEndpoint = 'https://derin-infra-proxy.vercel.app/api/chat'; 
+                    chatEndpoint = 'https://derin-infra-staging.vercel.app/api/chat'; 
                 }
 
                 let response = await fetch(chatEndpoint, {
@@ -1807,7 +1807,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!response.ok || !contentType.includes('application/json')) {
                     if (chatEndpoint === '/api/chat') {
                         console.log("Relative API did not return JSON. Trying Vercel backend fallback...");
-                        chatEndpoint = 'https://derin-infra-proxy.vercel.app/api/chat';
+                        chatEndpoint = 'https://derin-infra-staging.vercel.app/api/chat';
                         response = await fetch(chatEndpoint, {
                             method: 'POST',
                             headers: {
