@@ -1,5 +1,6 @@
 // server.js - Production-ready backend for Der-In infra
 // Usage: GEMINI_API_KEY=your_key node server.js
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 
@@ -15,7 +16,7 @@ const SYSTEM_INSTRUCTION = `
 You are the official AI assistant of Der-In infra (KVK: 89133226, BTW: NL004694216B91), a premium construction, renovation, and plumbing company.
 Your location is: Lelystad, Netherlands (De Valk, 8239AE).
 Phone / WhatsApp: +31 6 18694652.
-Email: inankuruoz@hotmail.com.
+Email: info@derininfra.nl.
 IBAN and bank details are private and provided only upon signed agreement or on official invoices. Do not disclose bank numbers.
 
 Services & Pricing Structure:
@@ -58,65 +59,126 @@ Rules for response:
 5. If the user asks about the Hermes Agent, explain that it is our automated system running on Hostinger VPS that helps İnan Abi update the website via WhatsApp, but only after Derya Abla approves.
 `;
 
-// Chat API Endpoint calling Google Gemini API directly
+// Chat API Endpoint supporting both Ollama Cloud API and Google Gemini API (fallback)
 app.post('/api/chat', async (req, res) => {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        console.error('Error: GEMINI_API_KEY environment variable is not set.');
-        return res.status(500).json({ error: 'Gemini API key is not configured on the server.' });
-    }
-
     const { message, language } = req.body;
     if (!message) {
         return res.status(400).json({ error: 'Message field is required.' });
     }
 
-    const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    let reply = '';
+    let success = false;
 
-    const payload = {
-        contents: [
-            {
-                role: 'user',
-                parts: [{ text: message }]
+    // 1. Try Ollama if OLLAMA_API_URL is configured
+    if (process.env.OLLAMA_API_URL) {
+        const ollamaUrl = `${process.env.OLLAMA_API_URL.replace(/\/$/, '')}/api/chat`;
+        const ollamaModel = process.env.OLLAMA_MODEL || 'qwen2.5';
+        const headers = { 'Content-Type': 'application/json' };
+        if (process.env.OLLAMA_API_KEY) {
+            headers['Authorization'] = `Bearer ${process.env.OLLAMA_API_KEY}`;
+        }
+
+        const payload = {
+            model: ollamaModel,
+            messages: [
+                { role: 'system', content: SYSTEM_INSTRUCTION + `\nPrefer to respond in the language: ${language || 'Dutch'}.` },
+                { role: 'user', content: message }
+            ],
+            stream: false
+        };
+
+        try {
+            console.log(`Attempting Ollama API at: ${ollamaUrl} (Model: ${ollamaModel})`);
+            
+            // Set a timeout for Ollama request (e.g. 8 seconds) so it doesn't hang forever
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            
+            const ollamaRes = await fetch(ollamaUrl, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(payload),
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (!ollamaRes.ok) {
+                const errorText = await ollamaRes.text();
+                throw new Error(`Ollama API status ${ollamaRes.status}: ${errorText}`);
             }
-        ],
-        systemInstruction: {
-            parts: [{ text: SYSTEM_INSTRUCTION + `
-Prefer to respond in the language: ${language || 'Dutch'}.` }]
-        },
-        generationConfig: {
-            maxOutputTokens: 500,
-            temperature: 0.7
+
+            const data = await ollamaRes.json();
+            if (data.message && data.message.content) {
+                reply = data.message.content;
+            } else if (data.choices && data.choices[0] && data.choices[0].message) {
+                reply = data.choices[0].message.content;
+            } else if (data.response) {
+                reply = data.response;
+            } else {
+                throw new Error('Unexpected response format from Ollama API');
+            }
+            
+            success = true;
+            console.log('Ollama API response received successfully.');
+        } catch (err) {
+            console.warn('Ollama Chat API failed, falling back to Gemini API. Error:', err.message);
         }
-    };
-
-    try {
-        const geminiRes = await fetch(targetUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (!geminiRes.ok) {
-            const errorText = await geminiRes.text();
-            throw new Error(`Gemini API returned ${geminiRes.status}: ${errorText}`);
-        }
-
-        const data = await geminiRes.json();
-        let reply = '';
-        if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
-            reply = data.candidates[0].content.parts[0].text;
-        } else {
-            throw new Error('Unexpected response format from Gemini API');
-        }
-
-        res.json({ reply: reply.trim() });
-    } catch (err) {
-        console.error('Gemini Chat API Error:', err.message);
-        res.status(500).json({ error: 'AI Assistant failed to generate a response. Please check server logs.' });
     }
+
+    // 2. Fallback to Gemini if Ollama was not tried or failed
+    if (!success) {
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            console.error('Error: Neither Ollama succeeded nor GEMINI_API_KEY environment variable is set.');
+            return res.status(500).json({ error: 'Chat API is not configured on the server. Please set GEMINI_API_KEY or OLLAMA_API_URL in .env.' });
+        }
+
+        const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+        const payload = {
+            contents: [
+                {
+                    role: 'user',
+                    parts: [{ text: message }]
+                }
+            ],
+            systemInstruction: {
+                parts: [{ text: SYSTEM_INSTRUCTION + `\nPrefer to respond in the language: ${language || 'Dutch'}.` }]
+            },
+            generationConfig: {
+                maxOutputTokens: 500,
+                temperature: 0.7
+            }
+        };
+
+        try {
+            console.log('Calling Gemini API fallback...');
+            const geminiRes = await fetch(targetUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!geminiRes.ok) {
+                const errorText = await geminiRes.text();
+                throw new Error(`Gemini API status ${geminiRes.status}: ${errorText}`);
+            }
+
+            const data = await geminiRes.json();
+            if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
+                reply = data.candidates[0].content.parts[0].text;
+                success = true;
+                console.log('Gemini API response received successfully.');
+            } else {
+                throw new Error('Unexpected response format from Gemini API');
+            }
+        } catch (err) {
+            console.error('Gemini Chat API Fallback Error:', err.message);
+            return res.status(500).json({ error: 'AI Assistant failed to generate a response. Please check server logs.' });
+        }
+    }
+
+    res.json({ reply: reply.trim() });
 });
 
 // Fallback for HTML5 client-side routing

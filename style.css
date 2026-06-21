@@ -657,6 +657,7 @@ section {
     overflow: hidden;
     user-select: none;
     box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+    touch-action: none; /* Prevents mobile page scroll when dragging slider */
 }
 
 .ba-image {
@@ -683,11 +684,12 @@ section {
     top: 0;
     bottom: 0;
     left: var(--clip-percentage, 50%);
-    width: 4px;
-    background-color: #fff;
+    width: 2px;
+    background-color: transparent;
     z-index: 10;
     cursor: ew-resize;
     transform: translateX(-50%);
+    touch-action: none;
 }
 
 .slider-line {
@@ -696,8 +698,9 @@ section {
     bottom: 0;
     left: 50%;
     width: 2px;
-    background-color: rgba(255, 255, 255, 0.5);
+    background: linear-gradient(to bottom, rgba(2, 132, 199, 0.3), #ffffff 20%, #ffffff 80%, rgba(249, 115, 22, 0.3));
     transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
 .slider-arrows {
@@ -705,24 +708,32 @@ section {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 44px;
-    height: 44px;
-    background-color: var(--primary);
-    border: 3px solid #fff;
+    width: 46px;
+    height: 46px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px solid transparent;
+    background-image: linear-gradient(white, white), linear-gradient(135deg, #0284c7, #f97316);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
     border-radius: 50%;
-    color: #fff;
+    color: #0f172a;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    font-size: 1.1rem;
-    transition: var(--transition);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    touch-action: none;
 }
 
 .slider-handle:hover .slider-arrows,
 .ba-slider:active .slider-arrows {
-    transform: translate(-50%, -50%) scale(1.1);
-    background-color: var(--accent);
+    transform: translate(-50%, -50%) scale(1.12);
+    background-image: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), linear-gradient(135deg, #0284c7, #f97316);
+    color: #0284c7;
+    box-shadow: 0 12px 30px rgba(2, 132, 199, 0.25), 0 0 15px rgba(249, 115, 22, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.9);
 }
 
 .ba-label {

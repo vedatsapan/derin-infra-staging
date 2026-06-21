@@ -437,37 +437,27 @@ document.addEventListener('DOMContentLoaded', () => {
             slider.style.setProperty('--clip-percentage', `${percentage}%`);
         }
         
-        // Mouse Events
-        slider.addEventListener('mousedown', (e) => {
+        // Pointer Events (supports both mouse and touch input natively)
+        slider.addEventListener('pointerdown', (e) => {
             isDragging = true;
+            slider.setPointerCapture(e.pointerId);
             updateSlider(e.clientX);
         });
         
-        window.addEventListener('mousemove', (e) => {
+        slider.addEventListener('pointermove', (e) => {
             if (!isDragging) return;
             updateSlider(e.clientX);
         });
         
-        window.addEventListener('mouseup', () => {
+        slider.addEventListener('pointerup', (e) => {
+            if (!isDragging) return;
+            slider.releasePointerCapture(e.pointerId);
             isDragging = false;
         });
         
-        // Touch Events (Mobile)
-        slider.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            if (e.touches.length > 0) {
-                updateSlider(e.touches[0].clientX);
-            }
-        });
-        
-        window.addEventListener('touchmove', (e) => {
+        slider.addEventListener('pointercancel', (e) => {
             if (!isDragging) return;
-            if (e.touches.length > 0) {
-                updateSlider(e.touches[0].clientX);
-            }
-        });
-        
-        window.addEventListener('touchend', () => {
+            slider.releasePointerCapture(e.pointerId);
             isDragging = false;
         });
     });
@@ -1404,7 +1394,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showOfferte({
                 client_name: "İnan Kuruöz (Voorbeeld)",
                 client_phone: "0618694652",
-                client_email: "inankuruoz@hotmail.com",
+                client_email: "info@derininfra.nl",
                 location: "De Valk, 8239AE Lelystad",
                 project_type: "toilet",
                 material_preference: "zonder-materiaal",
