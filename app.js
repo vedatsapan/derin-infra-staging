@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             footer_note: "Gerealiseerd met AI-assistentie & Vakmanschap.",
             chat_status: "Altijd online",
             chat_welcome: "Hallo! Ik ben de AI-assistent van Der-In infra. Ik kan u helpen met richtprijzen voor badkamerrenovatie, toiletrenovatie, tegelwerk en wanden. Hoe kan ik u vandaag helpen?",
+            wizard_btn_appointment: "Plan Direct Opmeting",
             btn_load_more: "Meer projecten laden",
             nav_transformations: "Voor & Na",
             hero_cta_transformations: "Bekijk Transformaties",
@@ -236,6 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
             footer_note: "Realized with AI assistance & Craftsmanship.",
             chat_status: "Always online",
             chat_welcome: "Hello! I am the AI assistant of Der-In infra. I can help you with estimates for bathroom renovations, toilet renovations, tiling, and walls. How can I help you today?",
+            wizard_btn_appointment: "Schedule Measurement",
             btn_load_more: "Load more projects",
             nav_transformations: "Before & After",
             hero_cta_transformations: "View Transformations",
@@ -366,6 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
             footer_note: "Yapay zeka asistanlığı ve ustalıkla hazırlanmıştır.",
             chat_status: "Her zaman çevrimiçi",
             chat_welcome: "Merhaba! Ben Der-In infra Yapay Zeka Asistanıyım. Banyo yenileme, tuvalet yenileme, fayans ve alçıpan duvar richtprijs (fiyat) tahminleri konusunda yardımcı olabilirim. Size nasıl yardımcı olabilirim?",
+            wizard_btn_appointment: "Ücretsiz Keşif / Randevu Planla",
             btn_load_more: "Daha fazla proje yükle",
             nav_transformations: "Öncesi & Sonrası",
             hero_cta_transformations: "Değişimleri İncele",
@@ -688,9 +691,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalSteps = 5;
 
     // Range & Number sync
+    function updateSliderProgress() {
+        if (!sizeRange) return;
+        const min = parseFloat(sizeRange.min) || 1;
+        const max = parseFloat(sizeRange.max) || 50;
+        const val = parseFloat(sizeRange.value) || 10;
+        const percentage = ((val - min) / (max - min)) * 100;
+        sizeRange.style.setProperty('--slider-progress', percentage + '%');
+    }
+
     if (sizeRange && sizeInput) {
+        // Initial progress fill
+        updateSliderProgress();
+
         sizeRange.addEventListener('input', () => {
             sizeInput.value = sizeRange.value;
+            updateSliderProgress();
             calculateEstimate();
         });
         sizeInput.addEventListener('input', () => {
@@ -699,6 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (val < 1) val = 1;
             if (val > 100) val = 100;
             sizeRange.value = val;
+            updateSliderProgress();
             calculateEstimate();
         });
     }
@@ -1115,6 +1132,577 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatMessages = document.getElementById('chatMessages');
     const chatTyping = document.getElementById('chatTyping');
 
+    let chatState = {
+        step: 'idle', // 'idle', 'booking_service', 'booking_name', 'booking_phone', 'booking_datetime', 'booking_confirm', 'pricing_service', 'pricing_size', 'pricing_materials', 'pricing_result'
+        data: {
+            project_type: '',
+            client_name: '',
+            client_phone: '',
+            datetime: '',
+            size: 10,
+            material_pref: 'zonder-materiaal'
+        }
+    };
+
+    const chatTranslations = {
+        tr: {
+            welcome: "Merhaba! Ben Der-In infra Yapay Zeka Asistanıyım. Size banyo/tuvalet tadilatı, fayans döşeme, alçıpan ve su tesisatı hizmetlerimiz ve fiyatlarımız hakkında bilgi verebilirim. Nasıl yardımcı olabilirim?",
+            chip_booking: "📅 Randevu Oluştur",
+            chip_pricing: "💰 Fiyat Hesapla",
+            chip_question: "💬 Soru Sor",
+            ask_service: "Hangi hizmet için randevu oluşturmak istersiniz?",
+            ask_service_pricing: "Hangi hizmet için yaklaşık fiyat hesaplamak istersiniz?",
+            ask_name: "Lütfen adınızı ve soyadınızı yazar mısınız?",
+            ask_phone: "Lütfen size ulaşabileceğimiz telefon numaranızı yazar mısınız?",
+            ask_datetime: "Randevu için uygun gün ve saati belirtir misiniz? (Örn: Pazartesi 14:00)",
+            ask_size: "Tadilat yapılacak alanın büyüklüğünü (m²) yazar mısınız? Aşağıdaki hazır butonları da kullanabilirsiniz:",
+            ask_materials: "Malzeme tercihiniz nedir?",
+            material_labor: "🛠️ Sadece İşçilik (+Kaba Malzeme)",
+            material_all: "💎 Her Şey Dahil (Malzemeli Paket)",
+            summary_title: "📋 Randevu Talebi Özetiniz",
+            summary_desc: "Bilgilerinizi aldım. WhatsApp üzerinden İnan Usta'ya göndermek için aşağıdaki butona tıklayın:",
+            btn_send_whatsapp: "🟢 WhatsApp ile Gönder & Tamamla",
+            price_summary_title: "📋 Hesaplanan Richtprijs",
+            price_summary_desc: "Şirket fiyatlandırma formüllerimize göre yaklaşık fiyat:",
+            btn_book_this: "📅 Bu Projeye Randevu Al",
+            btn_recalc: "🔄 Yeniden Hesapla",
+            btn_cancel: "❌ İptal Et & Menüye Dön",
+            field_service: "Hizmet",
+            field_client: "Müşteri",
+            field_phone: "Telefon",
+            field_datetime: "Tarih/Saat",
+            field_size: "Alan (m²)",
+            field_materials: "Malzeme",
+            field_price: "Yaklaşık Fiyat",
+            cancel_msg: "İşlem iptal edildi. Ana menüye dönüldü.",
+            whatsapp_template: "Merhaba İnan Usta, derininfra.nl sitesinden randevu talebi oluşturdum:\n\n- Hizmet: {service}\n- Müşteri: {name}\n- Telefon: {phone}\n- Tercih Edilen Zaman: {datetime}",
+            detect_lang_tr: "Türkçe dili algılandı. Size Türkçe olarak yardımcı olacağım.",
+            detect_lang_nl: "Nederlands gedetecteerd. Ik zal in het Nederlands antwoorden.",
+            detect_lang_en: "English detected. I will reply in English.",
+            error_invalid_size: "Lütfen geçerli bir sayı girin (1-100 m²).",
+            status_just_now: "Şimdi"
+        },
+        nl: {
+            welcome: "Hallo! Ik ben de AI-assistent van Der-In infra. Ik kan u helpen met richtprijzen voor badkamerrenovatie, toiletrenovatie, tegelwerk en wanden. Hoe kan ik u vandaag helpen?",
+            chip_booking: "📅 Afspraak Maken",
+            chip_pricing: "💰 Richtprijs Berekenen",
+            chip_question: "💬 Vraag Stellen",
+            ask_service: "Voor welk project wilt u een afspraak maken?",
+            ask_service_pricing: "Voor welk project wilt u de richtprijs berekenen?",
+            ask_name: "Wat is uw naam?",
+            ask_phone: "Wat is uw telefoonnummer?",
+            ask_datetime: "Wat is de gewenste datum en tijd voor de opmeting? (Bijv. Maandag 14:00)",
+            ask_size: "Wat is de geschatte oppervlakte in m²? Typ het of kies een optie:",
+            ask_materials: "Wat is uw materiaal voorkeur?",
+            material_labor: "🛠️ Alleen Arbeid (+Kaba Materialen)",
+            material_all: "💎 All-in Inclusief Materialen",
+            summary_title: "📋 Uw Afspraak Samenvatting",
+            summary_desc: "Ik heb uw gegevens ontvangen. Klik op de knop hieronder om het direct via WhatsApp naar İnan te sturen:",
+            btn_send_whatsapp: "🟢 Stuur via WhatsApp & Afronden",
+            price_summary_title: "📋 Berekende Richtprijs",
+            price_summary_desc: "Op basis van onze vaste tarieven is dit uw live richtprijs:",
+            btn_book_this: "📅 Plan Direct Opmeting",
+            btn_recalc: "🔄 Nieuwe Berekening",
+            btn_cancel: "❌ Annuleren",
+            field_service: "Dienst",
+            field_client: "Klant",
+            field_phone: "Telefoon",
+            field_datetime: "Datum & Tijd",
+            field_size: "Oppervlakte",
+            field_materials: "Materiaal",
+            field_price: "Richtprijs",
+            cancel_msg: "Geannuleerd. Terug naar het hoofdmenu.",
+            whatsapp_template: "Hallo İnan, ik heb een afspraakverzoek ingediend via derininfra.nl:\n\n- Dienst: {service}\n- Klant: {name}\n- Telefoon: {phone}\n- Gewenste tijd: {datetime}",
+            detect_lang_tr: "Turks gedetecteerd. Ik zal in het Turks antwoorden.",
+            detect_lang_nl: "Nederlands gedetecteerd. Ik zal in het Nederlands antwoorden.",
+            detect_lang_en: "Engels gedetecteerd. Ik zal in het Engels antwoorden.",
+            error_invalid_size: "Vul een geldig getal in (1-100 m²).",
+            status_just_now: "Zojuist"
+        },
+        en: {
+            welcome: "Hello! I am the AI assistant of Der-In infra. I can help you with estimates for bathroom, toilet, tiling, and drywall work. How can I assist you today?",
+            chip_booking: "📅 Book Appointment",
+            chip_pricing: "💰 Calculate Price",
+            chip_question: "💬 Ask a Question",
+            ask_service: "Which project would you like to book an appointment for?",
+            ask_service_pricing: "Which project would you like to calculate the price for?",
+            ask_name: "What is your name?",
+            ask_phone: "What is your telephone number?",
+            ask_datetime: "Please specify your preferred date and time for the measurement. (e.g. Monday 14:00)",
+            ask_size: "What is the estimated area size in m²? You can type it or select an option:",
+            ask_materials: "What is your material preference?",
+            material_labor: "🛠️ Labor & Rough Materials only",
+            material_all: "💎 All-in Including Materials",
+            summary_title: "📋 Your Appointment Summary",
+            summary_desc: "I have received your details. Click the button below to send it to İnan via WhatsApp:",
+            btn_send_whatsapp: "🟢 Send via WhatsApp & Complete",
+            price_summary_title: "📋 Calculated Estimate",
+            price_summary_desc: "Based on our pricing formulas, here is your estimated price:",
+            btn_book_this: "📅 Book Appointment for this",
+            btn_recalc: "🔄 Recalculate",
+            btn_cancel: "❌ Cancel & Return to Menu",
+            field_service: "Service",
+            field_client: "Client",
+            field_phone: "Phone",
+            field_datetime: "Date/Time",
+            field_size: "Area (m²)",
+            field_materials: "Material",
+            field_price: "Estimated Price",
+            cancel_msg: "Cancelled. Returning to main menu.",
+            whatsapp_template: "Hello İnan, I have created an appointment request from derininfra.nl:\n\n- Service: {service}\n- Client: {name}\n- Phone: {phone}\n- Preferred Time: {datetime}",
+            detect_lang_tr: "Turkish language detected. I will reply in Turkish.",
+            detect_lang_nl: "Dutch language detected. I will reply in Dutch.",
+            detect_lang_en: "English language detected. I will reply in English.",
+            error_invalid_size: "Please enter a valid number (1-100 m²).",
+            status_just_now: "Just now"
+        }
+    };
+
+    const projectTypeLabels = {
+        tr: {
+            badkamer: "Komple Banyo Yenileme",
+            toilet: "Tuvalet Yenileme",
+            fayans: "Tegelwerk (Fayans Döşeme)",
+            gipsplaat: "Alçıpan / Bölme Duvar",
+            riolering: "Su & Kanalizasyon Tesisatı"
+        },
+        nl: {
+            badkamer: "Complete Badkamerrenovatie",
+            toilet: "Toiletrenovatie",
+            fayans: "Tegelwerk (Tegels)",
+            gipsplaat: "Gipsplaten Wanden",
+            riolering: "Riolering & Loodgieterswerk"
+        },
+        en: {
+            badkamer: "Complete Bathroom Renovation",
+            toilet: "Toilet Renovation",
+            fayans: "Tiling Work",
+            gipsplaat: "Drywall Partition Walls",
+            riolering: "Sewerage & Plumbing"
+        }
+    };
+
+    const materialPrefLabels = {
+        tr: {
+            'zonder-materiaal': "Sadece İşçilik (+Kaba Malzeme)",
+            'met-materiaal': "Her Şey Dahil (Malzemeli)"
+        },
+        nl: {
+            'zonder-materiaal': "Alleen arbeid & basis-materialen",
+            'met-materiaal': "All-in inclusief sanitair/tegels"
+        },
+        en: {
+            'zonder-materiaal': "Labor & Rough Materials only",
+            'met-materiaal': "All-in including materials"
+        }
+    };
+
+    function resetChatState() {
+        chatState.step = 'idle';
+        chatState.data = {
+            project_type: '',
+            client_name: '',
+            client_phone: '',
+            datetime: '',
+            size: 10,
+            material_pref: 'zonder-materiaal'
+        };
+    }
+
+    function calculateChatEstimate(projectType, size, materialPref) {
+        let basePrice = 0;
+        let materialCost = 0;
+        let isOnRequest = false;
+
+        switch (projectType) {
+            case 'badkamer':
+                if (size <= 2) basePrice = 4000;
+                else if (size === 3) basePrice = 4500;
+                else if (size === 4) basePrice = 5200;
+                else if (size === 5 || size === 6) basePrice = 6000;
+                else if (size > 6) basePrice = 6000 + (size - 6) * 800;
+                materialCost = materialPref === 'met-materiaal' ? 2500 : 0;
+                break;
+
+            case 'toilet':
+                basePrice = 2000;
+                materialCost = materialPref === 'met-materiaal' ? 1000 : 0;
+                break;
+
+            case 'gipsplaat':
+                basePrice = size * 42.5;
+                materialCost = materialPref === 'met-materiaal' ? (size * 22.5) : 0;
+                break;
+
+            case 'fayans':
+                basePrice = size * 47.5;
+                materialCost = materialPref === 'met-materiaal' ? (size * 52.5) : 0;
+                break;
+
+            case 'riolering':
+                isOnRequest = true;
+                break;
+        }
+
+        if (isOnRequest) {
+            return null;
+        }
+
+        return basePrice + materialCost;
+    }
+
+    function autoDetectLanguage(msg) {
+        const text = msg.toLowerCase();
+        
+        const trKeywords = ['türkçe', 'turkce', 'merhaba', 'selam', 'randevu', 'fiyat', 'banyo', 'fayans', 'alçıpan', 'alcipan', 'tuvalet', 'yardım', 'tesisat', 'nedir', 'konuş'];
+        const nlKeywords = ['hallo', 'goedemorgen', 'goedemiddag', 'afspraak', 'prijs', 'badkamer', 'renovatie', 'tegelwerk', 'gipsplaten', 'toilet', 'hulp', 'riolering', 'zojuist', 'offerte', 'nederlands'];
+        const enKeywords = ['hello', 'hi', 'appointment', 'price', 'bathroom', 'renovation', 'tiling', 'drywall', 'toilet', 'help', 'plumbing', 'estimate', 'calculate', 'english'];
+
+        let trScore = 0;
+        let nlScore = 0;
+        let enScore = 0;
+
+        trKeywords.forEach(kw => { if (text.includes(kw)) trScore++; });
+        nlKeywords.forEach(kw => { if (text.includes(kw)) nlScore++; });
+        enKeywords.forEach(kw => { if (text.includes(kw)) enScore++; });
+
+        if (trScore > nlScore && trScore > enScore) return 'tr';
+        if (enScore > trScore && enScore > nlScore) return 'en';
+        if (nlScore > trScore && nlScore > enScore) return 'nl';
+        
+        return null;
+    }
+
+    function addChatMessage(text, sender) {
+        if (!chatMessages) return;
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `chat-msg ${sender}`;
+        
+        const bubble = document.createElement('div');
+        bubble.className = 'msg-bubble';
+        bubble.textContent = text;
+        
+        const time = document.createElement('span');
+        time.className = 'msg-time';
+        
+        const lang = currentLang || 'nl';
+        time.textContent = chatTranslations[lang].status_just_now;
+
+        msgDiv.appendChild(bubble);
+        msgDiv.appendChild(time);
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function addBotResponse(text, chips = [], card = null) {
+        if (!chatTyping) return;
+        chatTyping.classList.remove('hidden');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        setTimeout(() => {
+            chatTyping.classList.add('hidden');
+            
+            if (text) {
+                addChatMessage(text, 'bot');
+            }
+            
+            if (card) {
+                renderChatCard(card);
+            }
+
+            if (chips && chips.length > 0) {
+                renderChatChips(chips);
+            }
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 300 + Math.random() * 300);
+    }
+
+    function renderChatChips(chips) {
+        if (!chatMessages) return;
+        const existingChips = chatMessages.querySelectorAll('.chat-chips');
+        existingChips.forEach(el => el.remove());
+
+        const chipsDiv = document.createElement('div');
+        chipsDiv.className = 'chat-chips';
+
+        chips.forEach(chip => {
+            const btn = document.createElement('button');
+            btn.className = `chat-chip ${chip.accent ? 'accent' : ''}`;
+            btn.textContent = chip.text;
+            btn.addEventListener('click', () => {
+                addChatMessage(chip.text, 'user');
+                chipsDiv.remove();
+                handleChatAction(chip.action, chip.text);
+            });
+            chipsDiv.appendChild(btn);
+        });
+
+        chatMessages.appendChild(chipsDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function renderChatCard(card) {
+        if (!chatMessages) return;
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'chat-card';
+
+        if (card.title) {
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'chat-card-title';
+            titleDiv.textContent = card.title;
+            cardDiv.appendChild(titleDiv);
+        }
+
+        if (card.rows) {
+            const bodyDiv = document.createElement('div');
+            bodyDiv.className = 'chat-card-body';
+            
+            card.rows.forEach(row => {
+                const p = document.createElement('p');
+                p.innerHTML = `<strong>${row.label}:</strong> ${row.value}`;
+                bodyDiv.appendChild(p);
+            });
+            cardDiv.appendChild(bodyDiv);
+        }
+
+        if (card.actions) {
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'chat-card-actions';
+
+            card.actions.forEach(act => {
+                const btn = document.createElement('button');
+                btn.className = `chat-card-btn ${act.primary ? 'primary' : ''}`;
+                btn.innerHTML = act.text;
+                btn.addEventListener('click', () => {
+                    if (act.url) {
+                        window.open(act.url, '_blank');
+                    } else if (act.action) {
+                        btn.closest('.chat-card').remove();
+                        handleChatAction(act.action, act.text);
+                    }
+                });
+                actionsDiv.appendChild(btn);
+            });
+            cardDiv.appendChild(actionsDiv);
+        }
+
+        chatMessages.appendChild(cardDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function handleChatAction(action, textInput) {
+        const lang = currentLang || 'nl';
+        const t = chatTranslations[lang];
+
+        if (action === 'cancel' || textInput.toLowerCase() === 'exit' || textInput.toLowerCase() === 'cancel' || textInput.toLowerCase() === 'iptal' || textInput.toLowerCase() === 'menu') {
+            resetChatState();
+            addBotResponse(t.cancel_msg, [
+                { text: t.chip_booking, action: 'start_booking' },
+                { text: t.chip_pricing, action: 'start_pricing' },
+                { text: t.chip_question, action: 'start_question' }
+            ]);
+            return;
+        }
+
+        switch (chatState.step) {
+            case 'idle':
+                if (action === 'start_booking') {
+                    chatState.step = 'booking_service';
+                    addBotResponse(t.ask_service, [
+                        { text: projectTypeLabels[lang].badkamer, action: 'book_service_badkamer' },
+                        { text: projectTypeLabels[lang].toilet, action: 'book_service_toilet' },
+                        { text: projectTypeLabels[lang].fayans, action: 'book_service_fayans' },
+                        { text: projectTypeLabels[lang].gipsplaat, action: 'book_service_gipsplaat' },
+                        { text: projectTypeLabels[lang].riolering, action: 'book_service_riolering' },
+                        { text: t.btn_cancel, action: 'cancel', accent: true }
+                    ]);
+                } else if (action === 'start_pricing') {
+                    chatState.step = 'pricing_service';
+                    addBotResponse(t.ask_service_pricing, [
+                        { text: projectTypeLabels[lang].badkamer, action: 'price_service_badkamer' },
+                        { text: projectTypeLabels[lang].toilet, action: 'price_service_toilet' },
+                        { text: projectTypeLabels[lang].fayans, action: 'price_service_fayans' },
+                        { text: projectTypeLabels[lang].gipsplaat, action: 'price_service_gipsplaat' },
+                        { text: t.btn_cancel, action: 'cancel', accent: true }
+                    ]);
+                } else if (action === 'start_question') {
+                    addBotResponse(lang === 'tr' ? "Lütfen sorunuzu yazın. Size yardımcı olmaktan memnuniyet duyarım." : (lang === 'en' ? "Please type your question. I will be happy to help." : "Typ uw vraag. Ik help u graag."));
+                }
+                break;
+
+            case 'booking_service':
+                let selectedService = '';
+                if (action.startsWith('book_service_')) {
+                    selectedService = action.replace('book_service_', '');
+                } else {
+                    selectedService = 'toilet';
+                }
+                chatState.data.project_type = selectedService;
+                chatState.step = 'booking_name';
+                addBotResponse(t.ask_name, [
+                    { text: t.btn_cancel, action: 'cancel', accent: true }
+                ]);
+                break;
+
+            case 'booking_name':
+                chatState.data.client_name = textInput;
+                chatState.step = 'booking_phone';
+                addBotResponse(t.ask_phone, [
+                    { text: t.btn_cancel, action: 'cancel', accent: true }
+                ]);
+                break;
+
+            case 'booking_phone':
+                chatState.data.client_phone = textInput;
+                chatState.step = 'booking_datetime';
+                addBotResponse(t.ask_datetime, [
+                    { text: t.btn_cancel, action: 'cancel', accent: true }
+                ]);
+                break;
+
+            case 'booking_datetime':
+                chatState.data.datetime = textInput;
+                chatState.step = 'booking_confirm';
+                
+                const serviceLabel = projectTypeLabels[lang][chatState.data.project_type] || chatState.data.project_type;
+                let waText = t.whatsapp_template
+                    .replace('{service}', serviceLabel)
+                    .replace('{name}', chatState.data.client_name)
+                    .replace('{phone}', chatState.data.client_phone)
+                    .replace('{datetime}', chatState.data.datetime);
+                
+                if (chatState.data.size && chatState.data.project_type !== 'riolering') {
+                    const matLabel = materialPrefLabels[lang][chatState.data.material_pref] || chatState.data.material_pref;
+                    const rawPrice = calculateChatEstimate(chatState.data.project_type, chatState.data.size, chatState.data.material_pref);
+                    const priceFormatted = rawPrice ? `€ ${rawPrice.toLocaleString('nl-NL')}` : 'Prijs op aanvraag';
+                    waText += `\n- Oppervlakte: ${chatState.data.size} m²\n- Materiaal: ${matLabel}\n- Richtprijs: ${priceFormatted}`;
+                }
+
+                const waUrl = `https://wa.me/31618694652?text=${encodeURIComponent(waText)}`;
+
+                const confirmCard = {
+                    title: t.summary_title,
+                    rows: [
+                        { label: t.field_service, value: serviceLabel },
+                        { label: t.field_client, value: chatState.data.client_name },
+                        { label: t.field_phone, value: chatState.data.client_phone },
+                        { label: t.field_datetime, value: chatState.data.datetime }
+                    ],
+                    actions: [
+                        { text: t.btn_send_whatsapp, url: waUrl, primary: true },
+                        { text: t.btn_cancel, action: 'cancel' }
+                    ]
+                };
+
+                addBotResponse(t.summary_desc, [], confirmCard);
+                break;
+
+            case 'pricing_service':
+                let prService = '';
+                if (action.startsWith('price_service_')) {
+                    prService = action.replace('price_service_', '');
+                } else {
+                    prService = 'toilet';
+                }
+                chatState.data.project_type = prService;
+                
+                if (prService === 'toilet') {
+                    chatState.data.size = 1;
+                    chatState.step = 'pricing_materials';
+                    addBotResponse(t.ask_materials, [
+                        { text: materialPrefLabels[lang]['zonder-materiaal'], action: 'price_mat_zonder' },
+                        { text: materialPrefLabels[lang]['met-materiaal'], action: 'price_mat_met' },
+                        { text: t.btn_cancel, action: 'cancel', accent: true }
+                    ]);
+                } else {
+                    chatState.step = 'pricing_size';
+                    addBotResponse(t.ask_size, [
+                        { text: "2 m²", action: "price_size_2" },
+                        { text: "5 m²", action: "price_size_5" },
+                        { text: "8 m²", action: "price_size_8" },
+                        { text: "12 m²", action: "price_size_12" },
+                        { text: "15 m²", action: "price_size_15" },
+                        { text: "25 m²", action: "price_size_25" },
+                        { text: t.btn_cancel, action: 'cancel', accent: true }
+                    ]);
+                }
+                break;
+
+            case 'pricing_size':
+                let sizeVal = 10;
+                if (action.startsWith('price_size_')) {
+                    sizeVal = parseFloat(action.replace('price_size_', ''));
+                } else {
+                    sizeVal = parseFloat(textInput.replace(/[^0-9.]/g, ''));
+                    if (isNaN(sizeVal) || sizeVal <= 0) {
+                        addBotResponse(t.error_invalid_size, [
+                            { text: t.btn_cancel, action: 'cancel', accent: true }
+                        ]);
+                        return;
+                    }
+                }
+                chatState.data.size = sizeVal;
+                chatState.step = 'pricing_materials';
+                addBotResponse(t.ask_materials, [
+                    { text: materialPrefLabels[lang]['zonder-materiaal'], action: 'price_mat_zonder' },
+                    { text: materialPrefLabels[lang]['met-materiaal'], action: 'price_mat_met' },
+                    { text: t.btn_cancel, action: 'cancel', accent: true }
+                ]);
+                break;
+
+            case 'pricing_materials':
+                let matPref = 'zonder-materiaal';
+                if (action === 'price_mat_met') {
+                    matPref = 'met-materiaal';
+                }
+                chatState.data.material_pref = matPref;
+                chatState.step = 'pricing_result';
+
+                const calculated = calculateChatEstimate(chatState.data.project_type, chatState.data.size, chatState.data.material_pref);
+                const formattedPrice = calculated ? `€ ${calculated.toLocaleString('nl-NL')}` : 'Prijs op aanvraag';
+
+                const prServiceLabel = projectTypeLabels[lang][chatState.data.project_type] || chatState.data.project_type;
+                const matLabel = materialPrefLabels[lang][chatState.data.material_pref];
+
+                const resultCard = {
+                    title: t.price_summary_title,
+                    rows: [
+                        { label: t.field_service, value: prServiceLabel },
+                        { label: t.field_size, value: chatState.data.project_type === 'toilet' ? '1 adet' : `${chatState.data.size} m²` },
+                        { label: t.field_materials, value: matLabel },
+                        { label: t.field_price, value: `${formattedPrice} (excl. BTW)` }
+                    ],
+                    actions: [
+                        { text: t.btn_book_this, action: 'pricing_to_booking', primary: true },
+                        { text: t.btn_recalc, action: 'start_pricing' },
+                        { text: t.btn_cancel, action: 'cancel' }
+                    ]
+                };
+
+                addBotResponse(t.price_summary_desc, [], resultCard);
+                break;
+
+            case 'pricing_result':
+                if (action === 'pricing_to_booking') {
+                    chatState.step = 'booking_name';
+                    addBotResponse(t.ask_name, [
+                        { text: t.btn_cancel, action: 'cancel', accent: true }
+                    ]);
+                } else if (action === 'start_pricing') {
+                    chatState.step = 'pricing_service';
+                    addBotResponse(t.ask_service_pricing, [
+                        { text: projectTypeLabels[lang].badkamer, action: 'price_service_badkamer' },
+                        { text: projectTypeLabels[lang].toilet, action: 'price_service_toilet' },
+                        { text: projectTypeLabels[lang].fayans, action: 'price_service_fayans' },
+                        { text: projectTypeLabels[lang].gipsplaat, action: 'price_service_gipsplaat' },
+                        { text: t.btn_cancel, action: 'cancel', accent: true }
+                    ]);
+                }
+                break;
+        }
+    }
+
     if (chatBubble && chatWindow && chatClose) {
         chatBubble.addEventListener('click', () => {
             const isOpen = chatWindow.classList.contains('open');
@@ -1127,6 +1715,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => chatWindow.classList.add('open'), 10);
                 chatBubble.setAttribute('aria-expanded', 'true');
                 chatInput.focus();
+
+                const msgsCount = chatMessages.querySelectorAll('.chat-msg').length;
+                if (msgsCount <= 1) {
+                    const lang = currentLang || 'nl';
+                    const t = chatTranslations[lang];
+                    renderChatChips([
+                        { text: t.chip_booking, action: 'start_booking' },
+                        { text: t.chip_pricing, action: 'start_pricing' },
+                        { text: t.chip_question, action: 'start_question' }
+                    ]);
+                }
             }
         });
 
@@ -1146,6 +1745,37 @@ document.addEventListener('DOMContentLoaded', () => {
             addChatMessage(userMsgText, 'user');
             chatInput.value = '';
 
+            const detectedLang = autoDetectLanguage(userMsgText);
+            if (detectedLang && detectedLang !== currentLang) {
+                currentLang = detectedLang;
+                localStorage.setItem('preferred_language', detectedLang);
+                if (typeof setLanguage === 'function') {
+                    setLanguage(detectedLang);
+                }
+                
+                const sysMsg = chatTranslations[detectedLang].detect_lang_tr || chatTranslations[detectedLang].detect_lang_nl || chatTranslations[detectedLang].detect_lang_en;
+                addBotResponse(sysMsg);
+            }
+
+            if (chatState.step !== 'idle') {
+                handleChatAction(chatState.step, userMsgText);
+                return;
+            }
+
+            const lowerMsg = userMsgText.toLowerCase();
+            const lang = currentLang || 'nl';
+            const t = chatTranslations[lang];
+
+            if (lowerMsg.includes('randevu') || lowerMsg.includes('afspraak') || lowerMsg.includes('book') || lowerMsg.includes('appointment') || lowerMsg.includes('plan')) {
+                handleChatAction('start_booking', userMsgText);
+                return;
+            }
+
+            if (lowerMsg.includes('fiyat') || lowerMsg.includes('prijs') || lowerMsg.includes('price') || lowerMsg.includes('hesapla') || lowerMsg.includes('bereken') || lowerMsg.includes('cost')) {
+                handleChatAction('start_pricing', userMsgText);
+                return;
+            }
+
             chatTyping.classList.remove('hidden');
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -1158,7 +1788,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify({
                         message: userMsgText,
-                        language: currentLang
+                        language: lang
                     })
                 });
                 if (response.ok) {
@@ -1175,49 +1805,83 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 chatTyping.classList.add('hidden');
                 addChatMessage(replyText, 'bot');
+                
+                renderChatChips([
+                    { text: t.chip_booking, action: 'start_booking' },
+                    { text: t.chip_pricing, action: 'start_pricing' },
+                    { text: t.chip_question, action: 'start_question' }
+                ]);
+                
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 600 + Math.random() * 600);
+            }, 500 + Math.random() * 500);
         });
     }
 
-    function addChatMessage(text, sender) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `chat-msg ${sender}`;
-        
-        const bubble = document.createElement('div');
-        bubble.className = 'msg-bubble';
-        bubble.textContent = text;
-        
-        const time = document.createElement('span');
-        time.className = 'msg-time';
-        time.textContent = currentLang === 'tr' ? 'Şimdi' : (currentLang === 'en' ? 'Just now' : 'Zojuist');
+    const openChatbotBtn = document.getElementById('openChatbotAppointmentBtn');
+    if (openChatbotBtn) {
+        openChatbotBtn.addEventListener('click', () => {
+            if (chatWindow.classList.contains('hidden') || !chatWindow.classList.contains('open')) {
+                chatWindow.classList.remove('hidden');
+                setTimeout(() => chatWindow.classList.add('open'), 10);
+                chatBubble.setAttribute('aria-expanded', 'true');
+            }
 
-        msgDiv.appendChild(bubble);
-        msgDiv.appendChild(time);
-        chatMessages.appendChild(msgDiv);
+            const lang = currentLang || 'nl';
+            const t = chatTranslations[lang];
+
+            const projectTypeChecked = document.querySelector('input[name="project_type"]:checked');
+            const projectType = projectTypeChecked ? projectTypeChecked.value : 'toilet';
+            const size = parseFloat(sizeInput?.value) || 10;
+            const materialPref = document.getElementById('wizard_material_preference')?.value || 'zonder-materiaal';
+            const name = document.getElementById('wizard_client_name')?.value || '';
+            const phone = document.getElementById('wizard_client_phone')?.value || '';
+
+            chatState.step = 'booking_datetime';
+            chatState.data = {
+                project_type: projectType,
+                client_name: name,
+                client_phone: phone,
+                size: size,
+                material_pref: materialPref,
+                datetime: ''
+            };
+
+            const prefilledMsg = lang === 'tr' 
+                ? `Hesaplayıcıdan gelen proje bilgilerinizi aldım:\n- Hizmet: ${projectTypeLabels[lang][projectType]}\n- Alan: ${size} m²\n- Malzeme: ${materialPrefLabels[lang][materialPref]}\n- İsim: ${name}\n- Telefon: ${phone}\n\nRandevu planlamasını tamamlamak için uygun olduğunuz gün ve saati yazar misiniz?`
+                : (lang === 'en'
+                    ? `I have imported your project details from the calculator:\n- Service: ${projectTypeLabels[lang][projectType]}\n- Area: ${size} m²\n- Material: ${materialPrefLabels[lang][materialPref]}\n- Name: ${name}\n- Phone: ${phone}\n\nTo complete the booking, please specify your preferred date and time:`
+                    : `Ik heb uw projectgegevens uit de calculator geïmporteerd:\n- Dienst: ${projectTypeLabels[lang][projectType]}\n- Oppervlakte: ${size} m²\n- Materiaal: ${materialPrefLabels[lang][materialPref]}\n- Naam: ${name}\n- Telefoon: ${phone}\n\nOm de afspraak af te ronden, wat is de gewenste datum en tijd voor de opmeting?`);
+
+            addBotResponse(prefilledMsg, [
+                { text: t.btn_cancel, action: 'cancel', accent: true }
+            ]);
+        });
     }
 
     function generateAIResponse(query) {
         const q = query.toLowerCase();
+        const lang = currentLang || 'nl';
         
         const isBanyo = q.includes('badd') || q.includes('bath') || q.includes('banyo') || q.includes('renovatie');
         const isToilet = q.includes('toil') || q.includes('klozet') || q.includes('wc');
         const isFayans = q.includes('fay') || q.includes('teg') || q.includes('tile');
         const isAlcipan = q.includes('alc') || q.includes('alç') || q.includes('gips') || q.includes('dry') || q.includes('wand');
+        const isTesisat = q.includes('tesi') || q.includes('lood') || q.includes('plum') || q.includes('riol');
         const isPrice = q.includes('prijs') || q.includes('fiyat') || q.includes('tar') || q.includes('cost') || q.includes('price') || q.includes('offert');
-        const isLelystad = q.includes('lely') || q.includes('elit') || q.includes('regio') || q.includes('stad');
+        const isArea = q.includes('lely') || q.includes('regio') || q.includes('stad') || q.includes('amster') || q.includes('alme') || q.includes('utre');
         const isGaranti = q.includes('garant') || q.includes('guar');
-        const isHostingerHermes = q.includes('herm') || q.includes('host') || q.includes('agent') || q.includes('vps') || q.includes('what');
+        const isHermes = q.includes('herm') || q.includes('host') || q.includes('agent') || q.includes('vps');
+        const isContact = q.includes('adres') || q.includes('kvk') || q.includes('btw') || q.includes('ilet') || q.includes('cont') || q.includes('tel') || q.includes('mail');
 
-        if (currentLang === 'tr') {
-            if (isHostingerHermes) {
+        if (lang === 'tr') {
+            if (isHermes) {
                 return "Hermes Agent sistemimiz, İnan abimizin şantiyeden doğrudan WhatsApp üzerinden fotoğraf ve ses kaydı atarak web sitesini ve Facebook sayfasını güncellemesini sağlayan gelişmiş bir yapay zeka köprüsüdür. Derya ablamızın onayından geçtikten sonra site anında güncellenir. Hostinger VPS üzerinde izole bir şekilde güvenle çalışmaktadır.";
             }
             if (isBanyo) {
-                return "Banyo yenileme işçilik ve kaba malzeme fiyatlarımız 2 m² küçük alanlar için €4.000, standart banyolar (5-6 m²) için €6.000 taban fiyatından başlar. Söküm ve moloz atımı dahildir. Malzemeyi bizim almamızı isterseniz +€2.500 eklenir.";
+                return "Banyo yenileme işçilik ve kaba malzeme fiyatlarımız 2 m² küçük alanlar için €4.000, standart banyolar (5-6 m²) için €6.000 taban fiyatından başlar. Söküm ve moloz atımı dahildir. Tüm malzemeleri bizim almamızı isterseniz +€2.500 eklenir. Siz kendi zevkinize göre fayans ve vitrifiyeyi seçip getirebilirsiniz.";
             }
             if (isToilet) {
-                return "Tuvalet yenileme fiyatımız eski tuvaletin sökülmesi, moloz atılması ve anahtar teslim kurulum dahil malzemesiz €2.000'dur. Tüm malzemeleri bizim almamızı isterseniz (All-in klozet, rezervuar ve fayans dahil) €3.000'dur.";
+                return "Tuvalet yenileme fiyatımız eski tuvaletin sökülmesi, moloz atılması ve anahtar teslim kurulum dahil malzemesiz (sadece işçilik ve kaba malzeme) €2.000'dur. Tüm malzemeleri bizim almamızı isterseniz (All-in klozet, rezervuar ve fayans dahil) €3.000'dur.";
             }
             if (isFayans) {
                 return "Büyük ebat fayans döşeme işlerinde sadece işçilik m² fiyatımız €47.50'dir. Fayanslar dahil malzemeli m² fiyatımız €100 ex. BTW'dir.";
@@ -1225,19 +1889,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isAlcipan) {
                 return "Alçıpan bölme duvar yapımı işçilik m² fiyatı €42.50'dir. Levhalar ve profiller dahil malzemeli fiyatımız m² başına €65 ex. BTW'dir.";
             }
-            if (isPrice) {
-                return "Fiyatlarımız Lelystad ve çevresinde otopark ve yol masrafları dahil her şey dahil (excl. BTW) net fiyatlardır. Ekstra veya sürpriz hiçbir masraf çıkarılmaz (Geen verrassingen achteraf!).";
+            if (isTesisat) {
+                return "Su tesisatı ve kanalizasyon/riolering işlerinde, yerinde inceleme yapıp detaylı bir keşif raporu sunarak fiyatlandırıyoruz. Keşif randevusu almak için lütfen menüden 'Randevu Oluştur' seçeneğini kullanın.";
             }
-            if (isLelystad) {
-                return "Merkezimiz Lelystad'da yer almaktadır. Lelystad, Almere, Amsterdam, Utrecht ve civarındaki 50-75 km çapındaki tüm bölgelere hizmet sunuyoruz.";
+            if (isPrice) {
+                return "Fiyatlarımız net olup otopark ve yol masrafları dahil her şey dahil (excl. BTW) fiyatlardır. Ekstra veya sürpriz hiçbir masraf çıkarılmaz (Geen verrassingen achteraf!).";
+            }
+            if (isArea) {
+                return "Merkezimiz Lelystad'da yer almaktadır. Lelystad, Almere, Amsterdam, Utrecht ve civarındaki 50-75 km çapındaki tüm bölgelere hizmet sunuyoruz. Yol ücreti almıyoruz.";
             }
             if (isGaranti) {
                 return "Der-In infra olarak yaptığımız tüm işçilik ve tesisat işleri için teslim tarihinden itibaren 12 ay (1 Yıl) tam garanti veriyoruz.";
             }
+            if (isContact) {
+                return "Der-In infra İletişim Bilgileri:\n- Telefon: +31 6 18694652\n- E-posta: info@derininfra.nl\n- Konum: De Valk, 8239AE Lelystad\n- KVK Numarası: 89133226\n- BTW Numarası: NL004694216B91";
+            }
             return "Size banyo/tuvalet tadilatı, alçıpan, riolering tesisatı, Lelystad ve çevresindeki hizmet bölgelerimiz, fiyatlar ve garantilerimiz hakkında detaylı bilgi verebilirim. Sorunuz nedir?";
         } 
-        else if (currentLang === 'en') {
-            if (isHostingerHermes) {
+        else if (lang === 'en') {
+            if (isHermes) {
                 return "Our Hermes Agent runs as an advanced AI assistant hosted securely on a Hostinger VPS. It allows İnan Abi to update the website and Facebook page via WhatsApp voice and photos, which are deployed instantly after Derya Abla's approval. It keeps the web server and business files completely separate and safe.";
             }
             if (isBanyo) {
@@ -1252,19 +1922,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isAlcipan) {
                 return "Drywall wall installation is €42.50 per m² (labor). Materials included is €65 per m² ex. VAT.";
             }
-            if (isPrice) {
-                return "Our prices are listed ex. VAT (excl. BTW) but are strictly all-inclusive. Parking fees and travel charges are covered. We guarantee no surprises afterwards (Geen verrassingen achteraf!).";
+            if (isTesisat) {
+                return "For plumbing, drainage, and sewerage (riolering) works, we provide pricing after a site inspection. Please use 'Book Appointment' to schedule a free inspection.";
             }
-            if (isLelystad) {
+            if (isPrice) {
+                return "Our prices are listed ex. VAT (excl. BTW) but are strictly all-inclusive. Parking fees and travel charges are covered. We guarantee no surprises afterwards (Geen surprises afterwards!).";
+            }
+            if (isArea) {
                 return "We are based in Lelystad and serve all areas within a 50 to 75 km radius, including Amsterdam, Almere, Utrecht, Purmerend, and Zaandam.";
             }
             if (isGaranti) {
                 return "We offer a 12-month (1 Year) full warranty on all our labor, piping, and installation works from the completion date.";
             }
+            if (isContact) {
+                return "Der-In infra Contact Details:\n- Phone: +31 6 18694652\n- Email: info@derininfra.nl\n- Location: De Valk, 8239AE Lelystad\n- Chamber of Commerce (KVK): 89133226\n- VAT (BTW): NL004694216B91";
+            }
             return "I can help you with bathroom/toilet renovations, tiling, drywall, sewerage, pricing details, and our service area around Lelystad. What is your question?";
         } 
         else { // Dutch default
-            if (isHostingerHermes) {
+            if (isHermes) {
                 return "Onze Hermes Agent is een geavanceerde AI-assistent die veilig op een Hostinger VPS draait. Hiermee kan İnan Abi de website en Facebook-pagina bijwerken via WhatsApp-spraakberichten en foto's. Wijzigingen worden direct doorgevoerd na goedkeuring van Derya Abla.";
             }
             if (isBanyo) {
@@ -1279,14 +1955,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isAlcipan) {
                 return "Gipsplaten scheidingswand montage is € 42.50 per m². Inclusief platen en metal-stud profielen is dit € 65 per m² ex. BTW.";
             }
+            if (isTesisat) {
+                return "Voor riolerings- en loodgieterswerkzaamheden maken we een prijsopgave na inspectie ter plaatse. Gebruik 'Afspraak Maken' om een gratis opmeting in te plannen.";
+            }
             if (isPrice) {
                 return "Onze prijzen zijn ex. BTW maar zijn all-in. Parkeerkosten en reiskosten zijn gedekt. Wij garanderen geen verrassingen achteraf (Geen verrassingen achteraf!).";
             }
-            if (isLelystad) {
+            if (isArea) {
                 return "Wij zijn gevestigd in Lelystad en bedienen alle regio's binnen een straal van 50 tot 75 km, inclusief Amsterdam, Almere, Utrecht, Purmerend en Zaandam.";
             }
             if (isGaranti) {
                 return "Wij bieden een volledige garantie van 12 maanden (1 Jaar) op al onze werkzaamheden vanaf de opleverdatum.";
+            }
+            if (isContact) {
+                return "Der-In infra Contactgegevens:\n- Telefoon: +31 6 18694652\n- E-mail: info@derininfra.nl\n- Adres: De Valk, 8239AE Lelystad\n- KVK-nummer: 89133226\n- BTW-nummer: NL004694216B91";
             }
             return "Ik kan u helpen met vragen over badkamer- en toiletrenovaties, tegelwerk, gipsplaat wanden, loodgieterswerk, prijzen en garanties rond Lelystad. Wat is uw vraag?";
         }
