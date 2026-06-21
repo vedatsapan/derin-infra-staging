@@ -1781,7 +1781,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let replyText = "";
             try {
-                const response = await fetch('/api/chat', {
+                // If running on a static GitHub Pages environment, relative /api/chat will return index.html (or fail).
+                // In that case, we fall back to the Vercel serverless proxy endpoint.
+                let chatEndpoint = '/api/chat';
+                
+                // Direct fallback for typical *.github.io or when explicitly on derininfra.nl static Pages
+                if (window.location.hostname.includes('github.io') || window.location.hostname === 'derininfra.nl') {
+                    // Try the Vercel deployment URL (replace this if Vercel assigns a different name)
+                    chatEndpoint = 'https://derin-infra-proxy.vercel.app/api/chat'; 
+                }
+
+                let response = await fetch(chatEndpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1791,6 +1801,26 @@ document.addEventListener('DOMContentLoaded', () => {
                         language: lang
                     })
                 });
+
+                // Check if the response is HTML (GitHub Pages returns index.html for 404 routes like /api/chat)
+                const contentType = response.headers.get('content-type') || '';
+                if (!response.ok || !contentType.includes('application/json')) {
+                    if (chatEndpoint === '/api/chat') {
+                        console.log("Relative API did not return JSON. Trying Vercel backend fallback...");
+                        chatEndpoint = 'https://derin-infra-proxy.vercel.app/api/chat';
+                        response = await fetch(chatEndpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                message: userMsgText,
+                                language: lang
+                            })
+                        });
+                    }
+                }
+
                 if (response.ok) {
                     const data = await response.json();
                     replyText = data.reply;

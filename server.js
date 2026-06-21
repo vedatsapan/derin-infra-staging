@@ -10,6 +10,18 @@ const PORT = process.env.PORT || 8085;
 
 // Middleware
 app.use(express.json());
+
+// Enable CORS for all routes (necessary for Vercel deployment called from derininfra.nl)
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
+
 app.use(express.static(path.join(__dirname)));
 
 // Gemini System Instruction for the AI Chatbot
