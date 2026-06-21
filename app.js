@@ -1134,7 +1134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return "Fiyatlarımız Lelystad ve çevresinde otopark ve yol masrafları dahil her şey dahil (excl. BTW) net fiyatlardır. Ekstra veya sürpriz hiçbir masraf çıkarılmaz (Geen verrassingen achteraf!).";
             }
             if (isLelystad) {
-                return "Merkezimiz Lelystad'da yer almaktadır (De Valk 14). Lelystad, Almere, Amsterdam, Utrecht ve civarındaki 50-75 km çapındaki tüm bölgelere hizmet sunuyoruz.";
+                return "Merkezimiz Lelystad'da yer almaktadır. Lelystad, Almere, Amsterdam, Utrecht ve civarındaki 50-75 km çapındaki tüm bölgelere hizmet sunuyoruz.";
             }
             if (isGaranti) {
                 return "Der-In infra olarak yaptığımız tüm işçilik ve tesisat işleri için teslim tarihinden itibaren 12 ay (1 Yıl) tam garanti veriyoruz.";
@@ -1161,7 +1161,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return "Our prices are listed ex. VAT (excl. BTW) but are strictly all-inclusive. Parking fees and travel charges are covered. We guarantee no surprises afterwards (Geen verrassingen achteraf!).";
             }
             if (isLelystad) {
-                return "We are based in Lelystad (De Valk 14) and serve all areas within a 50 to 75 km radius, including Amsterdam, Almere, Utrecht, Purmerend, and Zaandam.";
+                return "We are based in Lelystad and serve all areas within a 50 to 75 km radius, including Amsterdam, Almere, Utrecht, Purmerend, and Zaandam.";
             }
             if (isGaranti) {
                 return "We offer a 12-month (1 Year) full warranty on all our labor, piping, and installation works from the completion date.";
@@ -1188,7 +1188,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return "Onze prijzen zijn ex. BTW maar zijn all-in. Parkeerkosten en reiskosten zijn gedekt. Wij garanderen geen verrassingen achteraf (Geen verrassingen achteraf!).";
             }
             if (isLelystad) {
-                return "Wij zijn gevestigd in Lelystad (De Valk 14) en bedienen alle regio's binnen een straal van 50 tot 75 km, inclusief Amsterdam, Almere, Utrecht, Purmerend en Zaandam.";
+                return "Wij zijn gevestigd in Lelystad en bedienen alle regio's binnen een straal van 50 tot 75 km, inclusief Amsterdam, Almere, Utrecht, Purmerend en Zaandam.";
             }
             if (isGaranti) {
                 return "Wij bieden een volledige garantie van 12 maanden (1 Jaar) op al onze werkzaamheden vanaf de opleverdatum.";
@@ -1405,7 +1405,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 client_name: "İnan Kuruöz (Voorbeeld)",
                 client_phone: "0618694652",
                 client_email: "inankuruoz@hotmail.com",
-                location: "De Valk 14, 8239AE Lelystad",
+                location: "De Valk, 8239AE Lelystad",
                 project_type: "toilet",
                 material_preference: "zonder-materiaal",
                 calculated_estimate: "€ 2.000,-"
