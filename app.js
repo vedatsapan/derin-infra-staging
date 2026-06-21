@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Global State Variables (declared first to prevent Temporal Dead Zone ReferenceErrors)
+    let currentLang = localStorage.getItem('preferred_language') || 'nl';
+    let allProjects = [];
+    let currentFilter = 'all';
+    let visibleCount = 9;
+
     // ----------------------------------------------------------------
     // 1. Translation Dictionary (Dutch, English, Turkish)
     // ----------------------------------------------------------------
@@ -296,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------------------
     // 2. Language Switching Engine
     // ----------------------------------------------------------------
-    let currentLang = localStorage.getItem('preferred_language') || 'nl';
+    // (currentLang is already declared at the top)
     const langBtns = document.querySelectorAll('.lang-btn');
     const mobileLangBtns = document.querySelectorAll('.lang-btn-mobile');
 
@@ -473,9 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const galleryGrid = document.getElementById('gallery-grid');
     const loadMoreBtn = document.getElementById('load-more-btn');
 
-    let allProjects = [];
-    let currentFilter = 'all';
-    let visibleCount = 9;
+    // (allProjects, currentFilter, visibleCount are already declared at the top)
 
     async function initGallery() {
         try {
