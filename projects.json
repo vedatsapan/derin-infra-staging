@@ -1,1 +1,1067 @@
-[]
+[
+  {
+    "id": 0,
+    "image": "projects/gal_0.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Luxe badkamerrenovatie",
+      "en": "Luxury bathroom renovation",
+      "tr": "Lüks Banyo Yenileme"
+    },
+    "desc": {
+      "nl": "Volledige renovatie van badkamer met grote tegels en inloopdouche.",
+      "en": "Complete renovation of bathroom with large tiles and walk-in shower.",
+      "tr": "Büyük ebatlı fayanslar ve duşakabin ile komple banyo tadilatı."
+    }
+  },
+  {
+    "id": 1,
+    "image": "projects/gal_1.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Modern hangtoilet",
+      "en": "Modern wall-hung toilet",
+      "tr": "Modern Asma Klozet"
+    },
+    "desc": {
+      "nl": "Toiletruimte volledig gerenoveerd inclusief nisverlichting.",
+      "en": "Toilet room completely renovated including niche lighting.",
+      "tr": "Niş aydınlatma dahil komple yenilenmiş tuvalet alanı."
+    }
+  },
+  {
+    "id": 2,
+    "image": "projects/drywall_before.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Voorzetwand plaatsen (Voor)",
+      "en": "Installing drywall lining (Before)",
+      "tr": "Metal Konstrüksiyon Duvar Yapımı (Öncesi)"
+    },
+    "desc": {
+      "nl": "Sloopfase en voorbereiding van: plafondverlaging met gipsplaten inclusief spotjes voorbereiding.",
+      "en": "Demolition phase and preparation of: ceiling lowering with gypsum boards including spotlight prep.",
+      "tr": "Yıkım aşaması ve hazırlık çalışması: spot ışık hazırlıklı alçıpan asma tavan yapımı."
+    }
+  },
+  {
+    "id": 3,
+    "image": "projects/gal_2.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Gipsplaat isolatie",
+      "en": "Drywall insulation",
+      "tr": "Alçıpan Arası Isı/Ses Yalıtımı"
+    },
+    "desc": {
+      "nl": "Opbouw van metalen profielen met steenwol isolatie en gipsplaten.",
+      "en": "Construction of metal profiles with rockwool insulation and drywalls.",
+      "tr": "Taş yünü yalıtımlı metal profiller ve alçıpan levha montajı."
+    }
+  },
+  {
+    "id": 4,
+    "image": "projects/gal_3.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Professioneel perswerk",
+      "en": "Professional pipe pressing",
+      "tr": "Profesyonel Boru Sıkma/Presleme"
+    },
+    "desc": {
+      "nl": "Riolering afvoer onder de betonvloer vakkundig vernieuwd.",
+      "en": "Sewer drainage under concrete floor professionally renewed.",
+      "tr": "Beton zemin altındaki kanalizasyon giderlerinin profesyonel yenilenmesi."
+    }
+  },
+  {
+    "id": 5,
+    "image": "projects/tiling_before.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Gerenoveerde douchewand (Voor)",
+      "en": "Renovated shower wall (Before)",
+      "tr": "Yenilenmiş Duş Duvarı (Öncesi)"
+    },
+    "desc": {
+      "nl": "Sloopfase en voorbereiding van: hoogwaardige afwerking van sanitair en tegelwerk.",
+      "en": "Demolition phase and preparation of: high-quality finishing of sanitary ware and tiling.",
+      "tr": "Yıkım aşaması ve hazırlık çalışması: birinci sınıf işçilikle vitrifiye ve fayans uygulaması."
+    }
+  },
+  {
+    "id": 6,
+    "image": "projects/gal_4.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Design badkamer afwerking",
+      "en": "Design bathroom finish",
+      "tr": "Tasarım Banyo Detayı"
+    },
+    "desc": {
+      "nl": "Moderne regendouche en drain goot installatie.",
+      "en": "Modern rain shower and drain channel installation.",
+      "tr": "Modern yağmur duşu ve duş süzgeci montajı."
+    }
+  },
+  {
+    "id": 7,
+    "image": "projects/gal_5.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Inbouwreservoir toilet",
+      "en": "Concealed cistern toilet",
+      "tr": "Gömme Rezervuar Montajı"
+    },
+    "desc": {
+      "nl": "Toiletruimte volledig gerenoveerd inclusief nisverlichting.",
+      "en": "Toilet room completely renovated including niche lighting.",
+      "tr": "Niş aydınlatma dahil komple yenilenmiş tuvalet alanı."
+    }
+  },
+  {
+    "id": 8,
+    "image": "projects/gal_6.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Gipsplaat isolatie",
+      "en": "Drywall insulation",
+      "tr": "Alçıpan Arası Isı/Ses Yalıtımı"
+    },
+    "desc": {
+      "nl": "Plafondverlaging met gipsplaten inclusief spotjes voorbereiding.",
+      "en": "Ceiling lowering with gypsum boards including spotlight prep.",
+      "tr": "Spot ışık hazırlıklı alçıpan asma tavan yapımı."
+    }
+  },
+  {
+    "id": 9,
+    "image": "projects/bathroom_after_1.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Strak badkamer tegelwerk",
+      "en": "Sleek bathroom tiling",
+      "tr": "Şık Banyo Fayans Kaplama"
+    },
+    "desc": {
+      "nl": "Hoogwaardige afwerking van sanitair en tegelwerk.",
+      "en": "High-quality finishing of sanitary ware and tiling.",
+      "tr": "Birinci sınıf işçilikle vitrifiye ve fayans uygulaması."
+    }
+  },
+  {
+    "id": 10,
+    "image": "projects/gal_7.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Loodgieterswerk & leidingen",
+      "en": "Plumbing & pipes",
+      "tr": "Sıhhi Tesisat & Boru Döşeme"
+    },
+    "desc": {
+      "nl": "Riolering afvoer onder de betonvloer vakkundig vernieuwd.",
+      "en": "Sewer drainage under concrete floor professionally renewed.",
+      "tr": "Beton zemin altındaki kanalizasyon giderlerinin profesyonel yenilenmesi."
+    }
+  },
+  {
+    "id": 11,
+    "image": "projects/gal_8.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Badkamermeubel montage",
+      "en": "Bathroom vanity installation",
+      "tr": "Lavabo ve Dolap Montajı"
+    },
+    "desc": {
+      "nl": "Nivelleren en verlijmen van XXL tegels op de wand.",
+      "en": "Leveling and bonding of XXL tiles on the wall.",
+      "tr": "Duvara XXL boyutlu fayansların lazer terazili montajı."
+    }
+  },
+  {
+    "id": 12,
+    "image": "projects/toilet_after.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Inbouwreservoir toilet",
+      "en": "Concealed cistern toilet",
+      "tr": "Gömme Rezervuar Montajı"
+    },
+    "desc": {
+      "nl": "Geberit inbouwsysteem met moderne hangende pot en fonteintje.",
+      "en": "Geberit built-in system with modern wall-hung toilet and small basin.",
+      "tr": "Geberit gömme rezervuar, asma klozet ve mini lavabo kurulumu."
+    }
+  },
+  {
+    "id": 13,
+    "image": "projects/gal_9.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Strak betegeld toilet",
+      "en": "Sleek tiled toilet",
+      "tr": "Fayans Kaplı Tuvalet"
+    },
+    "desc": {
+      "nl": "Toiletruimte volledig gerenoveerd inclusief nisverlichting.",
+      "en": "Toilet room completely renovated including niche lighting.",
+      "tr": "Niş aydınlatma dahil komple yenilenmiş tuvalet alanı."
+    }
+  },
+  {
+    "id": 14,
+    "image": "projects/toilet_before.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Toilet met nisverlichting (Voor)",
+      "en": "Toilet with niche lighting (Before)",
+      "tr": "Niş Aydınlatmalı Tuvalet (Öncesi)"
+    },
+    "desc": {
+      "nl": "Sloopfase en voorbereiding van: compact toilet strak afgewerkt met grote tegels.",
+      "en": "Demolition phase and preparation of: compact toilet cleanly finished with large tiles.",
+      "tr": "Yıkım aşaması ve hazırlık çalışması: büyük ebatlı fayanslar ile temizce bitirilmiş küçük tuvalet."
+    }
+  },
+  {
+    "id": 15,
+    "image": "projects/gal_10.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Metal-stud scheidingswand",
+      "en": "Metal stud partition wall",
+      "tr": "Metal İskeletli Bölme Duvar"
+    },
+    "desc": {
+      "nl": "Opbouw van metalen profielen met steenwol isolatie en gipsplaten.",
+      "en": "Construction of metal profiles with rockwool insulation and drywalls.",
+      "tr": "Taş yünü yalıtımlı metal profiller ve alçıpan levha montajı."
+    }
+  },
+  {
+    "id": 16,
+    "image": "projects/gal_11.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Nieuwe waterleidingen",
+      "en": "New water lines",
+      "tr": "Yeni Temiz Su Hattı"
+    },
+    "desc": {
+      "nl": "Riolering afvoer onder de betonvloer vakkundig vernieuwd.",
+      "en": "Sewer drainage under concrete floor professionally renewed.",
+      "tr": "Beton zemin altındaki kanalizasyon giderlerinin profesyonel yenilenmesi."
+    }
+  },
+  {
+    "id": 17,
+    "image": "projects/gal_12.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Sanitair installatie",
+      "en": "Sanitary installation",
+      "tr": "Sıhhi Tesisat ve Vitrifiye"
+    },
+    "desc": {
+      "nl": "Hoogwaardige afwerking van sanitair en tegelwerk.",
+      "en": "High-quality finishing of sanitary ware and tiling.",
+      "tr": "Birinci sınıf işçilikle vitrifiye ve fayans uygulaması."
+    }
+  },
+  {
+    "id": 18,
+    "image": "projects/bathroom_before_1.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Badkamermeubel montage (Voor)",
+      "en": "Bathroom vanity installation (Before)",
+      "tr": "Lavabo ve Dolap Montajı (Öncesi)"
+    },
+    "desc": {
+      "nl": "Sloopfase en voorbereiding van: moderne regendouche en drain goot installatie.",
+      "en": "Demolition phase and preparation of: modern rain shower and drain channel installation.",
+      "tr": "Yıkım aşaması ve hazırlık çalışması: modern yağmur duşu ve duş süzgeci montajı."
+    }
+  },
+  {
+    "id": 19,
+    "image": "projects/gal_13.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Toilet met nisverlichting",
+      "en": "Toilet with niche lighting",
+      "tr": "Niş Aydınlatmalı Tuvalet"
+    },
+    "desc": {
+      "nl": "Toiletruimte volledig gerenoveerd inclusief nisverlichting.",
+      "en": "Toilet room completely renovated including niche lighting.",
+      "tr": "Niş aydınlatma dahil komple yenilenmiş tuvalet alanı."
+    }
+  },
+  {
+    "id": 20,
+    "image": "projects/bathroom_after_2.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Design badkamer afwerking",
+      "en": "Design bathroom finish",
+      "tr": "Tasarım Banyo Detayı"
+    },
+    "desc": {
+      "nl": "Volledige renovatie van badkamer met grote tegels en inloopdouche.",
+      "en": "Complete renovation of bathroom with large tiles and walk-in shower.",
+      "tr": "Büyük ebatlı fayanslar ve duşakabin ile komple banyo tadilatı."
+    }
+  },
+  {
+    "id": 21,
+    "image": "projects/gal_14.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Gipsplaten plafond",
+      "en": "Gypsum board ceiling",
+      "tr": "Alçıpan Asma Tavan"
+    },
+    "desc": {
+      "nl": "Opbouw van metalen profielen met steenwol isolatie en gipsplaten.",
+      "en": "Construction of metal profiles with rockwool insulation and drywalls.",
+      "tr": "Taş yünü yalıtımlı metal profiller ve alçıpan levha montajı."
+    }
+  },
+  {
+    "id": 22,
+    "image": "projects/gal_15.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Riolering afvoerbuis",
+      "en": "Sewer drainage pipe",
+      "tr": "Kanalizasyon Gider Borusu"
+    },
+    "desc": {
+      "nl": "Riolering afvoer onder de betonvloer vakkundig vernieuwd.",
+      "en": "Sewer drainage under concrete floor professionally renewed.",
+      "tr": "Beton zemin altındaki kanalizasyon giderlerinin profesyonel yenilenmesi."
+    }
+  },
+  {
+    "id": 23,
+    "image": "projects/gal_16.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Strak badkamer tegelwerk",
+      "en": "Sleek bathroom tiling",
+      "tr": "Şık Banyo Fayans Kaplama"
+    },
+    "desc": {
+      "nl": "Nivelleren en verlijmen van XXL tegels op de wand.",
+      "en": "Leveling and bonding of XXL tiles on the wall.",
+      "tr": "Duvara XXL boyutlu fayansların lazer terazili montajı."
+    }
+  },
+  {
+    "id": 24,
+    "image": "projects/gal_17.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Toilet met nisverlichting",
+      "en": "Toilet with niche lighting",
+      "tr": "Niş Aydınlatmalı Tuvalet"
+    },
+    "desc": {
+      "nl": "Geberit inbouwsysteem met moderne hangende pot en fonteintje.",
+      "en": "Geberit built-in system with modern wall-hung toilet and small basin.",
+      "tr": "Geberit gömme rezervuar, asma klozet ve mini lavabo kurulumu."
+    }
+  },
+  {
+    "id": 25,
+    "image": "projects/gal_18.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Metal-stud scheidingswand",
+      "en": "Metal stud partition wall",
+      "tr": "Metal İskeletli Bölme Duvar"
+    },
+    "desc": {
+      "nl": "Glad afgewerkte wanden gereed voor sauswerk.",
+      "en": "Smoothly finished walls ready for painting.",
+      "tr": "Boya öncesi pürüzsüz hale getirilmiş alçı sıvalı duvarlar."
+    }
+  },
+  {
+    "id": 26,
+    "image": "projects/gal_19.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Nieuwe waterleidingen",
+      "en": "New water lines",
+      "tr": "Yeni Temiz Su Hattı"
+    },
+    "desc": {
+      "nl": "Lekvrije aansluitingen met kwalitatief hoogwaardig perssysteem.",
+      "en": "Leak-free connections with high-quality pressing system.",
+      "tr": "Yüksek kaliteli presleme sistemiyle sızdırmaz boru bağlantıları."
+    }
+  },
+  {
+    "id": 27,
+    "image": "projects/gal_20.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Design badkamer afwerking",
+      "en": "Design bathroom finish",
+      "tr": "Tasarım Banyo Detayı"
+    },
+    "desc": {
+      "nl": "Nivelleren en verlijmen van XXL tegels op de wand.",
+      "en": "Leveling and bonding of XXL tiles on the wall.",
+      "tr": "Duvara XXL boyutlu fayansların lazer terazili montajı."
+    }
+  },
+  {
+    "id": 28,
+    "image": "projects/gal_21.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Strak betegeld toilet",
+      "en": "Sleek tiled toilet",
+      "tr": "Fayans Kaplı Tuvalet"
+    },
+    "desc": {
+      "nl": "Toiletruimte volledig gerenoveerd inclusief nisverlichting.",
+      "en": "Toilet room completely renovated including niche lighting.",
+      "tr": "Niş aydınlatma dahil komple yenilenmiş tuvalet alanı."
+    }
+  },
+  {
+    "id": 29,
+    "image": "projects/gal_22.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Strak stucwerk wand",
+      "en": "Smooth plastered wall",
+      "tr": "Pürüzsüz Alçı Sıva Uygulaması"
+    },
+    "desc": {
+      "nl": "Plafondverlaging met gipsplaten inclusief spotjes voorbereiding.",
+      "en": "Ceiling lowering with gypsum boards including spotlight prep.",
+      "tr": "Spot ışık hazırlıklı alçıpan asma tavan yapımı."
+    }
+  },
+  {
+    "id": 30,
+    "image": "projects/gal_23.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Loodgieterswerk & leidingen",
+      "en": "Plumbing & pipes",
+      "tr": "Sıhhi Tesisat & Boru Döşeme"
+    },
+    "desc": {
+      "nl": "Aanleg en testen van nieuwe kunststof/koperen leidingen.",
+      "en": "Installation and testing of new plastic/copper pipework.",
+      "tr": "Yeni nesil plastik veya bakır tesisat borularının döşenmesi ve testi."
+    }
+  },
+  {
+    "id": 31,
+    "image": "projects/gal_24.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Sanitair installatie",
+      "en": "Sanitary installation",
+      "tr": "Sıhhi Tesisat ve Vitrifiye"
+    },
+    "desc": {
+      "nl": "Nivelleren en verlijmen van XXL tegels op de wand.",
+      "en": "Leveling and bonding of XXL tiles on the wall.",
+      "tr": "Duvara XXL boyutlu fayansların lazer terazili montajı."
+    }
+  },
+  {
+    "id": 32,
+    "image": "projects/toilet_modern.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Inbouwreservoir toilet",
+      "en": "Concealed cistern toilet",
+      "tr": "Gömme Rezervuar Montajı"
+    },
+    "desc": {
+      "nl": "Compact toilet strak afgewerkt met grote tegels.",
+      "en": "Compact toilet cleanly finished with large tiles.",
+      "tr": "Büyük ebatlı fayanslar ile temizce bitirilmiş küçük tuvalet."
+    }
+  },
+  {
+    "id": 33,
+    "image": "projects/gal_25.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Strak betegeld toilet",
+      "en": "Sleek tiled toilet",
+      "tr": "Fayans Kaplı Tuvalet"
+    },
+    "desc": {
+      "nl": "Geberit inbouwsysteem met moderne hangende pot en fonteintje.",
+      "en": "Geberit built-in system with modern wall-hung toilet and small basin.",
+      "tr": "Geberit gömme rezervuar, asma klozet ve mini lavabo kurulumu."
+    }
+  },
+  {
+    "id": 34,
+    "image": "projects/gal_26.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Strak stucwerk wand",
+      "en": "Smooth plastered wall",
+      "tr": "Pürüzsüz Alçı Sıva Uygulaması"
+    },
+    "desc": {
+      "nl": "Glad afgewerkte wanden gereed voor sauswerk.",
+      "en": "Smoothly finished walls ready for painting.",
+      "tr": "Boya öncesi pürüzsüz hale getirilmiş alçı sıvalı duvarlar."
+    }
+  },
+  {
+    "id": 35,
+    "image": "projects/gal_27.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Loodgieterswerk & leidingen",
+      "en": "Plumbing & pipes",
+      "tr": "Sıhhi Tesisat & Boru Döşeme"
+    },
+    "desc": {
+      "nl": "Lekvrije aansluitingen met kwalitatief hoogwaardig perssysteem.",
+      "en": "Leak-free connections with high-quality pressing system.",
+      "tr": "Yüksek kaliteli presleme sistemiyle sızdırmaz boru bağlantıları."
+    }
+  },
+  {
+    "id": 36,
+    "image": "projects/gal_28.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Moderne inloopdouche",
+      "en": "Modern walk-in shower",
+      "tr": "Modern Duşakabin"
+    },
+    "desc": {
+      "nl": "Volledige renovatie van badkamer met grote tegels en inloopdouche.",
+      "en": "Complete renovation of bathroom with large tiles and walk-in shower.",
+      "tr": "Büyük ebatlı fayanslar ve duşakabin ile komple banyo tadilatı."
+    }
+  },
+  {
+    "id": 37,
+    "image": "projects/gal_29.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Inbouwreservoir toilet",
+      "en": "Concealed cistern toilet",
+      "tr": "Gömme Rezervuar Montajı"
+    },
+    "desc": {
+      "nl": "Toiletruimte volledig gerenoveerd inclusief nisverlichting.",
+      "en": "Toilet room completely renovated including niche lighting.",
+      "tr": "Niş aydınlatma dahil komple yenilenmiş tuvalet alanı."
+    }
+  },
+  {
+    "id": 38,
+    "image": "projects/gal_30.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Gipsplaat isolatie",
+      "en": "Drywall insulation",
+      "tr": "Alçıpan Arası Isı/Ses Yalıtımı"
+    },
+    "desc": {
+      "nl": "Plafondverlaging met gipsplaten inclusief spotjes voorbereiding.",
+      "en": "Ceiling lowering with gypsum boards including spotlight prep.",
+      "tr": "Spot ışık hazırlıklı alçıpan asma tavan yapımı."
+    }
+  },
+  {
+    "id": 39,
+    "image": "projects/gal_31.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Professioneel perswerk",
+      "en": "Professional pipe pressing",
+      "tr": "Profesyonel Boru Sıkma/Presleme"
+    },
+    "desc": {
+      "nl": "Aanleg en testen van nieuwe kunststof/koperen leidingen.",
+      "en": "Installation and testing of new plastic/copper pipework.",
+      "tr": "Yeni nesil plastik veya bakır tesisat borularının döşenmesi ve testi."
+    }
+  },
+  {
+    "id": 40,
+    "image": "projects/tiling_after.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Gerenoveerde douchewand",
+      "en": "Renovated shower wall",
+      "tr": "Yenilenmiş Duş Duvarı"
+    },
+    "desc": {
+      "nl": "Volledige renovatie van badkamer met grote tegels en inloopdouche.",
+      "en": "Complete renovation of bathroom with large tiles and walk-in shower.",
+      "tr": "Büyük ebatlı fayanslar ve duşakabin ile komple banyo tadilatı."
+    }
+  },
+  {
+    "id": 41,
+    "image": "projects/gal_32.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Design badkamer afwerking",
+      "en": "Design bathroom finish",
+      "tr": "Tasarım Banyo Detayı"
+    },
+    "desc": {
+      "nl": "Hoogwaardige afwerking van sanitair en tegelwerk.",
+      "en": "High-quality finishing of sanitary ware and tiling.",
+      "tr": "Birinci sınıf işçilikle vitrifiye ve fayans uygulaması."
+    }
+  },
+  {
+    "id": 42,
+    "image": "projects/gal_33.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Inbouwreservoir toilet",
+      "en": "Concealed cistern toilet",
+      "tr": "Gömme Rezervuar Montajı"
+    },
+    "desc": {
+      "nl": "Geberit inbouwsysteem met moderne hangende pot en fonteintje.",
+      "en": "Geberit built-in system with modern wall-hung toilet and small basin.",
+      "tr": "Geberit gömme rezervuar, asma klozet ve mini lavabo kurulumu."
+    }
+  },
+  {
+    "id": 43,
+    "image": "projects/gal_34.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Gipsplaat isolatie",
+      "en": "Drywall insulation",
+      "tr": "Alçıpan Arası Isı/Ses Yalıtımı"
+    },
+    "desc": {
+      "nl": "Glad afgewerkte wanden gereed voor sauswerk.",
+      "en": "Smoothly finished walls ready for painting.",
+      "tr": "Boya öncesi pürüzsüz hale getirilmiş alçı sıvalı duvarlar."
+    }
+  },
+  {
+    "id": 44,
+    "image": "projects/gal_35.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Professioneel perswerk",
+      "en": "Professional pipe pressing",
+      "tr": "Profesyonel Boru Sıkma/Presleme"
+    },
+    "desc": {
+      "nl": "Lekvrije aansluitingen met kwalitatief hoogwaardig perssysteem.",
+      "en": "Leak-free connections with high-quality pressing system.",
+      "tr": "Yüksek kaliteli presleme sistemiyle sızdırmaz boru bağlantıları."
+    }
+  },
+  {
+    "id": 45,
+    "image": "projects/gal_36.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Sanitair installatie",
+      "en": "Sanitary installation",
+      "tr": "Sıhhi Tesisat ve Vitrifiye"
+    },
+    "desc": {
+      "nl": "Hoogwaardige afwerking van sanitair en tegelwerk.",
+      "en": "High-quality finishing of sanitary ware and tiling.",
+      "tr": "Birinci sınıf işçilikle vitrifiye ve fayans uygulaması."
+    }
+  },
+  {
+    "id": 46,
+    "image": "projects/gal_37.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Modern hangtoilet",
+      "en": "Modern wall-hung toilet",
+      "tr": "Modern Asma Klozet"
+    },
+    "desc": {
+      "nl": "Toiletruimte volledig gerenoveerd inclusief nisverlichting.",
+      "en": "Toilet room completely renovated including niche lighting.",
+      "tr": "Niş aydınlatma dahil komple yenilenmiş tuvalet alanı."
+    }
+  },
+  {
+    "id": 47,
+    "image": "projects/drywall_after.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Voorzetwand plaatsen",
+      "en": "Installing drywall lining",
+      "tr": "Metal Konstrüksiyon Duvar Yapımı"
+    },
+    "desc": {
+      "nl": "Plafondverlaging met gipsplaten inclusief spotjes voorbereiding.",
+      "en": "Ceiling lowering with gypsum boards including spotlight prep.",
+      "tr": "Spot ışık hazırlıklı alçıpan asma tavan yapımı."
+    }
+  },
+  {
+    "id": 48,
+    "image": "projects/gal_38.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Gipsplaat isolatie",
+      "en": "Drywall insulation",
+      "tr": "Alçıpan Arası Isı/Ses Yalıtımı"
+    },
+    "desc": {
+      "nl": "Opbouw van metalen profielen met steenwol isolatie en gipsplaten.",
+      "en": "Construction of metal profiles with rockwool insulation and drywalls.",
+      "tr": "Taş yünü yalıtımlı metal profiller ve alçıpan levha montajı."
+    }
+  },
+  {
+    "id": 49,
+    "image": "projects/gal_39.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Professioneel perswerk",
+      "en": "Professional pipe pressing",
+      "tr": "Profesyonel Boru Sıkma/Presleme"
+    },
+    "desc": {
+      "nl": "Riolering afvoer onder de betonvloer vakkundig vernieuwd.",
+      "en": "Sewer drainage under concrete floor professionally renewed.",
+      "tr": "Beton zemin altındaki kanalizasyon giderlerinin profesyonel yenilenmesi."
+    }
+  },
+  {
+    "id": 50,
+    "image": "projects/bathroom_luxury.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Moderne inloopdouche",
+      "en": "Modern walk-in shower",
+      "tr": "Modern Duşakabin"
+    },
+    "desc": {
+      "nl": "Moderne regendouche en drain goot installatie.",
+      "en": "Modern rain shower and drain channel installation.",
+      "tr": "Modern yağmur duşu ve duş süzgeci montajı."
+    }
+  },
+  {
+    "id": 51,
+    "image": "projects/bathroom_before_2.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Strak badkamer tegelwerk (Voor)",
+      "en": "Sleek bathroom tiling (Before)",
+      "tr": "Şık Banyo Fayans Kaplama (Öncesi)"
+    },
+    "desc": {
+      "nl": "Sloopfase en voorbereiding van: nivelleren en verlijmen van xxl tegels op de wand.",
+      "en": "Demolition phase and preparation of: leveling and bonding of xxl tiles on the wall.",
+      "tr": "Yıkım aşaması ve hazırlık çalışması: duvara xxl boyutlu fayansların lazer terazili montajı."
+    }
+  },
+  {
+    "id": 52,
+    "image": "projects/gal_40.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Sanitair installatie",
+      "en": "Sanitary installation",
+      "tr": "Sıhhi Tesisat ve Vitrifiye"
+    },
+    "desc": {
+      "nl": "Volledige renovatie van badkamer met grote tegels en inloopdouche.",
+      "en": "Complete renovation of bathroom with large tiles and walk-in shower.",
+      "tr": "Büyük ebatlı fayanslar ve duşakabin ile komple banyo tadilatı."
+    }
+  },
+  {
+    "id": 53,
+    "image": "projects/gal_41.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Strak betegeld toilet",
+      "en": "Sleek tiled toilet",
+      "tr": "Fayans Kaplı Tuvalet"
+    },
+    "desc": {
+      "nl": "Compact toilet strak afgewerkt met grote tegels.",
+      "en": "Compact toilet cleanly finished with large tiles.",
+      "tr": "Büyük ebatlı fayanslar ile temizce bitirilmiş küçük tuvalet."
+    }
+  },
+  {
+    "id": 54,
+    "image": "projects/gal_42.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Strak stucwerk wand",
+      "en": "Smooth plastered wall",
+      "tr": "Pürüzsüz Alçı Sıva Uygulaması"
+    },
+    "desc": {
+      "nl": "Opbouw van metalen profielen met steenwol isolatie en gipsplaten.",
+      "en": "Construction of metal profiles with rockwool insulation and drywalls.",
+      "tr": "Taş yünü yalıtımlı metal profiller ve alçıpan levha montajı."
+    }
+  },
+  {
+    "id": 55,
+    "image": "projects/gal_43.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Loodgieterswerk & leidingen",
+      "en": "Plumbing & pipes",
+      "tr": "Sıhhi Tesisat & Boru Döşeme"
+    },
+    "desc": {
+      "nl": "Riolering afvoer onder de betonvloer vakkundig vernieuwd.",
+      "en": "Sewer drainage under concrete floor professionally renewed.",
+      "tr": "Beton zemin altındaki kanalizasyon giderlerinin profesyonel yenilenmesi."
+    }
+  },
+  {
+    "id": 56,
+    "image": "projects/gal_44.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Luxe badkamerrenovatie",
+      "en": "Luxury bathroom renovation",
+      "tr": "Lüks Banyo Yenileme"
+    },
+    "desc": {
+      "nl": "Volledige renovatie van badkamer met grote tegels en inloopdouche.",
+      "en": "Complete renovation of bathroom with large tiles and walk-in shower.",
+      "tr": "Büyük ebatlı fayanslar ve duşakabin ile komple banyo tadilatı."
+    }
+  },
+  {
+    "id": 57,
+    "image": "projects/gal_45.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Inbouwreservoir toilet",
+      "en": "Concealed cistern toilet",
+      "tr": "Gömme Rezervuar Montajı"
+    },
+    "desc": {
+      "nl": "Geberit inbouwsysteem met moderne hangende pot en fonteintje.",
+      "en": "Geberit built-in system with modern wall-hung toilet and small basin.",
+      "tr": "Geberit gömme rezervuar, asma klozet ve mini lavabo kurulumu."
+    }
+  },
+  {
+    "id": 58,
+    "image": "projects/plumbing_rough.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Leidingen verleggen",
+      "en": "Rerouting pipework",
+      "tr": "Tesisat Hattı Taşıma"
+    },
+    "desc": {
+      "nl": "Riolering afvoer onder de betonvloer vakkundig vernieuwd.",
+      "en": "Sewer drainage under concrete floor professionally renewed.",
+      "tr": "Beton zemin altındaki kanalizasyon giderlerinin profesyonel yenilenmesi."
+    }
+  },
+  {
+    "id": 59,
+    "image": "projects/gal_46.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Strak stucwerk wand",
+      "en": "Smooth plastered wall",
+      "tr": "Pürüzsüz Alçı Sıva Uygulaması"
+    },
+    "desc": {
+      "nl": "Plafondverlaging met gipsplaten inclusief spotjes voorbereiding.",
+      "en": "Ceiling lowering with gypsum boards including spotlight prep.",
+      "tr": "Spot ışık hazırlıklı alçıpan asma tavan yapımı."
+    }
+  },
+  {
+    "id": 60,
+    "image": "projects/gal_47.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Loodgieterswerk & leidingen",
+      "en": "Plumbing & pipes",
+      "tr": "Sıhhi Tesisat & Boru Döşeme"
+    },
+    "desc": {
+      "nl": "Aanleg en testen van nieuwe kunststof/koperen leidingen.",
+      "en": "Installation and testing of new plastic/copper pipework.",
+      "tr": "Yeni nesil plastik veya bakır tesisat borularının döşenmesi ve testi."
+    }
+  },
+  {
+    "id": 61,
+    "image": "projects/gal_48.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Gerenoveerde douchewand",
+      "en": "Renovated shower wall",
+      "tr": "Yenilenmiş Duş Duvarı"
+    },
+    "desc": {
+      "nl": "Hoogwaardige afwerking van sanitair en tegelwerk.",
+      "en": "High-quality finishing of sanitary ware and tiling.",
+      "tr": "Birinci sınıf işçilikle vitrifiye ve fayans uygulaması."
+    }
+  },
+  {
+    "id": 62,
+    "image": "projects/gal_49.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Inbouwreservoir toilet",
+      "en": "Concealed cistern toilet",
+      "tr": "Gömme Rezervuar Montajı"
+    },
+    "desc": {
+      "nl": "Compact toilet strak afgewerkt met grote tegels.",
+      "en": "Compact toilet cleanly finished with large tiles.",
+      "tr": "Büyük ebatlı fayanslar ile temizce bitirilmiş küçük tuvalet."
+    }
+  },
+  {
+    "id": 63,
+    "image": "projects/tiling_finished.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Luxe badkamerrenovatie",
+      "en": "Luxury bathroom renovation",
+      "tr": "Lüks Banyo Yenileme"
+    },
+    "desc": {
+      "nl": "Nivelleren en verlijmen van XXL tegels op de wand.",
+      "en": "Leveling and bonding of XXL tiles on the wall.",
+      "tr": "Duvara XXL boyutlu fayansların lazer terazili montajı."
+    }
+  },
+  {
+    "id": 64,
+    "image": "projects/gal_50.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Strak stucwerk wand",
+      "en": "Smooth plastered wall",
+      "tr": "Pürüzsüz Alçı Sıva Uygulaması"
+    },
+    "desc": {
+      "nl": "Glad afgewerkte wanden gereed voor sauswerk.",
+      "en": "Smoothly finished walls ready for painting.",
+      "tr": "Boya öncesi pürüzsüz hale getirilmiş alçı sıvalı duvarlar."
+    }
+  },
+  {
+    "id": 65,
+    "image": "projects/gal_51.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Loodgieterswerk & leidingen",
+      "en": "Plumbing & pipes",
+      "tr": "Sıhhi Tesisat & Boru Döşeme"
+    },
+    "desc": {
+      "nl": "Lekvrije aansluitingen met kwalitatief hoogwaardig perssysteem.",
+      "en": "Leak-free connections with high-quality pressing system.",
+      "tr": "Yüksek kaliteli presleme sistemiyle sızdırmaz boru bağlantıları."
+    }
+  },
+  {
+    "id": 66,
+    "image": "projects/bathroom_sink.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Sanitair installatie",
+      "en": "Sanitary installation",
+      "tr": "Sıhhi Tesisat ve Vitrifiye"
+    },
+    "desc": {
+      "nl": "Moderne regendouche en drain goot installatie.",
+      "en": "Modern rain shower and drain channel installation.",
+      "tr": "Modern yağmur duşu ve duş süzgeci montajı."
+    }
+  },
+  {
+    "id": 67,
+    "image": "projects/gal_52.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Badkamermeubel montage",
+      "en": "Bathroom vanity installation",
+      "tr": "Lavabo ve Dolap Montajı"
+    },
+    "desc": {
+      "nl": "Nivelleren en verlijmen van XXL tegels op de wand.",
+      "en": "Leveling and bonding of XXL tiles on the wall.",
+      "tr": "Duvara XXL boyutlu fayansların lazer terazili montajı."
+    }
+  },
+  {
+    "id": 68,
+    "image": "projects/gal_53.jpg",
+    "category": "toilet",
+    "title": {
+      "nl": "Strak betegeld toilet",
+      "en": "Sleek tiled toilet",
+      "tr": "Fayans Kaplı Tuvalet"
+    },
+    "desc": {
+      "nl": "Compact toilet strak afgewerkt met grote tegels.",
+      "en": "Compact toilet cleanly finished with large tiles.",
+      "tr": "Büyük ebatlı fayanslar ile temizce bitirilmiş küçük tuvalet."
+    }
+  },
+  {
+    "id": 69,
+    "image": "projects/gal_54.jpg",
+    "category": "gipsplaat",
+    "title": {
+      "nl": "Strak stucwerk wand",
+      "en": "Smooth plastered wall",
+      "tr": "Pürüzsüz Alçı Sıva Uygulaması"
+    },
+    "desc": {
+      "nl": "Opbouw van metalen profielen met steenwol isolatie en gipsplaten.",
+      "en": "Construction of metal profiles with rockwool insulation and drywalls.",
+      "tr": "Taş yünü yalıtımlı metal profiller ve alçıpan levha montajı."
+    }
+  },
+  {
+    "id": 70,
+    "image": "projects/gal_55.jpg",
+    "category": "riolering",
+    "title": {
+      "nl": "Loodgieterswerk & leidingen",
+      "en": "Plumbing & pipes",
+      "tr": "Sıhhi Tesisat & Boru Döşeme"
+    },
+    "desc": {
+      "nl": "Riolering afvoer onder de betonvloer vakkundig vernieuwd.",
+      "en": "Sewer drainage under concrete floor professionally renewed.",
+      "tr": "Beton zemin altındaki kanalizasyon giderlerinin profesyonel yenilenmesi."
+    }
+  }
+]

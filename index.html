@@ -267,79 +267,11 @@
                 <button class="filter-tab" data-filter="riolering" role="tab" aria-selected="false" data-i18n="filter_plumbing">Loodgieterswerk</button>
             </div>
 
-            <div class="gallery-grid">
-                <!-- Project 1 -->
-                <div class="gallery-item" data-category="badkamer" tabindex="0">
-                    <img src="projects/bathroom_luxury.jpg" alt="Luxe badkamer met ligbad en glazen douchewand">
-                    <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_1_title">Luxe Badkamer</h4>
-                        <p data-i18n="gallery_item_1_desc">Ligbad, inloopdouche & modern tegelwerk</p>
-                    </div>
-                </div>
-                <!-- Project 2 -->
-                <div class="gallery-item" data-category="toilet" tabindex="0">
-                    <img src="projects/toilet_modern.jpg" alt="Modern hangend toilet met nisverlichting en donkere tegels">
-                    <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_2_title">Modern Asma Klozet</h4>
-                        <p data-i18n="gallery_item_2_desc">Geberit inbouwsysteem & nisverlichting</p>
-                    </div>
-                </div>
-                <!-- Project 3 -->
-                <div class="gallery-item" data-category="badkamer" tabindex="0">
-                    <img src="projects/bathroom_after_1.jpg" alt="Badkamerrenovatie met inloopdouche en tegels">
-                    <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_3_title">Badkamer Amsterdam</h4>
-                        <p data-i18n="gallery_item_3_desc">Strakke inloopdouche & regendouche</p>
-                    </div>
-                </div>
-                <!-- Project 4 -->
-                <div class="gallery-item" data-category="gipsplaat" tabindex="0">
-                    <img src="projects/drywall_after.jpg" alt="Strak afgewerkt gipsplaten plafond met spots">
-                    <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_4_title">Gipsplaat Plafond</h4>
-                        <p data-i18n="gallery_item_4_desc">Inclusief spots & glad pleisterwerk</p>
-                    </div>
-                </div>
-                <!-- Project 5 -->
-                <div class="gallery-item" data-category="riolering" tabindex="0">
-                    <img src="projects/plumbing_rough.jpg" alt="Professionele leidinginstallatie onder de vloer">
-                    <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_5_title">Loodgieterswerk</h4>
-                        <p data-i18n="gallery_item_5_desc">Vernieuwde waterleidingen & afvoeren</p>
-                    </div>
-                </div>
-                <!-- Project 6 -->
-                <div class="gallery-item" data-category="gipsplaat" tabindex="0">
-                    <img src="projects/drywall_before.jpg" alt="Metal-stud plafond frame constructie">
-                    <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_6_title">Metal Stud Frame</h4>
-                        <p data-i18n="gallery_item_6_desc">Voorbereiding voor gipsplaten</p>
-                    </div>
-                </div>
-                <!-- Project 7 -->
-                <div class="gallery-item" data-category="badkamer" tabindex="0">
-                    <img src="projects/bathroom_sink.jpg" alt="Banyoda şık lavabo ve ayna montajı">
-                    <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_7_title">Lavabo Ünitesi</h4>
-                        <p data-i18n="gallery_item_7_desc">Modern lavabo dolabı, batarya & LED ayna</p>
-                    </div>
-                </div>
-                <!-- Project 8 -->
-                <div class="gallery-item" data-category="toilet" tabindex="0">
-                    <img src="projects/toilet_after.jpg" alt="Komple yenilenmiş klozet alanı">
-                    <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_8_title">Modern Toilet</h4>
-                        <p data-i18n="gallery_item_8_desc">Klassieke lichte betegeling met hangtoilet</p>
-                    </div>
-                </div>
-                <!-- Project 9 -->
-                <div class="gallery-item" data-category="gipsplaat" tabindex="0">
-                    <img src="projects/tiling_after.jpg" alt="Fayans yapıştırma işlemi tamamlanmış yer kaplaması">
-                    <div class="gallery-overlay">
-                        <h4 data-i18n="gallery_item_9_title">Zemin Fayansı</h4>
-                        <p data-i18n="gallery_item_9_desc">Büyük ebatlı granit fayans döşeme</p>
-                    </div>
-                </div>
+            <div class="gallery-grid" id="gallery-grid">
+                <!-- Projects will be loaded dynamically via JavaScript -->
+            </div>
+            <div class="gallery-actions text-center" style="margin-top: 40px;">
+                <button id="load-more-btn" class="btn btn-primary" data-i18n="btn_load_more">Meer projecten laden</button>
             </div>
         </div>
     </section>

@@ -96,7 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
             map_title: "Actief in Flevoland & Omstreken",
             footer_note: "Gerealiseerd met AI-assistentie & Vakmanschap.",
             chat_status: "Altijd online",
-            chat_welcome: "Hallo! Ik ben de AI-assistent van Der-In infra. Ik kan u helpen met richtprijzen voor badkamerrenovatie, toiletrenovatie, tegelwerk en wanden. Hoe kan ik u vandaag helpen?"
+            chat_welcome: "Hallo! Ik ben de AI-assistent van Der-In infra. Ik kan u helpen met richtprijzen voor badkamerrenovatie, toiletrenovatie, tegelwerk en wanden. Hoe kan ik u vandaag helpen?",
+            btn_load_more: "Meer projecten laden"
         },
         en: {
             nav_home: "Home",
@@ -191,7 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
             map_title: "Active in Flevoland & Surroundings",
             footer_note: "Realized with AI assistance & Craftsmanship.",
             chat_status: "Always online",
-            chat_welcome: "Hello! I am the AI assistant of Der-In infra. I can help you with estimates for bathroom renovations, toilet renovations, tiling, and walls. How can I help you today?"
+            chat_welcome: "Hello! I am the AI assistant of Der-In infra. I can help you with estimates for bathroom renovations, toilet renovations, tiling, and walls. How can I help you today?",
+            btn_load_more: "Load more projects"
         },
         tr: {
             nav_home: "Ana Sayfa",
@@ -286,7 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
             map_title: "Flevoland & Çevresinde Aktifiz",
             footer_note: "Yapay zeka asistanlığı ve ustalıkla hazırlanmıştır.",
             chat_status: "Her zaman çevrimiçi",
-            chat_welcome: "Merhaba! Ben Der-In infra Yapay Zeka Asistanıyım. Banyo yenileme, tuvalet yenileme, fayans ve alçıpan duvar richtprijs (fiyat) tahminleri konusunda yardımcı olabilirim. Size nasıl yardımcı olabilirim?"
+            chat_welcome: "Merhaba! Ben Der-In infra Yapay Zeka Asistanıyım. Banyo yenileme, tuvalet yenileme, fayans ve alçıpan duvar richtprijs (fiyat) tahminleri konusunda yardımcı olabilirim. Size nasıl yardımcı olabilirim?",
+            btn_load_more: "Daha fazla proje yükle"
         }
     };
 
@@ -355,6 +358,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Only call if defined
         if (typeof calculateEstimate === 'function') {
             calculateEstimate();
+        }
+
+        // Re-render gallery with new language
+        if (typeof renderGallery === 'function') {
+            renderGallery();
         }
     }
 
@@ -459,11 +467,85 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ----------------------------------------------------------------
-    // 3.2. Portfolio Category Filter Logic
+    // 3.2. Dynamic Portfolio Category Filter & Load More Logic
     // ----------------------------------------------------------------
     const filterTabs = document.querySelectorAll('.filter-tab');
-    const galleryItems = document.querySelectorAll('.gallery-item');
+    const galleryGrid = document.getElementById('gallery-grid');
+    const loadMoreBtn = document.getElementById('load-more-btn');
 
+    let allProjects = [];
+    let currentFilter = 'all';
+    let visibleCount = 9;
+
+    async function initGallery() {
+        try {
+            const response = await fetch('projects.json');
+            allProjects = await response.json();
+            renderGallery();
+        } catch (error) {
+            console.error('Error loading projects.json:', error);
+            if (galleryGrid) {
+                galleryGrid.innerHTML = '<p class="text-center" style="grid-column: 1/-1;">Error loading projects. Please refresh the page.</p>';
+            }
+        }
+    }
+
+    function renderGallery(resetAnimation = false) {
+        if (!galleryGrid) return;
+
+        // Filter projects
+        const filtered = allProjects.filter(project => {
+            return currentFilter === 'all' || project.category === currentFilter;
+        });
+
+        // Slice for pagination
+        const sliced = filtered.slice(0, visibleCount);
+
+        // Render items
+        galleryGrid.innerHTML = '';
+        sliced.forEach((project, idx) => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.setAttribute('data-category', project.category);
+            item.setAttribute('tabindex', '0');
+            
+            // Localize title and description based on currentLang
+            const title = (project.title && project.title[currentLang]) ? project.title[currentLang] : (project.title ? project.title['nl'] : '');
+            const desc = (project.desc && project.desc[currentLang]) ? project.desc[currentLang] : (project.desc ? project.desc['nl'] : '');
+            
+            item.innerHTML = `
+                <img src="${project.image}" alt="${desc}">
+                <div class="gallery-overlay">
+                    <h4>${title}</h4>
+                    <p>${desc}</p>
+                </div>
+            `;
+
+            // Micro-animation for items loading
+            if (resetAnimation) {
+                item.style.transform = 'scale(0.95)';
+                item.style.opacity = '0';
+                item.style.transition = 'all 0.3s ease';
+                setTimeout(() => {
+                    item.style.transform = 'scale(1)';
+                    item.style.opacity = '1';
+                }, idx * 30 + 30);
+            }
+            
+            galleryGrid.appendChild(item);
+        });
+
+        // Show/hide load more button
+        if (loadMoreBtn) {
+            if (filtered.length > visibleCount) {
+                loadMoreBtn.style.display = 'inline-flex';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+    }
+
+    // Filter switch listener
     filterTabs.forEach(tab => {
         tab.addEventListener('click', () => {
             filterTabs.forEach(t => {
@@ -473,28 +555,22 @@ document.addEventListener('DOMContentLoaded', () => {
             tab.classList.add('active');
             tab.setAttribute('aria-selected', 'true');
 
-            const filterValue = tab.getAttribute('data-filter');
-
-            galleryItems.forEach(item => {
-                const category = item.getAttribute('data-category');
-                if (filterValue === 'all' || category === filterValue) {
-                    item.classList.remove('hidden');
-                    item.style.transform = 'scale(0.95)';
-                    item.style.opacity = '0';
-                    setTimeout(() => {
-                        item.style.transform = 'scale(1)';
-                        item.style.opacity = '1';
-                    }, 50);
-                } else {
-                    item.style.opacity = '0';
-                    item.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        item.classList.add('hidden');
-                    }, 250);
-                }
-            });
+            currentFilter = tab.getAttribute('data-filter');
+            visibleCount = 9; // Reset page size on filter change
+            renderGallery(true);
         });
     });
+
+    // Load More listener
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', () => {
+            visibleCount += 9;
+            renderGallery(false);
+        });
+    }
+
+    // Call dynamic gallery initialization
+    initGallery();
 
     // ----------------------------------------------------------------
     // 4. Live Pricing Calculator & Multi-Step Wizard Logic
