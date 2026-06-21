@@ -3,6 +3,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 8085;
@@ -59,6 +60,23 @@ Rules for response:
 5. If the user asks about the Hermes Agent, explain that it is our automated system running on Hostinger VPS that helps İnan Abi update the website via WhatsApp, but only after Derya Abla approves.
 `;
 
+// Function to dynamically load updates from company_updates.txt
+function getSystemInstruction() {
+    let instruction = SYSTEM_INSTRUCTION;
+    const updatesPath = path.join(__dirname, 'company_updates.txt');
+    if (fs.existsSync(updatesPath)) {
+        try {
+            const updates = fs.readFileSync(updatesPath, 'utf8').trim();
+            if (updates) {
+                instruction += `\n\nADDITIONAL REAL-TIME CONTEXT & UPDATES (Provided dynamically by Hermes Agent):\n${updates}`;
+            }
+        } catch (err) {
+            console.error('Error reading company_updates.txt:', err);
+        }
+    }
+    return instruction;
+}
+
 // Chat API Endpoint supporting both Ollama Cloud API and Google Gemini API (fallback)
 app.post('/api/chat', async (req, res) => {
     const { message, language } = req.body;
@@ -81,7 +99,7 @@ app.post('/api/chat', async (req, res) => {
         const payload = {
             model: ollamaModel,
             messages: [
-                { role: 'system', content: SYSTEM_INSTRUCTION + `\nPrefer to respond in the language: ${language || 'Dutch'}.` },
+                { role: 'system', content: getSystemInstruction() + `\nPrefer to respond in the language: ${language || 'Dutch'}.` },
                 { role: 'user', content: message }
             ],
             stream: false
@@ -143,7 +161,7 @@ app.post('/api/chat', async (req, res) => {
                 }
             ],
             systemInstruction: {
-                parts: [{ text: SYSTEM_INSTRUCTION + `\nPrefer to respond in the language: ${language || 'Dutch'}.` }]
+                parts: [{ text: getSystemInstruction() + `\nPrefer to respond in the language: ${language || 'Dutch'}.` }]
             },
             generationConfig: {
                 maxOutputTokens: 500,

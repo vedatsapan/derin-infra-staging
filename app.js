@@ -1188,47 +1188,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------------------
-    // 8. Dynamic Portfolio Loader (Hermes integration)
+    // 8. Dynamic Portfolio Loader (Hermes integration via initGallery)
     // ----------------------------------------------------------------
-    async function loadDynamicProjects() {
-        const galleryGrid = document.querySelector('.gallery-grid');
-        if (!galleryGrid) return;
-        
-        try {
-            const response = await fetch('projects.json');
-            if (response.ok) {
-                const projects = await response.json();
-                if (projects && projects.length > 0) {
-                    projects.forEach(proj => {
-                        const exists = Array.from(galleryGrid.querySelectorAll('.gallery-item h4'))
-                            .some(el => el.textContent === proj.title);
-                            
-                        if (!exists) {
-                            const item = document.createElement('div');
-                            item.className = 'gallery-item';
-                            item.setAttribute('data-category', proj.category || 'badkamer');
-                            item.tabIndex = 0;
-                            
-                            const title = proj.title;
-                            const desc = proj.description;
-                            
-                            item.innerHTML = `
-                                <img src="${proj.image}" alt="${title}">
-                                <div class="gallery-overlay">
-                                    <h4>${title}</h4>
-                                    <p>${desc}</p>
-                                </div>
-                            `;
-                            galleryGrid.insertBefore(item, galleryGrid.firstChild);
-                        }
-                    });
-                }
-            }
-        } catch (err) {
-            console.warn("Dynamic projects.json could not be loaded. Running on static fallback.", err);
-        }
-    }
-    loadDynamicProjects();
+    // Portfolio images are loaded dynamically and localized inside initGallery().
 
     // ----------------------------------------------------------------
     // 9. Offerte Modal & Generator Handler
@@ -1237,6 +1199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const offerteClose = document.getElementById('offerteClose');
     const closeOfferteModalBtn = document.getElementById('closeOfferteModalBtn');
     const printOfferteBtn = document.getElementById('printOfferteBtn');
+    const viewSampleOfferteBtn = document.getElementById('viewSampleOfferteBtn');
 
     // Modal populate fields
     const offerteClientName = document.getElementById('offerteClientName');
