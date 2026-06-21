@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let allProjects = [];
     let currentFilter = 'all';
     let visibleCount = 9;
+    let sizeInput = document.getElementById('wizard_size');
+    let galleryGrid = document.getElementById('gallery-grid');
+    let loadMoreBtn = document.getElementById('load-more-btn');
 
     // ----------------------------------------------------------------
     // 1. Translation Dictionary (Dutch, English, Turkish)
@@ -466,8 +469,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3.2. Dynamic Portfolio Category Filter & Load More Logic
     // ----------------------------------------------------------------
     const filterTabs = document.querySelectorAll('.filter-tab');
-    const galleryGrid = document.getElementById('gallery-grid');
-    const loadMoreBtn = document.getElementById('load-more-btn');
+    galleryGrid = document.getElementById('gallery-grid');
+    loadMoreBtn = document.getElementById('load-more-btn');
 
     // (allProjects, currentFilter, visibleCount are already declared at the top)
 
@@ -577,7 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn = document.getElementById('nextBtn');
     const wSubmitBtn = document.getElementById('wSubmitBtn');
     const sizeRange = document.getElementById('wizard_size_range');
-    const sizeInput = document.getElementById('wizard_size');
+    sizeInput = document.getElementById('wizard_size');
 
     let currentStep = 1;
     const totalSteps = 5;
@@ -1366,4 +1369,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    window.__appJsLoaded = true;
 });
