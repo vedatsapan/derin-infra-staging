@@ -1063,5 +1063,140 @@
       "en": "Sewer drainage under concrete floor professionally renewed.",
       "tr": "Beton zemin altındaki kanalizasyon giderlerinin profesyonel yenilenmesi."
     }
+  },
+  {
+    "id": 71,
+    "image": "projects/inan_before_1.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Halve badkamer renovatie (Voor)",
+      "en": "Half bathroom renovation (Before)",
+      "tr": "Yarim Banyo Tadilati (Oncesi)"
+    },
+    "desc": {
+      "nl": "Sloopfase en voorbereiding van: douchebak, tegelwerk, wastafel en spiegel installatie in Lelystad.",
+      "en": "Demolition phase and preparation of: shower tray, tiling, sink and mirror installation in Lelystad.",
+      "tr": "Yikim asamasi ve hazirlik: dus teknesi, fayans, lavabo ve ayna montaji, Lelystad."
+    }
+  },
+  {
+    "id": 72,
+    "image": "projects/inan_after_1.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Halve badkamer renovatie (Na)",
+      "en": "Half bathroom renovation (After)",
+      "tr": "Yarim Banyo Tadilati (Sonrasi)"
+    },
+    "desc": {
+      "nl": "Complete renovatie met nieuwe douchebak, tegelwerk, wastafel en spiegel in Lelystad.",
+      "en": "Complete renovation with new shower tray, tiling, sink and mirror in Lelystad.",
+      "tr": "Yeni dus teknesi, fayans, lavabo ve ayna ile komple tadilat, Lelystad."
+    }
+  },
+  {
+    "id": 73,
+    "image": "projects/inan_before_2.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Badkamer sloopfase (Voor)",
+      "en": "Bathroom demolition phase (Before)",
+      "tr": "Banyo Yikim Asamasi (Oncesi)"
+    },
+    "desc": {
+      "nl": "Voorbereiding voor nieuwe tegelwerk en sanitair installatie in Lelystad.",
+      "en": "Preparation for new tiling and sanitary installation in Lelystad.",
+      "tr": "Yeni fayans ve vitrifiye montaji icin hazirlik, Lelystad."
+    }
+  },
+  {
+    "id": 74,
+    "image": "projects/inan_after_2.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Badkamer afwerking (Na)",
+      "en": "Bathroom finishing (After)",
+      "tr": "Banyo Bitirme (Sonrasi)"
+    },
+    "desc": {
+      "nl": "Strak tegelwerk en sanitair installatie, netjes afgewerkt in Lelystad.",
+      "en": "Sleek tiling and sanitary installation, neatly finished in Lelystad.",
+      "tr": "Sik fayans ve vitrifiye montaji, temiz iscilik, Lelystad."
+    }
+  },
+  {
+    "id": 75,
+    "image": "projects/inan_before_3.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Wand voorbereiding (Voor)",
+      "en": "Wall preparation (Before)",
+      "tr": "Duvar Hazirligi (Oncesi)"
+    },
+    "desc": {
+      "nl": "Sloopfase van badkamerwand in Lelystad, klaar voor nieuwe tegels.",
+      "en": "Demolition of bathroom wall in Lelystad, ready for new tiles.",
+      "tr": "Lelystad banyo duvari yikim asamasi, yeni fayanslara hazir."
+    }
+  },
+  {
+    "id": 76,
+    "image": "projects/inan_after_3.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Wand tegelwerk (Na)",
+      "en": "Wall tiling (After)",
+      "tr": "Duvar Fayans (Sonrasi)"
+    },
+    "desc": {
+      "nl": "Nieuwe tegels op de wand, strak en waterdicht afgewerkt in Lelystad.",
+      "en": "New wall tiles, sleek and waterproof finished in Lelystad.",
+      "tr": "Duvarda yeni fayanslar, sik ve su gecirmez, Lelystad."
+    }
+  },
+  {
+    "id": 77,
+    "image": "projects/inan_before_4.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Sanitair verwijderen (Voor)",
+      "en": "Removing sanitary (Before)",
+      "tr": "Vitrifiye Sokumu (Oncesi)"
+    },
+    "desc": {
+      "nl": "Oude wastafel en spiegel verwijderd, ruimte klaar voor renovatie in Lelystad.",
+      "en": "Old sink and mirror removed, space ready for renovation in Lelystad.",
+      "tr": "Eski lavabo ve ayna sokuldu, alan tadilata hazir, Lelystad."
+    }
+  },
+  {
+    "id": 78,
+    "image": "projects/inan_after_4.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Wastafel en spiegel (Na)",
+      "en": "Sink and mirror (After)",
+      "tr": "Lavabo ve Ayna (Sonrasi)"
+    },
+    "desc": {
+      "nl": "Nieuwe wastafel met spiegel geinstalleerd, moderne afwerking in Lelystad.",
+      "en": "New sink with mirror installed, modern finish in Lelystad.",
+      "tr": "Yeni lavabo ve ayna montaji, modern bitirim, Lelystad."
+    }
+  },
+  {
+    "id": 79,
+    "image": "projects/inan_after_5.jpg",
+    "category": "badkamer",
+    "title": {
+      "nl": "Douchebak installatie (Na)",
+      "en": "Shower tray installation (After)",
+      "tr": "Dus Teknesi Montaji (Sonrasi)"
+    },
+    "desc": {
+      "nl": "Nieuwe douchebak geinstalleerd met strak afgewerkt tegelwerk in Lelystad.",
+      "en": "New shower tray installed with sleek finished tiling in Lelystad.",
+      "tr": "Yeni dus teknesi montaji, sik fayans bitirimi, Lelystad."
+    }
   }
 ]
