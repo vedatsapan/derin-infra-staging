@@ -1938,7 +1938,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return "Der-In infra olarak yaptığımız tüm işçilik ve tesisat işleri için teslim tarihinden itibaren 12 ay (1 Yıl) tam garanti veriyoruz.";
             }
             if (isContact) {
-                return "Der-In infra İletişim Bilgileri:\n- Telefon: +31 6 18694652\n- E-posta: info@derininfra.nl\n- Konum: De Valk, 8239AE Lelystad\n- KVK Numarası: 89133226\n- BTW Numarası: NL004694216B91";
+                return "Der-In infra İletişim Bilgileri:\n- Telefon: +31 6 18694652\n- E-posta: info@derininfra.nl\n- Konum: De Valk 14, 8239AE Lelystad\n- KVK Numarası: 89133226\n- BTW Numarası: NL004694216B91";
             }
             return "Size banyo/tuvalet tadilatı, alçıpan, riolering tesisatı, Lelystad ve çevresindeki hizmet bölgelerimiz, fiyatlar ve garantilerimiz hakkında detaylı bilgi verebilirim. Sorunuz nedir?";
         } 
@@ -1971,7 +1971,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return "We offer a 12-month (1 Year) full warranty on all our labor, piping, and installation works from the completion date.";
             }
             if (isContact) {
-                return "Der-In infra Contact Details:\n- Phone: +31 6 18694652\n- Email: info@derininfra.nl\n- Location: De Valk, 8239AE Lelystad\n- Chamber of Commerce (KVK): 89133226\n- VAT (BTW): NL004694216B91";
+                return "Der-In infra Contact Details:\n- Phone: +31 6 18694652\n- Email: info@derininfra.nl\n- Location: De Valk 14, 8239AE Lelystad\n- Chamber of Commerce (KVK): 89133226\n- VAT (BTW): NL004694216B91";
             }
             return "I can help you with bathroom/toilet renovations, tiling, drywall, sewerage, pricing details, and our service area around Lelystad. What is your question?";
         } 
@@ -2004,7 +2004,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return "Wij bieden een volledige garantie van 12 maanden (1 Jaar) op al onze werkzaamheden vanaf de opleverdatum.";
             }
             if (isContact) {
-                return "Der-In infra Contactgegevens:\n- Telefoon: +31 6 18694652\n- E-mail: info@derininfra.nl\n- Adres: De Valk, 8239AE Lelystad\n- KVK-nummer: 89133226\n- BTW-nummer: NL004694216B91";
+                return "Der-In infra Contactgegevens:\n- Telefoon: +31 6 18694652\n- E-mail: info@derininfra.nl\n- Adres: De Valk 14, 8239AE Lelystad\n- KVK-nummer: 89133226\n- BTW-nummer: NL004694216B91";
             }
             return "Ik kan u helpen met vragen over badkamer- en toiletrenovaties, tegelwerk, gipsplaat wanden, loodgieterswerk, prijzen en garanties rond Lelystad. Wat is uw vraag?";
         }
@@ -2181,7 +2181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 client_name: "İnan Kuruöz (Voorbeeld)",
                 client_phone: "0618694652",
                 client_email: "info@derininfra.nl",
-                location: "De Valk, 8239AE Lelystad",
+                location: "De Valk 14, 8239AE Lelystad",
                 project_type: "toilet",
                 material_preference: "zonder-materiaal",
                 calculated_estimate: "€ 2.000,-"
