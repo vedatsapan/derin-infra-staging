@@ -1069,8 +1069,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Loading...`;
             }
-
-            const webhookUrl = document.getElementById('wizard_webhook_url')?.value || 'https://hook.us2.make.com/placeholder-webhook-id';
+            // Fallback to Vercel API endpoint for Telegram notification proxy if no explicit webhook URL is set
+            let webhookUrl = document.getElementById('wizard_webhook_url')?.value;
+            if (!webhookUrl || webhookUrl.includes('placeholder-webhook-id') || webhookUrl.includes('make.com')) {
+                // If running on derininfra.nl static Pages, point to Vercel deployment URL
+                webhookUrl = window.location.hostname === 'derininfra.nl' || window.location.hostname === 'www.derininfra.nl'
+                    ? 'https://derin-infra-staging.vercel.app/api/quote'
+                    : '/api/quote';
+            }
 
             try {
                 await fetch(webhookUrl, {

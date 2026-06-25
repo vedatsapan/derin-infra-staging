@@ -211,6 +211,50 @@ app.post('/api/chat', async (req, res) => {
     res.json({ reply: reply.trim() });
 });
 
+// Endpoint to receive website contact/quote form submissions and notify via Telegram
+app.post('/api/quote', async (req, res) => {
+    const data = req.body;
+    const telegramToken = process.env.TELEGRAM_TOKEN;
+    const inanChatId = process.env.INAN_CHAT_ID;
+    const deryaChatId = process.env.DERYA_CHAT_ID;
+
+    console.log("Received quote submission:", data);
+
+    if (telegramToken && (inanChatId || deryaChatId)) {
+        const message = `🔔 *YENİ TEKLİF TALEBİ GELDİ!* (derininfra.nl)
+👤 *İsim:* ${data.client_name || 'Bilinmiyor'}
+📞 *Telefon:* ${data.client_phone || 'Belirtilmedi'}
+✉️ *E-posta:* ${data.client_email || 'Belirtilmedi'}
+📍 *Konum:* ${data.location || 'Belirtilmedi'}
+🛠️ *Hizmet Tipi:* ${data.project_type || 'Belirtilmedi'}
+📐 *Boyut:* ${data.size || 0} m²
+💎 *Malzeme Tercihi:* ${data.material_preference || 'Belirtilmedi'}
+📝 *Açıklama:* ${data.description || 'Yok'}
+💰 *Hesaplanan Fiyat:* €${data.calculated_estimate || '0'} ex. BTW`;
+
+        const sendMsg = async (chatId) => {
+            if (!chatId) return;
+            try {
+                await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+            } catch (err) {
+                console.error(`Telegram notify error for chat ${chatId}:`, err.message);
+            }
+        };
+
+        await Promise.all([sendMsg(inanChatId), sendMsg(deryaChatId)]);
+    }
+
+    res.json({ success: true, message: "Notification sent successfully." });
+});
+
 // Fallback for HTML5 client-side routing
 app.get('*any', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
