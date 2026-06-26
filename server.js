@@ -350,8 +350,10 @@ app.post('/api/email-webhook', async (req, res) => {
             const escapedSubject = escapeHTML(subject);
             const escapedBody = escapeHTML(bodyText);
             const escapedDraft = escapeHTML(draftReply);
+            const escapedInbox = escapeHTML(inboxId);
 
             const tgMsg = `<b>📬 YENİ E-POSTA ALINDI!</b>
+<b>📥 Gelen Kutu:</b> <code>${escapedInbox}</code>
 <b>👤 Gönderen:</b> <code>${escapedFrom}</code>
 <b>📌 Konu:</b> <code>${escapedSubject}</code>
 

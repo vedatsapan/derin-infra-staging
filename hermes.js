@@ -125,7 +125,7 @@ Der-In infra Hermes asistanın başarıyla kuruldu ve ilk kez çalıştırıldı
     }, 15000); // every 15 seconds
 }
 
-// Hostinger Mail API Linker
+// Hostinger Mail API Linker (Registers all available mailboxes)
 async function handleEmailLink(chatId, token) {
     await sendTelegramMessage(chatId, "🔗 Hostinger Agentic Mail API doğrulanıyor, lütfen bekleyin...");
     try {
@@ -133,59 +133,74 @@ async function handleEmailLink(chatId, token) {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const mailboxes = res.data.data?.mailboxes || [];
-        const mailbox = mailboxes.find(m => m.address === 'info@derininfra.nl') || mailboxes[0];
         
-        if (!mailbox) {
+        if (mailboxes.length === 0) {
             await sendTelegramMessage(chatId, "❌ Bağlı hesapta yönetilebilir bir e-posta kutusu bulunamadı.");
             return;
         }
 
-        const mailboxResourceId = mailbox.resourceId;
-
-        // Register Webhook
         const targetUrl = 'https://derin-infra-staging.vercel.app/api/email-webhook';
-        
-        // List existing webhooks
-        const webhooksRes = await axios.get(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/webhooks`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const existingWebhooks = webhooksRes.data.data || [];
-        let webhook = existingWebhooks.find(w => w.url === targetUrl);
-        let secret = '';
+        const mailboxMapping = {};
+        let finalSecret = '';
+        const registeredList = [];
 
-        if (!webhook) {
-            // Create new webhook
-            const createRes = await axios.post(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/webhooks`, {
-                name: "Hermes Webhook",
-                url: targetUrl,
-                events: ["message.received"],
-                status: "active"
-            }, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            webhook = createRes.data.data;
-            secret = webhook.secret;
-        } else {
-            // Webhook exists, regenerate secret to ensure we have it stored
-            const regenRes = await axios.post(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/webhooks/${webhook.id}/regenerate-secret`, {}, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            secret = regenRes.data.data.secret;
+        for (const mailbox of mailboxes) {
+            const mailboxResourceId = mailbox.resourceId;
+            mailboxMapping[mailbox.address] = mailboxResourceId;
+
+            try {
+                // List existing webhooks
+                const webhooksRes = await axios.get(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/webhooks`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const existingWebhooks = webhooksRes.data.data || [];
+                let webhook = existingWebhooks.find(w => w.url === targetUrl);
+                let secret = '';
+
+                if (!webhook) {
+                    // Create new webhook
+                    const createRes = await axios.post(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/webhooks`, {
+                        name: "Hermes Webhook",
+                        url: targetUrl,
+                        events: ["message.received"],
+                        status: "active"
+                    }, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    webhook = createRes.data.data;
+                    secret = webhook.secret;
+                } else {
+                    // Webhook exists, regenerate secret to ensure we have it stored
+                    const regenRes = await axios.post(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/webhooks/${webhook.id}/regenerate-secret`, {}, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    secret = regenRes.data.data.secret;
+                }
+
+                if (!finalSecret) {
+                    finalSecret = secret;
+                }
+                registeredList.push(mailbox.address);
+            } catch (webhookErr) {
+                console.error(`Failed to configure webhook for mailbox ${mailbox.address}:`, webhookErr.message);
+            }
         }
+
+        // Save mapping to mailboxes.json
+        fs.writeFileSync(path.join(__dirname, 'mailboxes.json'), JSON.stringify(mailboxMapping, null, 2), 'utf8');
 
         // Update .env file
         updateEnvFile({
             HOSTINGER_MAIL_TOKEN: token,
-            HOSTINGER_MAILBOX_RESOURCE_ID: mailboxResourceId,
-            WEBHOOK_SECRET: secret
+            WEBHOOK_SECRET: finalSecret
         });
 
-        const reply = `✅ <b>E-posta kutusu başarıyla bağlandı!</b>
-📬 <b>Adres:</b> <code>${mailbox.address}</code>
-📌 <b>Resource ID:</b> <code>${mailboxResourceId}</code>
-⚡ <b>Webhook Durumu:</b> Aktif ve 7/24 izleniyor!
+        const reply = `✅ <b>E-posta kutuları başarıyla bağlandı!</b>
+📬 <b>Bağlanan Adresler:</b>
+${registeredList.map(email => `• <code>${email}</code>`).join('\n')}
+⚡ <b>Webhook Durumu:</b> Tüm kutular için aktif ve 7/24 izleniyor!
 
-Taslak cevaplar artık bota otomatik düşecektir İnan Abi.`;
+İnan Abi, artık bu e-posta adreslerinin herhangi birine mesaj geldiğinde yapay zeka taslak cevabı bota otomatik düşecektir.`;
         await sendTelegramMessage(chatId, reply);
     } catch (err) {
         console.error("API Link Error:", err);
@@ -197,15 +212,22 @@ Taslak cevaplar artık bota otomatik düşecektir İnan Abi.`;
     }
 }
 
-// Hostinger Mail sending on reply
+// Hostinger Mail sending on reply (Supports dynamic mailbox selection)
 async function handleEmailReply(message, repliedText) {
     const chatId = message.chat.id.toString();
     const text = (message.text || '').trim();
 
-    // Extract email using regex
+    // Parse Gelen Kutu address from the replied notification message
+    let inbox = "info@derininfra.nl";
+    const inboxMatch = repliedText.match(/📥 Gelen Kutu:\s*([^\n\r]+)/);
+    if (inboxMatch) {
+        inbox = inboxMatch[1].replace(/<\/?[^>]+(>|$)/g, "").trim();
+    }
+
+    // Extract emails using regex
     const emailRegex = /[\w.-]+@[\w.-]+\.[\w.-]+/g;
     const emails = repliedText.match(emailRegex) || [];
-    const recipient = emails.find(e => e !== 'info@derininfra.nl');
+    const recipient = emails.find(e => e !== inbox && e !== 'info@derininfra.nl');
     
     if (!recipient) {
         await sendTelegramMessage(chatId, "❌ Alıcı e-posta adresi bildirim mesajından ayrıştırılamadı.");
@@ -234,14 +256,27 @@ async function handleEmailReply(message, repliedText) {
     }
 
     const token = process.env.HOSTINGER_MAIL_TOKEN;
-    const mailboxResourceId = process.env.HOSTINGER_MAILBOX_RESOURCE_ID;
+    
+    // Look up mailboxResourceId from mapping file
+    let mailboxResourceId = process.env.HOSTINGER_MAILBOX_RESOURCE_ID;
+    const mappingPath = path.join(__dirname, 'mailboxes.json');
+    if (fs.existsSync(mappingPath)) {
+        try {
+            const mapping = JSON.parse(fs.readFileSync(mappingPath, 'utf8'));
+            if (mapping[inbox]) {
+                mailboxResourceId = mapping[inbox];
+            }
+        } catch (e) {
+            console.error("Failed to read mailboxes mapping:", e.message);
+        }
+    }
     
     if (!token || !mailboxResourceId) {
         await sendTelegramMessage(chatId, "❌ E-posta göndermek için önce e-posta kutusunu bağlamalısınız. Lütfen <code>/bagla &lt;token&gt;</code> komutunu çalıştırın.");
         return;
     }
 
-    await sendTelegramMessage(chatId, `✉️ E-posta gönderiliyor, lütfen bekleyin...`);
+    await sendTelegramMessage(chatId, `✉️ E-posta <b>${inbox}</b> adresi üzerinden gönderiliyor, lütfen bekleyin...`);
 
     try {
         await axios.post(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/send`, {
@@ -256,6 +291,7 @@ async function handleEmailReply(message, repliedText) {
         });
         
         const successMsg = `✅ <b>E-posta Başarıyla Gönderildi!</b>
+📥 <b>Gönderen Kutu:</b> <code>${inbox}</code>
 👤 <b>Alıcı:</b> <code>${recipient}</code>
 📌 <b>Konu:</b> <code>${subject}</code>
 
@@ -268,7 +304,7 @@ async function handleEmailReply(message, repliedText) {
         if (err.response && err.response.data) {
             errMsg = JSON.stringify(err.response.data);
         }
-        await sendTelegramMessage(chatId, `❌ <b>E-posta Gönderme Hatası:</b>\n<code>${escapeHTML(errMsg)}</code>`);
+        await sendTelegramMessage(chatId, `❌ <b>E-posta Gönderme Hatası (${inbox} üzerinden):</b>\n<code>${escapeHTML(errMsg)}</code>`);
     }
 }
 
