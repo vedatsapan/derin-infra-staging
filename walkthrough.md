@@ -73,3 +73,20 @@ Web sitesi, kullanıcı tercihi doğrultusunda **GitHub Pages** üzerinde kendi 
    * Eski tek sayfalık form yerine 5 adımlı şık bir Teklif Hesaplama Sihirbazı kodlandı. İlerleme çubuğu, adım doğrulama (validation), m² alanı kaydırıcı çubuğu ile sayı girişinin senkronizasyonu ve dinamik özet alanı eklendi.
    * Portföy için kategori filtreleme tabları (Tümü, Banyolar, Tuvaletler, Duvar & Tavanlar, Tesisat) akıcı ölçeklendirme animasyonları eşliğinde entegre edildi.
 
+---
+
+## 📬 Son Eklenen Geliştirmeler (26 Haziran Güncellemesi) - Hostinger Agentic Mail & Telegram Entegrasyonu
+
+1. **Vercel Yönlendirme Güncellemesi (`vercel.json`):**
+   * Buluttaki sunucusuz Express yönlendirmesi `/api/(.*)` olarak güncellendi. Bu sayede tüm yeni API endpoint'leri (`/api/email-webhook` vb.) CORS engeline takılmadan ve 7/24 kesintisiz olarak bulutta çalışacaktır.
+2. **7/24 Gelen Kutusu İzleme ve Yapay Zeka Taslağı (`server.js`):**
+   * `/api/email-webhook` endpoint'i yazıldı. Hostinger Agentic Mail webhook tetiklendiğinde e-postanın gönderen, konu ve içerik bilgileri alınıp Gemini 1.5 Flash ile e-postanın dili tespit edilir.
+   * Aynı dilde (Hollandaca, Türkçe, İngilizce) profesyonelce hazırlanmış bir taslak yanıt otomatik oluşturulur.
+   * Bu taslak, HTML formatında İnan Abi'nin Telegram botuna push bildirimi olarak anında gönderilir.
+3. **Lokal Hermes Telegram Ajanı Göçü (`hermes.js`):**
+   * Ajan tamamen **Telegram long-polling** yapısına taşındı (WhatsApp bağımlılığı kaldırıldı).
+   * **Bilgisayar Açılış Bildirimi (Downtime Tracking):** `last_seen.json` üzerinden bilgisayarın kapalı kaldığı süre hesaplanarak İnan Abi'ye Telegram'dan esprili bir karşılama ("Emrindeyim İnan Abi!") gönderilir. Ayrıca bu süreçte gelen e-posta adedi de listelenir.
+   * **API Bağlama (`/bagla <token>`):** İnan Abi `/bagla` komutuyla Hostinger Mail API token'ını girdiğinde, bot otomatik olarak `info@derininfra.nl` posta kutusu Resource ID'sini çeker, Hostinger'da webhook ve webhook secret kaydını tamamlar ve yerel `.env` dosyasına yazar.
+   * **Sunucu Yönetimi Komutları:** `/durum` ve `/restart` komutları ile Hostinger VPS durum bilgisi ve reboot işlemleri Telegram üzerinden tetiklenebilir.
+   * **GitOps Chatbot Güncelleme (`/chatbot_guncelle <bilgi>`):** Gönderilen yeni chatbot bilgileri yerel `company_updates.txt` dosyasına yazılır ve otomatik `git push` ile Vercel üzerinde 7/24 yayında olan chatbot bilgi tabanı güncellenir.
+   * **E-posta Yanıtlama (Stateless Reply Flow):** İnan Abi gelen e-posta bildirimine Telegram'da **Yanıtla (Reply)** seçeneğiyle `/gonder` yazarsa taslak e-posta gönderilir. Özel bir mesaj yazarsa, İnan Abi'nin kendi yazdığı özel yanıt Hostinger API'si üzerinden alıcıya gönderilir.
