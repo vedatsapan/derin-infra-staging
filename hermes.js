@@ -722,6 +722,15 @@ async function handleTelegramMessage(message) {
         }
     }
 
+    // Smart GitHub Token Auto-Extractor (ghp_... or github_pat_...)
+    const githubTokenMatch = text.match(/\b(ghp_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9_]{82})\b/);
+    if (githubTokenMatch) {
+        const ghToken = githubTokenMatch[1];
+        updateEnvFile({ GITHUB_TOKEN: ghToken });
+        await sendTelegramMessage(chatId, "🔑 <b>GitHub Token başarıyla kaydedildi!</b> Artık teklifleri, randevuları ve web sitesi güncellemelerini yönetebilirim.");
+        return;
+    }
+
     // Smart Token Auto-Extractor (Checks if the message contains a 64-character Hostinger API token)
     const tokenMatch = text.match(/\b([a-f0-9]{64})\b/i);
     if (tokenMatch) {
