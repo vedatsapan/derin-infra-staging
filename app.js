@@ -1,5 +1,31 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Global State Variables (declared first to prevent Temporal Dead Zone ReferenceErrors)
+    let pricesConfig = {
+        badkamer_2: 4000,
+        badkamer_3: 4500,
+        badkamer_4: 5200,
+        badkamer_5_6: 6000,
+        badkamer_extra_m2: 800,
+        badkamer_material: 2500,
+        toilet_base: 2000,
+        toilet_material: 1000,
+        gipsplaat_labor: 42.5,
+        gipsplaat_material: 22.5,
+        fayans_labor: 47.5,
+        fayans_material: 52.5
+    };
+
+    // Load dynamic prices from prices.json
+    fetch('prices.json')
+        .then(res => res.json())
+        .then(data => {
+            pricesConfig = { ...pricesConfig, ...data };
+            console.log('Dynamic prices loaded successfully:', pricesConfig);
+        })
+        .catch(err => {
+            console.warn('Could not load dynamic prices from prices.json, using defaults:', err);
+        });
+
     let currentLang = localStorage.getItem('preferred_language') || 'nl';
     let allProjects = [];
     let currentFilter = 'all';
@@ -739,32 +765,32 @@ document.addEventListener('DOMContentLoaded', () => {
         switch (projectType) {
             case 'badkamer':
                 if (size <= 2) {
-                    basePrice = 4000;
+                    basePrice = pricesConfig.badkamer_2;
                 } else if (size === 3) {
-                    basePrice = 4500;
+                    basePrice = pricesConfig.badkamer_3;
                 } else if (size === 4) {
-                    basePrice = 5200;
+                    basePrice = pricesConfig.badkamer_4;
                 } else if (size === 5 || size === 6) {
-                    basePrice = 6000;
+                    basePrice = pricesConfig.badkamer_5_6;
                 } else if (size > 6) {
-                    basePrice = 6000 + (size - 6) * 800;
+                    basePrice = pricesConfig.badkamer_5_6 + (size - 6) * pricesConfig.badkamer_extra_m2;
                 }
-                materialCost = materialPref === 'met-materiaal' ? 2500 : 0;
+                materialCost = materialPref === 'met-materiaal' ? pricesConfig.badkamer_material : 0;
                 break;
 
             case 'toilet':
-                basePrice = 2000;
-                materialCost = materialPref === 'met-materiaal' ? 1000 : 0;
+                basePrice = pricesConfig.toilet_base;
+                materialCost = materialPref === 'met-materiaal' ? pricesConfig.toilet_material : 0;
                 break;
 
             case 'gipsplaat':
-                basePrice = size * 42.5;
-                materialCost = materialPref === 'met-materiaal' ? (size * 22.5) : 0;
+                basePrice = size * pricesConfig.gipsplaat_labor;
+                materialCost = materialPref === 'met-materiaal' ? (size * pricesConfig.gipsplaat_material) : 0;
                 break;
 
             case 'fayans':
-                basePrice = size * 47.5;
-                materialCost = materialPref === 'met-materiaal' ? (size * 52.5) : 0;
+                basePrice = size * pricesConfig.fayans_labor;
+                materialCost = materialPref === 'met-materiaal' ? (size * pricesConfig.fayans_material) : 0;
                 break;
 
             case 'riolering':
@@ -1322,27 +1348,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         switch (projectType) {
             case 'badkamer':
-                if (size <= 2) basePrice = 4000;
-                else if (size === 3) basePrice = 4500;
-                else if (size === 4) basePrice = 5200;
-                else if (size === 5 || size === 6) basePrice = 6000;
-                else if (size > 6) basePrice = 6000 + (size - 6) * 800;
-                materialCost = materialPref === 'met-materiaal' ? 2500 : 0;
+                if (size <= 2) basePrice = pricesConfig.badkamer_2;
+                else if (size === 3) basePrice = pricesConfig.badkamer_3;
+                else if (size === 4) basePrice = pricesConfig.badkamer_4;
+                else if (size === 5 || size === 6) basePrice = pricesConfig.badkamer_5_6;
+                else if (size > 6) basePrice = pricesConfig.badkamer_5_6 + (size - 6) * pricesConfig.badkamer_extra_m2;
+                materialCost = materialPref === 'met-materiaal' ? pricesConfig.badkamer_material : 0;
                 break;
 
             case 'toilet':
-                basePrice = 2000;
-                materialCost = materialPref === 'met-materiaal' ? 1000 : 0;
+                basePrice = pricesConfig.toilet_base;
+                materialCost = materialPref === 'met-materiaal' ? pricesConfig.toilet_material : 0;
                 break;
 
             case 'gipsplaat':
-                basePrice = size * 42.5;
-                materialCost = materialPref === 'met-materiaal' ? (size * 22.5) : 0;
+                basePrice = size * pricesConfig.gipsplaat_labor;
+                materialCost = materialPref === 'met-materiaal' ? (size * pricesConfig.gipsplaat_material) : 0;
                 break;
 
             case 'fayans':
-                basePrice = size * 47.5;
-                materialCost = materialPref === 'met-materiaal' ? (size * 52.5) : 0;
+                basePrice = size * pricesConfig.fayans_labor;
+                materialCost = materialPref === 'met-materiaal' ? (size * pricesConfig.fayans_material) : 0;
                 break;
 
             case 'riolering':

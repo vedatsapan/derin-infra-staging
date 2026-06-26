@@ -1,0 +1,14 @@
+{
+  "badkamer_2": 4000,
+  "badkamer_3": 4500,
+  "badkamer_4": 5200,
+  "badkamer_5_6": 6000,
+  "badkamer_extra_m2": 800,
+  "badkamer_material": 2500,
+  "toilet_base": 2000,
+  "toilet_material": 1000,
+  "gipsplaat_labor": 42.5,
+  "gipsplaat_material": 22.5,
+  "fayans_labor": 47.5,
+  "fayans_material": 52.5
+}

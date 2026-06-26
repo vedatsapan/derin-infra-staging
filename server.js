@@ -211,6 +211,83 @@ app.post('/api/chat', async (req, res) => {
     res.json({ reply: reply.trim() });
 });
 
+// Helper to save quote requests persistently in GitHub repository
+async function saveQuoteToGitHub(quoteData) {
+    const token = process.env.GITHUB_TOKEN;
+    const repo = "vedatsapan/derin-infra-staging";
+    const path = "quotes.json";
+    
+    if (!token || token.includes('placeholder')) {
+        console.warn("GITHUB_TOKEN is missing or placeholder, skipping saving quote to GitHub.");
+        return;
+    }
+
+    const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+    const headers = {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Der-In-Infra-App'
+    };
+
+    try {
+        let fileSha = null;
+        let quotes = [];
+
+        // Fetch current quotes.json content and SHA
+        const getRes = await fetch(url, { headers });
+        if (getRes.status === 200) {
+            const fileData = await getRes.json();
+            fileSha = fileData.sha;
+            const content = Buffer.from(fileData.content, 'base64').toString('utf8');
+            try {
+                quotes = JSON.parse(content);
+            } catch (parseErr) {
+                console.error("Failed to parse quotes.json content, starting fresh:", parseErr.message);
+            }
+        }
+
+        // Prepend new quote
+        quotes.unshift({
+            id: Date.now(),
+            created_at: new Date().toISOString(),
+            ...quoteData
+        });
+
+        // Limit list to last 100 quotes
+        if (quotes.length > 100) {
+            quotes = quotes.slice(0, 100);
+        }
+
+        // Commit updated quotes.json back to GitHub
+        const updatedContentBase64 = Buffer.from(JSON.stringify(quotes, null, 2), 'utf8').toString('base64');
+        const putPayload = {
+            message: `save proposal submission: ${quoteData.client_name || 'Anonymous'}`,
+            content: updatedContentBase64
+        };
+        if (fileSha) {
+            putPayload.sha = fileSha;
+        }
+
+        const putRes = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                ...headers,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(putPayload)
+        });
+
+        if (!putRes.ok) {
+            const putErrorText = await putRes.text();
+            throw new Error(`Failed to update quotes.json on GitHub (${putRes.status}): ${putErrorText}`);
+        }
+
+        console.log("Successfully saved quote to GitHub quotes.json!");
+    } catch (err) {
+        console.error("Error in saveQuoteToGitHub:", err.message);
+    }
+}
+
 // Endpoint to receive website contact/quote form submissions and notify via Telegram
 app.post('/api/quote', async (req, res) => {
     const data = req.body;
@@ -219,6 +296,9 @@ app.post('/api/quote', async (req, res) => {
     const deryaChatId = process.env.DERYA_CHAT_ID;
 
     console.log("Received quote submission:", data);
+
+    // Save persistently to GitHub quotes.json database emulation
+    await saveQuoteToGitHub(data);
 
     if (telegramToken && (inanChatId || deryaChatId)) {
         const message = `🔔 *YENİ TEKLİF TALEBİ GELDİ!* (derininfra.nl)
