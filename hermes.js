@@ -430,12 +430,20 @@ async function handleTelegramMessage(message) {
         }
     }
 
+    // Smart Token Auto-Extractor (Checks if the message contains a 64-character Hostinger API token)
+    const tokenMatch = text.match(/\b([a-f0-9]{64})\b/i);
+    if (tokenMatch) {
+        const token = tokenMatch[1];
+        await handleEmailLink(chatId, token);
+        return;
+    }
+
     // Command Router
     if (text.startsWith('/start') || text.startsWith('/yardim')) {
         const helpMsg = `🤖 <b>Der-In Infra Hermes Asistanı</b>
 
 <b>Komutlar:</b>
-🔑 <code>/bagla &lt;token&gt;</code> - Hostinger Mail API jetonunu bağlar.
+🔑 <code>/bagla &lt;token&gt;</code> - Hostinger Mail API jetonunu bağlar. (Not: Jetonu doğrudan komutsuz da gönderebilirsiniz!)
 🖥️ <code>/durum</code> - VPS sunucu durumunu gösterir.
 🔄 <code>/restart</code> - VPS sunucuyu yeniden başlatır.
 📝 <code>/chatbot_guncelle &lt;bilgi&gt;</code> - Chatbot bilgi tabanına yeni bilgi ekler.
