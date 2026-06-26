@@ -1,271 +1,465 @@
-// hermes.js - AI Assistant & WhatsApp Secretary for Der-In infra
-// Orchestrates WhatsApp commands, project approvals, Hostinger VPS API, and chatbot updates.
+// hermes.js - AI Assistant & Telegram Secretary for Der-In infra
+// Orchestrates Telegram commands, project approvals, Hostinger VPS API, and chatbot updates.
 // Run with: pm2 start hermes.js --name "hermes-agent"
 
 require('dotenv').config();
-const { makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
-const { Boom } = require('@hapi/boom');
-const qrcode = require('qrcode-terminal');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 
-// Configure phone numbers (JIDs) for İnan Abi and Derya Abla
-// Format: country_code + number + @s.whatsapp.net (e.g. '31618694652@s.whatsapp.net')
-const INAN_JID = process.env.INAN_JID || '31618694652@s.whatsapp.net'; // İnan Abi (Default)
-const DERYA_JID = process.env.DERYA_JID || '31618694652@s.whatsapp.net'; // Derya Abla (Default)
+// Get Telegram and Chat configurations
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
+const INAN_CHAT_ID = process.env.INAN_CHAT_ID;
+const DERYA_CHAT_ID = process.env.DERYA_CHAT_ID;
 
-// State Tracking
-let currentStatus = {
-    step: 'IDLE', // IDLE, PENDING_APPROVAL
-    pendingData: null
-};
+// Ensure Telegram Token is configured
+if (!TELEGRAM_TOKEN || TELEGRAM_TOKEN.includes('placeholder')) {
+    console.error("⚠️ Hata: TELEGRAM_TOKEN .env dosyasında tanımlı değil veya varsayılan değerde!");
+    process.exit(1);
+}
 
-// Hostinger VPS API Helper
-async function callHostingerAPI(endpoint, method = 'GET', data = null) {
-    const apiKey = process.env.HOSTINGER_API_KEY;
-    const serverId = process.env.HOSTINGER_SERVER_ID;
-    
-    if (!apiKey) {
-        throw new Error('Hostinger API Key (.env) bulunamadı.');
+let offset = 0;
+const lastSeenPath = path.join(__dirname, 'last_seen.json');
+
+// Helper to escape HTML tags for Telegram
+function escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Helper to update local .env file dynamically
+function updateEnvFile(updates) {
+    const envPath = path.join(__dirname, '.env');
+    let content = fs.existsSync(envPath) ? fs.readFileSync(envPath, 'utf8') : '';
+    for (const [key, val] of Object.entries(updates)) {
+        const regex = new RegExp(`^${key}=.*$`, 'm');
+        if (regex.test(content)) {
+            content = content.replace(regex, `${key}=${val}`);
+        } else {
+            content += `\n${key}=${val}`;
+        }
     }
-    if (!serverId) {
-        throw new Error('Hostinger Server ID/IP (.env) bulunamadı.');
-    }
+    fs.writeFileSync(envPath, content, 'utf8');
+    // Reload process env
+    require('dotenv').config();
+}
 
-    // Hostinger VPS REST API URL
-    // Standard URL format for Hostinger API: https://api.hostinger.com/v1/vps/...
-    const url = `https://api.hostinger.com/v1/vps/${serverId}/${endpoint}`;
-    
+// Telegram sendMessage helper
+async function sendTelegramMessage(chatId, text, parseMode = 'HTML') {
     try {
-        const response = await axios({
-            url,
-            method,
+        await axios.post(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+            chat_id: chatId,
+            text: text,
+            parse_mode: parseMode
+        });
+    } catch (err) {
+        console.error(`Telegram message send failed for chat ${chatId}:`, err.message);
+    }
+}
+
+// Startup downtime calculator and notification
+async function handleStartup() {
+    console.log("Startup downtime check running...");
+    if (fs.existsSync(lastSeenPath)) {
+        try {
+            const data = JSON.parse(fs.readFileSync(lastSeenPath, 'utf8'));
+            const lastSeen = data.timestamp;
+            const diffMs = Date.now() - lastSeen;
+            const diffMins = Math.floor(diffMs / 60000);
+            
+            let timeStr = "";
+            if (diffMins < 60) {
+                timeStr = `${diffMins} dakika`;
+            } else {
+                const hours = Math.floor(diffMins / 60);
+                const mins = diffMins % 60;
+                timeStr = `${hours} saat ${mins} dakika`;
+            }
+            
+            // Check for missing emails during downtime
+            let emailsCount = 0;
+            const token = process.env.HOSTINGER_MAIL_TOKEN;
+            const mailboxResourceId = process.env.HOSTINGER_MAILBOX_RESOURCE_ID;
+            if (token && mailboxResourceId) {
+                try {
+                    const res = await axios.get(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/folders/INBOX/messages`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const messages = res.data.data || [];
+                    for (const msg of messages) {
+                        const msgDate = new Date(msg.date).getTime();
+                        if (msgDate > lastSeen) {
+                            emailsCount++;
+                        }
+                    }
+                } catch (e) {
+                    console.error("Failed to check emails since offline:", e.message);
+                }
+            }
+
+            const startupMsg = `🤖 <b>Emrindeyim İnan Abi!</b> 🛠️
+
+Bilgisayarın az önce açıldı ve Hermes Ajanın göreve hazır.
+Sistem yaklaşık <b>${timeStr}</b> kapalı kaldı.
+${emailsCount > 0 ? `📬 Sen yokken gelen kutuna <b>${emailsCount} yeni e-posta</b> düştü! (Bota bildirimleri gelmiş olmalı).` : "📬 Sen yokken yeni e-posta gelmedi."}
+
+<i>"Fayansların terazisi bozuksa, Derya abla hemen çimento kokusunu alır!" 😉</i>`;
+            await sendTelegramMessage(INAN_CHAT_ID, startupMsg);
+        } catch (err) {
+            console.error("Error reading last seen timestamp:", err);
+        }
+    } else {
+        const welcomeMsg = `🤖 <b>Merhaba İnan Abi!</b>
+Der-In infra Hermes asistanın başarıyla kuruldu ve ilk kez çalıştırıldı!
+🛠️ <i>Tüm işler tıkırında, emrindeyim!</i>`;
+        await sendTelegramMessage(INAN_CHAT_ID, welcomeMsg);
+    }
+    
+    // Start periodic heartbeat
+    setInterval(() => {
+        try {
+            fs.writeFileSync(lastSeenPath, JSON.stringify({ timestamp: Date.now() }), 'utf8');
+        } catch (e) {
+            console.error("Failed to write heartbeat:", e.message);
+        }
+    }, 15000); // every 15 seconds
+}
+
+// Hostinger Mail API Linker
+async function handleEmailLink(chatId, token) {
+    await sendTelegramMessage(chatId, "🔗 Hostinger Agentic Mail API doğrulanıyor, lütfen bekleyin...");
+    try {
+        const res = await axios.get('https://api.mail.hostinger.com/api/v1/me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const mailboxes = res.data.data?.mailboxes || [];
+        const mailbox = mailboxes.find(m => m.address === 'info@derininfra.nl') || mailboxes[0];
+        
+        if (!mailbox) {
+            await sendTelegramMessage(chatId, "❌ Bağlı hesapta yönetilebilir bir e-posta kutusu bulunamadı.");
+            return;
+        }
+
+        const mailboxResourceId = mailbox.resourceId;
+
+        // Register Webhook
+        const targetUrl = 'https://derin-infra-staging.vercel.app/api/email-webhook';
+        
+        // List existing webhooks
+        const webhooksRes = await axios.get(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/webhooks`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const existingWebhooks = webhooksRes.data.data || [];
+        let webhook = existingWebhooks.find(w => w.url === targetUrl);
+        let secret = '';
+
+        if (!webhook) {
+            // Create new webhook
+            const createRes = await axios.post(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/webhooks`, {
+                name: "Hermes Webhook",
+                url: targetUrl,
+                events: ["message.received"],
+                status: "active"
+            }, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            webhook = createRes.data.data;
+            secret = webhook.secret;
+        } else {
+            // Webhook exists, regenerate secret to ensure we have it stored
+            const regenRes = await axios.post(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/webhooks/${webhook.id}/regenerate-secret`, {}, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            secret = regenRes.data.data.secret;
+        }
+
+        // Update .env file
+        updateEnvFile({
+            HOSTINGER_MAIL_TOKEN: token,
+            HOSTINGER_MAILBOX_RESOURCE_ID: mailboxResourceId,
+            WEBHOOK_SECRET: secret
+        });
+
+        const reply = `✅ <b>E-posta kutusu başarıyla bağlandı!</b>
+📬 <b>Adres:</b> <code>${mailbox.address}</code>
+📌 <b>Resource ID:</b> <code>${mailboxResourceId}</code>
+⚡ <b>Webhook Durumu:</b> Aktif ve 7/24 izleniyor!
+
+Taslak cevaplar artık bota otomatik düşecektir İnan Abi.`;
+        await sendTelegramMessage(chatId, reply);
+    } catch (err) {
+        console.error("API Link Error:", err);
+        let errMsg = err.message;
+        if (err.response && err.response.data) {
+            errMsg = JSON.stringify(err.response.data);
+        }
+        await sendTelegramMessage(chatId, `❌ <b>E-posta Bağlama Hatası:</b>\n<code>${escapeHTML(errMsg)}</code>`);
+    }
+}
+
+// Hostinger Mail sending on reply
+async function handleEmailReply(message, repliedText) {
+    const chatId = message.chat.id.toString();
+    const text = (message.text || '').trim();
+
+    // Extract email using regex
+    const emailRegex = /[\w.-]+@[\w.-]+\.[\w.-]+/g;
+    const emails = repliedText.match(emailRegex) || [];
+    const recipient = emails.find(e => e !== 'info@derininfra.nl');
+    
+    if (!recipient) {
+        await sendTelegramMessage(chatId, "❌ Alıcı e-posta adresi bildirim mesajından ayrıştırılamadı.");
+        return;
+    }
+
+    // Extract Subject
+    let subject = "Re: Der-In infra";
+    const subjectMatch = repliedText.match(/📌 Konu:\s*([^\n\r]+)/);
+    if (subjectMatch) {
+        subject = "Re: " + subjectMatch[1].replace(/<\/?[^>]+(>|$)/g, "").trim();
+    }
+
+    // Extract Draft Reply
+    let emailBody = "";
+    if (text === '/gonder') {
+        const draftMatch = repliedText.match(/🤖 Önerilen Cevap:\s*[\r\n]+([\s\S]*?)(?:----------------------------------------|$)/);
+        if (draftMatch) {
+            emailBody = draftMatch[1].replace(/<\/?[^>]+(>|$)/g, "").trim();
+        } else {
+            await sendTelegramMessage(chatId, "❌ Önerilen cevap taslağı bildirimden okunamadı.");
+            return;
+        }
+    } else {
+        emailBody = text; // Custom response body
+    }
+
+    const token = process.env.HOSTINGER_MAIL_TOKEN;
+    const mailboxResourceId = process.env.HOSTINGER_MAILBOX_RESOURCE_ID;
+    
+    if (!token || !mailboxResourceId) {
+        await sendTelegramMessage(chatId, "❌ E-posta göndermek için önce e-posta kutusunu bağlamalısınız. Lütfen <code>/bagla &lt;token&gt;</code> komutunu çalıştırın.");
+        return;
+    }
+
+    await sendTelegramMessage(chatId, `✉️ E-posta gönderiliyor, lütfen bekleyin...`);
+
+    try {
+        await axios.post(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}/send`, {
+            to: [recipient],
+            subject: subject,
+            text: emailBody
+        }, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const successMsg = `✅ <b>E-posta Başarıyla Gönderildi!</b>
+👤 <b>Alıcı:</b> <code>${recipient}</code>
+📌 <b>Konu:</b> <code>${subject}</code>
+
+📝 <b>Gönderilen Cevap:</b>
+<pre>${escapeHTML(emailBody)}</pre>`;
+        await sendTelegramMessage(chatId, successMsg);
+    } catch (err) {
+        console.error("Email send failed:", err);
+        let errMsg = err.message;
+        if (err.response && err.response.data) {
+            errMsg = JSON.stringify(err.response.data);
+        }
+        await sendTelegramMessage(chatId, `❌ <b>E-posta Gönderme Hatası:</b>\n<code>${escapeHTML(errMsg)}</code>`);
+    }
+}
+
+// Hostinger VPS Status
+async function showServerStatus(chatId) {
+    await sendTelegramMessage(chatId, '🔍 Hostinger API üzerinden VPS durumu sorgulanıyor, lütfen bekleyin...');
+    try {
+        const apiKey = process.env.HOSTINGER_API_KEY;
+        const serverId = process.env.HOSTINGER_SERVER_ID;
+        
+        if (!apiKey || apiKey.includes('key')) {
+            const simMsg = `💡 <b>Bilgilendirme (Simüle Modu):</b> Hostinger API anahtarı girilmemiş.
+
+🖥️ <b>Sunucu Durumu:</b> Aktif/Çalışıyor (Port 8085)
+⚡ <b>CPU:</b> %5.2
+💾 <b>RAM:</b> 480MB / 1024MB
+🌐 <b>Web:</b> https://derininfra.nl/`;
+            await sendTelegramMessage(chatId, simMsg);
+            return;
+        }
+
+        const url = `https://api.hostinger.com/v1/vps/${serverId}/status`;
+        const res = await axios.get(url, {
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json'
-            },
-            data,
-            timeout: 10000
+            }
         });
-        return response.data;
+        const vpsInfo = res.data;
+        const reply = `🖥️ <b>HOSTINGER VPS DURUMU</b>
+📌 <b>Sunucu ID:</b> <code>${serverId}</code>
+🟢 <b>Durum:</b> ${vpsInfo.status || 'Aktif'}
+⚡ <b>İşlemci (CPU):</b> %${vpsInfo.cpu || '0'}
+💾 <b>Bellek (RAM):</b> ${vpsInfo.ram_used || '0'}MB / ${vpsInfo.ram_total || '0'}MB
+💾 <b>Disk Kullanımı:</b> %${vpsInfo.disk_used_percent || '0'}
+🌐 <b>IP Adresi:</b> <code>${vpsInfo.ip || 'Bilinmiyor'}</code>`;
+        await sendTelegramMessage(chatId, reply);
     } catch (err) {
-        if (err.response) {
-            throw new Error(`Hostinger API Hatası (${err.response.status}): ${JSON.stringify(err.response.data)}`);
-        }
-        throw new Error(`Hostinger API Bağlantı Hatası: ${err.message}`);
+        await sendTelegramMessage(chatId, `❌ Sunucu durumu alınamadı: <code>${escapeHTML(err.message)}</code>`);
     }
 }
 
-// Main WhatsApp Bot Initialization
-async function connectToWhatsApp() {
-    console.log('Hermes Agent WhatsApp bağlantısı başlatılıyor...');
-    const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
-    
-    const sock = makeWASocket({
-        auth: state,
-        printQRInTerminal: true // Prints QR code to terminal for easy linking
-    });
-
-    sock.ev.on('creds.update', saveCreds);
-
-    sock.ev.on('connection.update', (update) => {
-        const { connection, lastDisconnect, qr } = update;
+// Hostinger VPS Restart
+async function restartServer(chatId) {
+    await sendTelegramMessage(chatId, '🔄 Sunucu yeniden başlatma komutu gönderiliyor...');
+    try {
+        const apiKey = process.env.HOSTINGER_API_KEY;
+        const serverId = process.env.HOSTINGER_SERVER_ID;
         
-        if (qr) {
-            console.log('👉 Lütfen telefonunuzdan WhatsApp -> Bağlı Cihazlar -> Cihaz Bağla seçeneğiyle bu QR kodu taratın:');
-        }
-        
-        if (connection === 'close') {
-            const shouldReconnect = (lastDisconnect.error instanceof Boom) ? 
-                lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut : true;
-            console.log('Bağlantı koptu. Yeniden bağlanılıyor:', shouldReconnect);
-            if (shouldReconnect) connectToWhatsApp();
-        } else if (connection === 'open') {
-            console.log('==================================================');
-            console.log(' Der-In infra Hermes Agent WhatsApp Bağlantısı Kuruldu! ✅');
-            console.log(` Dinlenen Numaralar:`);
-            console.log(` İnan Abi: ${INAN_JID}`);
-            console.log(` Derya Abla: ${DERYA_JID}`);
-            console.log('==================================================');
-        }
-    });
-
-    // Listen for incoming messages
-    sock.ev.on('messages.upsert', async (m) => {
-        const msg = m.messages[0];
-        if (!msg.message || msg.key.fromMe) return;
-
-        const from = msg.key.remoteJid;
-        const messageText = (msg.message.conversation || 
-                             msg.message.extendedTextMessage?.text || '').trim();
-
-        // Check if message is from İnan Abi or Derya Abla
-        const isSenderAuthorized = (from === INAN_JID || from === DERYA_JID);
-        if (!isSenderAuthorized) return;
-
-        // --- COMMAND 1: Chatbot Bilgi Güncelleme (Real-time updates) ---
-        if (messageText.toLowerCase().startsWith('chatbot güncelle:') || messageText.toLowerCase().startsWith('chatbot güncelle ')) {
-            const newInfo = messageText.substring(17).trim();
-            if (!newInfo) {
-                await sock.sendMessage(from, { text: '⚠️ Hata: Güncellenecek bilgiyi boş bırakamazsınız. Örnek: "Chatbot Güncelle: Bayramda kapalıyız."' });
-                return;
-            }
-
-            const updatesPath = path.join(__dirname, 'company_updates.txt');
-            try {
-                // Append or write the update to the file
-                const timestamp = new Date().toLocaleString('tr-TR');
-                const updateLine = `[${timestamp}]: ${newInfo}`;
-                
-                // Read current content to keep history
-                let currentContent = '';
-                if (fs.existsSync(updatesPath)) {
-                    currentContent = fs.readFileSync(updatesPath, 'utf8');
-                }
-                
-                const newContent = currentContent ? `${currentContent}\n${updateLine}` : updateLine;
-                fs.writeFileSync(updatesPath, newContent, 'utf8');
-                
-                await sock.sendMessage(from, { text: `✅ Chatbot bilgi tabanı başarıyla güncellendi ve aktif oldu!\n\nℹ️ *Yeni Eklenen Bilgi:*\n"${newInfo}"` });
-                console.log(`Chatbot updated by WhatsApp user: ${newInfo}`);
-            } catch (err) {
-                await sock.sendMessage(from, { text: `❌ Dosya güncelleme hatası: ${err.message}` });
-            }
+        if (!apiKey || apiKey.includes('key')) {
+            const simMsg = `💡 <b>Simüle Modu:</b> Hostinger API anahtarı eksik olduğu için fiziki restart tetiklenemedi. Lokal sunucu çalışmaya devam ediyor.`;
+            await sendTelegramMessage(chatId, simMsg);
             return;
         }
 
-        // --- COMMAND 2: Hostinger VPS Durumu Sorgulama ---
-        if (messageText.toLowerCase() === 'sunucu durumu' || messageText.toLowerCase() === 'hostinger durum') {
-            await sock.sendMessage(from, { text: '🔍 Hostinger API üzerinden VPS durumu sorgulanıyor, lütfen bekleyin...' });
-            try {
-                // Fetch status from Hostinger VPS API
-                const vpsInfo = await callHostingerAPI('status', 'GET');
-                // Format response
-                const reply = `🖥️ *HOSTINGER VPS DURUMU*
-📌 *Sunucu ID:* ${process.env.HOSTINGER_SERVER_ID}
-🟢 *Durum:* ${vpsInfo.status || 'Aktif'}
-⚡ *İşlemci (CPU):* %${vpsInfo.cpu || '0'}
-💾 *Bellek (RAM):* ${vpsInfo.ram_used || '0'}MB / ${vpsInfo.ram_total || '0'}MB
-💾 *Disk Kullanımı:* %${vpsInfo.disk_used_percent || '0'}
-🌐 *IP Adresi:* ${vpsInfo.ip || 'Bilinmiyor'}`;
-                
-                await sock.sendMessage(from, { text: reply });
-            } catch (err) {
-                // Fallback / simulated info if credentials are placeholders
-                const isPlaceholder = !process.env.HOSTINGER_API_KEY || process.env.HOSTINGER_API_KEY.includes('key');
-                if (isPlaceholder) {
-                    await sock.sendMessage(from, { text: `💡 *Bilgilendirme (Simüle Modu):* Hostinger API anahtarı girilmemiş. \n\n🖥️ *Sunucu Durumu:* Aktif/Çalışıyor (Port 8085)\n⚡ *CPU:* %5.2\n💾 *RAM:* 480MB / 1024MB\n🌐 *Web:* https://derininfra.nl/` });
-                } else {
-                    await sock.sendMessage(from, { text: `❌ Hostinger API Sorgu Hatası: ${err.message}` });
-                }
+        const url = `https://api.hostinger.com/v1/vps/${serverId}/reboot`;
+        await axios.post(url, {}, {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
             }
-            return;
-        }
-
-        // --- COMMAND 3: Hostinger VPS Yeniden Başlatma (Reboot) ---
-        if (messageText.toLowerCase() === 'sunucu restart' || messageText.toLowerCase() === 'sunucuyu yeniden başlat') {
-            await sock.sendMessage(from, { text: '🔄 Sunucu yeniden başlatma komutu gönderiliyor...' });
-            try {
-                const response = await callHostingerAPI('reboot', 'POST');
-                await sock.sendMessage(from, { text: `✅ Sunucu başarıyla yeniden başlatıldı! 1-2 dakika içinde tekrar aktif olacaktır.` });
-            } catch (err) {
-                const isPlaceholder = !process.env.HOSTINGER_API_KEY || process.env.HOSTINGER_API_KEY.includes('key');
-                if (isPlaceholder) {
-                    await sock.sendMessage(from, { text: `💡 *Simüle Modu:* Hostinger API anahtarı eksik olduğu için fiziki restart tetiklenemedi. Lokal sunucu çalışmaya devam ediyor.` });
-                } else {
-                    await sock.sendMessage(from, { text: `❌ Hostinger API Restart Hatası: ${err.message}` });
-                }
-            }
-            return;
-        }
-
-        // --- FLOW 4: İNAN ABİ'DEN GELEN YENİ İŞ / RESİM ONAY SÜRECİ ---
-        if (from === INAN_JID) {
-            // İnan abi ses kaydı veya şantiye resmi gönderdiğinde
-            if (msg.message.imageMessage || msg.message.audioMessage) {
-                await sock.sendMessage(from, { text: '📥 Dosyayı aldım İnan abi. Yapay zeka ile görseli/sesi işliyorum...' });
-                
-                // Setup metadata for the new project
-                const mockProject = {
-                    id: Date.now(),
-                    image: "projects/gallery_bathroom_modern.png", // Or the actual saved filename
-                    category: "badkamer",
-                    title: {
-                        nl: "Nieuwe Badkamer Opgeleverd",
-                        en: "New Bathroom Completed",
-                        tr: "Yeni Banyo Teslimi"
-                    },
-                    desc: {
-                        nl: "Complete renovatie van badkamer met grote tegels en inloopdouche.",
-                        en: "Complete renovation of bathroom with large tiles and walk-in shower.",
-                        tr: "Büyük ebatlı fayanslar ve duşakabin ile komple banyo tadilatı."
-                    }
-                };
-
-                currentStatus.step = 'PENDING_APPROVAL';
-                currentStatus.pendingData = mockProject;
-
-                // Send request to Derya Abla for approval
-                const approvalMsg = `📢 *YENİ İŞ ONAY TALEBİ!*
-👤 *Gönderen:* İnan Abi
-
-📄 *Hollandaca Açıklama:*
-*Başlık:* ${mockProject.title.nl}
-*Metin:* ${mockProject.desc.nl}
-
-📄 *Türkçe Açıklama:*
-*Başlık:* ${mockProject.title.tr}
-*Metin:* ${mockProject.desc.tr}
-
-📸 *Görsel:* [Yeni Resim Eklendi]
-
-Lütfen web sitesinde yayınlamak için *EVET* yazın, iptal etmek için *HAYIR* yazın. Açıklamayı değiştirmek için doğrudan yeni metni yazıp gönderebilirsiniz.`;
-
-                await sock.sendMessage(DERYA_JID, { text: approvalMsg });
-                await sock.sendMessage(from, { text: '⏱️ İş detayları ve görsel Derya Abla\'nın onayına sunuldu. Onaylandığı an web sitesinde yayına alınacaktır.' });
-            }
-        }
-
-        // --- FLOW 5: DERYA ABLA ONAY KONTROLÜ ---
-        if (from === DERYA_JID && currentStatus.step === 'PENDING_APPROVAL') {
-            const reply = messageText.toUpperCase().trim();
-
-            if (reply === 'EVET') {
-                const projectsPath = path.join(__dirname, 'projects.json');
-                let projects = [];
-                try {
-                    if (fs.existsSync(projectsPath)) {
-                        projects = JSON.parse(fs.readFileSync(projectsPath, 'utf8'));
-                    }
-                    
-                    // Prepend new project
-                    projects.unshift(currentStatus.pendingData);
-                    fs.writeFileSync(projectsPath, JSON.stringify(projects, null, 2), 'utf8');
-                    
-                    await sock.sendMessage(DERYA_JID, { text: '✅ Web sitesi başarıyla güncellendi! Yeni iş galeride en başta yayında.' });
-                    await sock.sendMessage(INAN_JID, { text: '🎉 Müjde İnan abi, gönderdiğin iş Derya ablanın onayıyla web sitesinde yayınlandı!' });
-                } catch (err) {
-                    await sock.sendMessage(DERYA_JID, { text: `❌ Dosya yazma hatası: ${err.message}` });
-                }
-                
-                currentStatus.step = 'IDLE';
-                currentStatus.pendingData = null;
-
-            } else if (reply === 'HAYIR') {
-                await sock.sendMessage(DERYA_JID, { text: '❌ İşlem iptal edildi, web sitesine eklenmeyecek.' });
-                await sock.sendMessage(INAN_JID, { text: '⚠️ Gönderdiğin iş Derya abla tarafından uygun görülmedi ve iptal edildi.' });
-                
-                currentStatus.step = 'IDLE';
-                currentStatus.pendingData = null;
-            } else {
-                // If Derya abla edits the text
-                currentStatus.pendingData.desc.tr = messageText;
-                currentStatus.pendingData.desc.nl = messageText; // For simplicity in mock
-                await sock.sendMessage(DERYA_JID, { text: `📝 Açıklama güncellendi. Yeni metni onaylıyor musunuz? Onaylamak için *EVET* yazın.` });
-            }
-        }
-    });
+        });
+        await sendTelegramMessage(chatId, `✅ Sunucu başarıyla yeniden başlatıldı! 1-2 dakika içinde tekrar aktif olacaktır.`);
+    } catch (err) {
+        await sendTelegramMessage(chatId, `❌ Sunucu yeniden başlatılamadı: <code>${escapeHTML(err.message)}</code>`);
+    }
 }
 
-connectToWhatsApp();
+// GitOps Chatbot Update
+async function handleChatbotUpdate(chatId, newInfo) {
+    if (!newInfo) {
+        await sendTelegramMessage(chatId, '⚠️ Hata: Güncellenecek bilgiyi boş bırakamazsınız. Örnek: <code>/chatbot_guncelle Bayramda kapalıyız.</code>');
+        return;
+    }
+
+    const updatesPath = path.join(__dirname, 'company_updates.txt');
+    try {
+        const timestamp = new Date().toLocaleString('tr-TR');
+        const updateLine = `[${timestamp}]: ${newInfo}`;
+        
+        let currentContent = '';
+        if (fs.existsSync(updatesPath)) {
+            currentContent = fs.readFileSync(updatesPath, 'utf8');
+        }
+        
+        const newContent = currentContent ? `${currentContent}\n${updateLine}` : updateLine;
+        fs.writeFileSync(updatesPath, newContent, 'utf8');
+        
+        await sendTelegramMessage(chatId, `📝 Bilgi tabanı güncellendi. Değişiklikler canlıya (GitHub/Vercel) yükleniyor...`);
+        
+        const { exec } = require('child_process');
+        exec('git add company_updates.txt && git commit -m "update chatbot info via Telegram" && git push origin master', (gitErr, stdout, stderr) => {
+            if (gitErr) {
+                console.error("Git Push failed:", gitErr);
+                sendTelegramMessage(chatId, `❌ <b>Git Push Hatası:</b> Web sitesi güncellenemedi.\n<code>${escapeHTML(gitErr.message)}</code>`);
+            } else {
+                console.log("Git Push stdout:", stdout);
+                sendTelegramMessage(chatId, `✅ <b>Chatbot bilgisi başarıyla güncellendi!</b>\n\nℹ️ <b>Eklenen Bilgi:</b>\n"${escapeHTML(newInfo)}"\n\n🚀 Vercel 1-2 dakika içinde otomatik derleyip canlıya alacaktır.`);
+            }
+        });
+    } catch (err) {
+        await sendTelegramMessage(chatId, `❌ Dosya güncelleme hatası: <code>${escapeHTML(err.message)}</code>`);
+    }
+}
+
+// Telegram Message Dispatcher
+async function handleTelegramMessage(message) {
+    const chatId = message.chat.id.toString();
+    
+    // Authorization Check
+    const isSenderAuthorized = (chatId === INAN_CHAT_ID || chatId === DERYA_CHAT_ID);
+    if (!isSenderAuthorized) return;
+
+    const text = (message.text || '').trim();
+
+    // Check if reply to email notification
+    if (message.reply_to_message) {
+        const repliedMsg = message.reply_to_message;
+        const repliedText = repliedMsg.text || '';
+        if (repliedText.includes('📬 YENİ E-POSTA ALINDI!')) {
+            await handleEmailReply(message, repliedText);
+            return;
+        }
+    }
+
+    // Command Router
+    if (text.startsWith('/start') || text.startsWith('/yardim')) {
+        const helpMsg = `🤖 <b>Der-In Infra Hermes Asistanı</b>
+
+<b>Komutlar:</b>
+🔑 <code>/bagla &lt;token&gt;</code> - Hostinger Mail API jetonunu bağlar.
+🖥️ <code>/durum</code> - VPS sunucu durumunu gösterir.
+🔄 <code>/restart</code> - VPS sunucuyu yeniden başlatır.
+📝 <code>/chatbot_guncelle &lt;bilgi&gt;</code> - Chatbot bilgi tabanına yeni bilgi ekler.
+
+<i>Şantiyede çimento kokusu varsa teraziyi kontrol etmeyi unutma İnan Abi! 🛠️</i>`;
+        await sendTelegramMessage(chatId, helpMsg);
+        return;
+    }
+
+    if (text.startsWith('/bagla ')) {
+        const token = text.substring(7).trim();
+        await handleEmailLink(chatId, token);
+        return;
+    }
+
+    if (text === '/durum' || text === '/sunucu_durumu') {
+        await showServerStatus(chatId);
+        return;
+    }
+
+    if (text === '/restart' || text === '/sunucu_restart') {
+        await restartServer(chatId);
+        return;
+    }
+
+    if (text.startsWith('/chatbot_guncelle ')) {
+        const newInfo = text.substring(18).trim();
+        await handleChatbotUpdate(chatId, newInfo);
+        return;
+    }
+}
+
+// Polling Updates loop
+async function pollTelegramUpdates() {
+    try {
+        const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/getUpdates?offset=${offset}&timeout=30`;
+        const res = await axios.get(url, { timeout: 35000 });
+        const updates = res.data.result || [];
+        for (const update of updates) {
+            offset = update.update_id + 1;
+            if (update.message) {
+                await handleTelegramMessage(update.message);
+            }
+        }
+    } catch (err) {
+        console.error("Telegram polling connection error:", err.message);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+    }
+    setTimeout(pollTelegramUpdates, 500);
+}
+
+// Initialize Hermes Agent
+async function init() {
+    console.log("==================================================");
+    console.log(" Der-In infra Hermes Agent (Telegram Bot) is starting...");
+    console.log(` Target User Chat ID: ${INAN_CHAT_ID}`);
+    console.log("==================================================");
+
+    await handleStartup();
+    pollTelegramUpdates();
+}
+
+init();

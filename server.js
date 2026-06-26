@@ -255,6 +255,135 @@ app.post('/api/quote', async (req, res) => {
     res.json({ success: true, message: "Notification sent successfully." });
 });
 
+// Helper to escape HTML tags for Telegram
+function escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Endpoint to receive Hostinger email webhooks
+app.post('/api/email-webhook', async (req, res) => {
+    const payload = req.body;
+    console.log("Received Hostinger email webhook:", JSON.stringify(payload));
+
+    // Optional webhook signature verification
+    const webhookSecret = process.env.WEBHOOK_SECRET;
+    if (webhookSecret) {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || authHeader !== `Bearer ${webhookSecret}`) {
+            console.warn("Unauthorized webhook request.");
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+    }
+
+    if (payload.event_type !== 'message.received') {
+        return res.json({ success: true, message: "Ignored event type." });
+    }
+
+    const emailMsg = payload.message;
+    if (!emailMsg) {
+        return res.status(400).json({ error: "Missing message field." });
+    }
+
+    const from = emailMsg.from || "Bilinmeyen Gönderici";
+    const subject = emailMsg.subject || "(Konu Yok)";
+    const bodyText = emailMsg.extracted_text || emailMsg.preview || "(İçerik Yok)";
+    const inboxId = emailMsg.inbox_id || "info@derininfra.nl";
+
+    try {
+        const apiKey = process.env.GEMINI_API_KEY;
+        let draftReply = "";
+
+        if (apiKey) {
+            // Call Gemini 1.5 Flash to detect language and draft a professional reply
+            const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            const prompt = `
+            You are the official AI assistant of Der-In infra. We just received an email:
+            From: ${from}
+            Subject: ${subject}
+            Message:
+            ${bodyText}
+
+            Draft a professional, polite, and warm reply to this email in the same language it was written (e.g. Dutch if Dutch, Turkish if Turkish, English if English).
+            
+            Refer to our company services and pricing if relevant:
+            - Bathroom renovation starting €4000 ex BTW.
+            - Toilet renovation €2000 ex BTW.
+            - Tiling €47.50/m² ex BTW.
+            - Drywall €42.50/m² ex BTW.
+            - Service area: Lelystad + 75km radius.
+            - Warranty: 12 months.
+            - Always sign off as "Met vriendelijke groet, Der-In infra Team" (or Turkish equivalent if email is Turkish).
+
+            Do not include placeholders like "[Your Name]" or "[Date]". Draft a complete, ready-to-send reply.
+            Return only the drafted reply body, nothing else. Do not use quotes or markdown wrapping.
+            `;
+
+            const geminiPayload = {
+                contents: [{ role: 'user', parts: [{ text: prompt }] }],
+                generationConfig: { maxOutputTokens: 1000, temperature: 0.7 }
+            };
+
+            const geminiRes = await fetch(targetUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(geminiPayload)
+            });
+
+            if (geminiRes.ok) {
+                const geminiData = await geminiRes.json();
+                draftReply = geminiData.candidates[0].content.parts[0].text.trim();
+            } else {
+                console.error("Gemini API call failed for email drafting:", geminiRes.statusText);
+                draftReply = "Taslak oluşturulamadı. Lütfen kendi cevabınızı yazın.";
+            }
+        } else {
+            draftReply = "Gemini API anahtarı yüklü değil. Lütfen kendi cevabınızı yazın.";
+        }
+
+        // Send notification to İnan Abi's Telegram
+        const telegramToken = process.env.TELEGRAM_TOKEN;
+        const inanChatId = process.env.INAN_CHAT_ID;
+
+        if (telegramToken && inanChatId) {
+            const escapedFrom = escapeHTML(from);
+            const escapedSubject = escapeHTML(subject);
+            const escapedBody = escapeHTML(bodyText);
+            const escapedDraft = escapeHTML(draftReply);
+
+            const tgMsg = `<b>📬 YENİ E-POSTA ALINDI!</b>
+<b>👤 Gönderen:</b> <code>${escapedFrom}</code>
+<b>📌 Konu:</b> <code>${escapedSubject}</code>
+
+<b>📝 Müşteri Mesajı:</b>
+<pre>${escapedBody}</pre>
+
+----------------------------------------
+<b>🤖 Önerilen Cevap:</b>
+<pre>${escapedDraft}</pre>
+----------------------------------------
+
+👉 <i>Cevabı göndermek için bu mesaja <b>Yanıtla (Reply)</b> deyip sadece <code>/gonder</code> yazın.</i>
+👉 <i>Cevabı düzenlemek istiyorsanız, <b>Yanıtla</b> deyip göndermek istediğiniz yeni cevabı yazıp yollayın.</i>`;
+
+            await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: inanChatId,
+                    text: tgMsg,
+                    parse_mode: 'HTML'
+                })
+            });
+        }
+
+        res.json({ success: true, message: "Webhook processed and Telegram notification sent." });
+    } catch (err) {
+        console.error("Error processing email webhook:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 // Fallback for HTML5 client-side routing
 app.get('*any', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
