@@ -75,18 +75,31 @@ Web sitesi, kullanıcı tercihi doğrultusunda **GitHub Pages** üzerinde kendi 
 
 ---
 
-## 📬 Son Eklenen Geliştirmeler (26 Haziran Güncellemesi) - Hostinger Agentic Mail & Telegram Entegrasyonu
+## 📬 Son Eklenen Geliştirmeler (26 Haziran Güncellemesi) - Gelişmiş Teklif, Randevu ve Web Güncelleme Yönetimi
 
 1. **Vercel Yönlendirme Güncellemesi (`vercel.json`):**
    * Buluttaki sunucusuz Express yönlendirmesi `/api/(.*)` olarak güncellendi. Bu sayede tüm yeni API endpoint'leri (`/api/email-webhook` vb.) CORS engeline takılmadan ve 7/24 kesintisiz olarak bulutta çalışacaktır.
 2. **7/24 Gelen Kutusu İzleme ve Yapay Zeka Taslağı (`server.js`):**
    * `/api/email-webhook` endpoint'i yazıldı. Hostinger Agentic Mail webhook tetiklendiğinde e-postanın gönderen, konu ve içerik bilgileri alınıp Gemini 1.5 Flash ile e-postanın dili tespit edilir.
-   * Aynı dilde (Hollandaca, Türkçe, İngilizce) profesyonelce hazırlanmış bir taslak yanıt otomatik oluşturulur.
-   * Bu taslak, HTML formatında İnan Abi'nin Telegram botuna push bildirimi olarak anında gönderilir.
+   * Aynı dilde (Hollandaca, Türkçe, İngilizce) profesyonelce hazırlanmış bir taslak yanıt otomatik oluşturulur ve İnan Abi'nin Telegram botuna push bildirimi olarak anında gönderilir.
 3. **Lokal Hermes Telegram Ajanı Göçü (`hermes.js`):**
    * Ajan tamamen **Telegram long-polling** yapısına taşındı (WhatsApp bağımlılığı kaldırıldı).
-   * **Bilgisayar Açılış Bildirimi (Downtime Tracking):** `last_seen.json` üzerinden bilgisayarın kapalı kaldığı süre hesaplanarak İnan Abi'ye Telegram'dan esprili bir karşılama ("Emrindeyim İnan Abi!") gönderilir. Ayrıca bu süreçte gelen e-posta adedi de listelenir.
-    * **API Bağlama (`/bagla <token>`):** İnan Abi `/bagla` komutuyla Hostinger Mail API jetonunu girdiğinde, bot otomatik olarak Hostinger hesabındaki **tüm e-posta kutularını** (hem `info@derininfra.nl` hem de kendi kişisel/diğer inboxes) sorgular. Her biri için Vercel webhook entegrasyonunu aktif hale getirir ve adres-resourceId haritasını yerel `mailboxes.json` dosyasına kaydeder.
-    * **Sunucu Yönetimi Komutları:** `/durum` ve `/restart` komutları ile Hostinger VPS durum bilgisi ve reboot işlemleri Telegram üzerinden tetiklenebilir.
-    * **GitOps Chatbot Güncelleme (`/chatbot_guncelle <bilgi>`):** Gönderilen yeni chatbot bilgileri yerel `company_updates.txt` dosyasına yazılır ve otomatik `git push` ile Vercel üzerinde 7/24 yayında olan chatbot bilgi tabanı güncellenir.
-    * **E-posta Yanıtlama (Çoklu Kutu Destekli):** İnan Abi gelen e-posta bildirimine Telegram'da **Yanıtla (Reply)** seçeneğiyle cevap verdiğinde; Hermes bildirim mesajındaki `📥 Gelen Kutu:` bilgisini okur, `mailboxes.json` üzerinden doğru e-posta kutusunun Resource ID'sini bulur ve yanıtı **e-postayı alan asıl kutu üzerinden** alıcıya iletir. `/gonder` yazarsa yapay zeka taslağı, başka bir şey yazarsa kendi özel mesajı gönderilir.
+   * **Bilgisayar Açılış Bildirimi (Downtime Tracking):** `last_seen.json` üzerinden bilgisayarın kapalı kaldığı süre hesaplanarak İnan Abi'ye Telegram'dan esprili bir karşılama ("Emrindeyim İnan Abi!") gönderilir. Ayrıca bu süreçte gelen e-posta adedi ve o günkü randevuları listelenir.
+   * **API Bağlama (`/bagla <token>`):** İnan Abi `/bagla` komutuyla Hostinger Mail API jetonunu girdiğinde, bot otomatik olarak Hostinger hesabındaki tüm e-posta kutularını sorgular, Vercel webhook entegrasyonunu aktif hale getirir ve adres-resourceId haritasını yerel `mailboxes.json` dosyasına kaydeder.
+   * **Sunucu Yönetimi Komutları:** `/durum` ve `/restart` komutları ile Hostinger VPS durum bilgisi ve reboot işlemleri Telegram üzerinden tetiklenebilir.
+   * **GitOps Chatbot Güncelleme (`/chatbot_guncelle <bilgi>`):** Gönderilen yeni chatbot bilgileri yerel `company_updates.txt` dosyasına yazılır ve otomatik `git push` ile Vercel üzerinde 7/24 yayında olan chatbot bilgi tabanı güncellenir.
+   * **E-posta Yanıtlama (Çoklu Kutu Destekli):** İnan Abi gelen e-posta bildirimine Telegram'da **Yanıtla (Reply)** seçeneğiyle cevap verdiğinde; Hermes bildirim mesajındaki `📥 Gelen Kutu:` bilgisini okur, `mailboxes.json` üzerinden doğru e-posta kutusunun Resource ID'sini bulur ve yanıtı e-postayı alan asıl kutu üzerinden alıcıya iletir.
+4. **Teklif Takibi Entegrasyonu (`/teklifler`):**
+   * İnan Abi `/teklifler` yazarak web sitesindeki teklif hesaplama formunu dolduran son 5 müşterinin adı, telefonu, e-postası, konumu, hesaplanan bütçesi ve proje detaylarını Telegram üzerinden anında görebilir.
+   * Veriler GitHub API aracılığıyla `quotes.json` dosyasından canlı olarak çekilir.
+5. **Yapay Zeka Destekli Keşif & Tadilat Randevu Yönetimi:**
+   * **Doğal Dil Analizi ile Randevu Ekleme (`/randevu_ekle <istek>`):** İnan Abi `/randevu_ekle yarın öğleden sonra 3'te Ahmet bey ile banyo keşfi` gibi serbest dilde yazıp gönderdiğinde, Gemini AI bu metni analiz ederek tarih, saat, müşteri adı ve amaç bilgisini çıkartır. Veriler `appointments.json` dosyasına yazılıp otomatik olarak GitHub deposuna commit edilir.
+   * **Randevuları Listeleme (`/randevular`):** Kayıtlı tüm aktif keşif ve tadilat randevuları tarih ve saat sırasına göre listelenir. Her randevunun bir benzersiz ID'si (`randevu_sil` için) gösterilir.
+   * **Randevu Silme (`/randevu_sil <id>`):** Belirtilen ID'ye sahip randevu veritabanından (GitHub reposundan) kaldırılır.
+   * **Günlük Randevu Özeti:** Sistem her sabah saat 08:00'de o günkü randevuları kontrol ederek İnan Abi'ye Telegram'dan otomatik bir özet gönderir.
+6. **Yapay Zeka ile Doğal Dilde Web Sitesi Güncelleme (`/guncelle <istek>`):**
+   * İnan Abi bota `/guncelle banyo başlangıç fiyatını 4250 Euro yap` şeklinde Türkçe talimat verir.
+   * Bot, Gemini AI kullanarak `prices.json` dosyasını günceller, değişiklik özeti (diff) taslağı oluşturur ve bunu Derya Abla'nın onayına gönderir.
+   * Derya Abla bota gelen bu değişiklik özetine doğrudan **Yanıtla (Reply)** diyerek sadece **EVET** yazdığında, değişiklik GitHub'a pushlanır. Vercel otomatik rebuild tetikler ve site fiyatları saniyeler içinde canlıya alınır. **HAYIR** yazarsa işlem iptal edilir.
+   * Tüm bu onay geçmişi ve taslak veriler botun olası yeniden başlamalarına karşı yerel `pending_approvals.json` dosyasında güvenle saklanır.
+
